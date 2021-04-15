@@ -15,6 +15,12 @@ export default function Layout({ children }) {
           <li>
             <Link to="/register">Register</Link>
           </li>
+          <li>
+            <Link to="/positions">Positions</Link>
+          </li>
+          <li>
+            <Link to="/deductions">Deductions</Link>
+          </li>
         </ul>
       </nav>
 
