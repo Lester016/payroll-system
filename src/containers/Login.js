@@ -1,7 +1,10 @@
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { connect } from "react-redux";
 
-export default function Login() {
+import * as actions from "../store/actions";
+
+const Login = ({ login }) => {
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required().label("Email"),
     password: Yup.string().required().label("Password"),
@@ -12,7 +15,7 @@ export default function Login() {
       initialValues={{ email: "", password: "" }}
       validationSchema={LoginSchema}
       onSubmit={(values) => {
-        alert(values.email, values.password);
+        login(values.email, values.password);
       }}
     >
       {() => (
@@ -43,4 +46,21 @@ export default function Login() {
       )}
     </Formik>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    loading: state.auth.loading,
+    error: state.auth.error,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: (email, password) => {
+      dispatch(actions.login(email, password));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
