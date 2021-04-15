@@ -24,6 +24,7 @@ const reducer = (state = initialState, action) => {
         email: action.email,
         name: action.name,
         loading: false,
+        error: null,
       };
     case actionTypes.AUTH_FAILED:
       return {
