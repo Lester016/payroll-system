@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { filter } from "lodash/collection";
 
 function Position() {
   const [positions, setPositions] = useState([]);
@@ -45,18 +44,17 @@ function Position() {
       });
     e.preventDefault();
   };
+
   const deleteHandler = (key) => {
     setIsLoading(true);
     axios
       .delete(
         `https://tup-payroll-default-rtdb.firebaseio.com/positions/${key}.json`
       )
-      .then((response) => {
-        let newLists;
-        newLists = filter(positions, function (o) {
-          return o[response.data.name];
-        });
-        console.log(newLists);
+      .then(() => {
+        let filteredPositions = { ...positions };
+        delete filteredPositions[key];
+        setPositions(filteredPositions);
         setIsLoading(false);
       })
       .catch((error) => {
