@@ -67,24 +67,28 @@ function Position() {
   if (positions) {
     positionsList = (
       <table>
-        <tr>
-          <th>Position Title</th>
-          <th>Rate Per Hour</th>
-          <th>Options</th>
-        </tr>
-        {Object.keys(positions).map((item) => (
-          <tr key={item}>
-            <td>{positions[item].title}</td>
-            <td>{positions[item].rate}</td>
-            <td>
-              <input
-                type="button"
-                value="Delete"
-                onClick={() => deleteHandler(item)}
-              />
-            </td>
+        <thead>
+          <tr>
+            <th>Position Title</th>
+            <th>Rate Per Hour</th>
+            <th>Options</th>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {Object.keys(positions).map((item) => (
+            <tr key={item}>
+              <td>{positions[item].title}</td>
+              <td>{positions[item].rate}</td>
+              <td>
+                <input
+                  type="button"
+                  value="Delete"
+                  onClick={() => deleteHandler(item)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     );
   }
@@ -109,7 +113,15 @@ function Position() {
       />
       <input type="submit" value="Add" onClick={submitHandler} />
 
-      <div>{isLoading ? <h1>Loading..</h1> : positionsList}</div>
+      <div>
+        {isLoading ? (
+          <h1>Loading..</h1>
+        ) : positions === null ? (
+          <p>No Data</p>
+        ) : (
+          positionsList
+        )}
+      </div>
     </div>
   );
 }
