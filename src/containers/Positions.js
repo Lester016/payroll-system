@@ -65,21 +65,28 @@ function Position() {
 
   let positionsList = [];
   if (positions) {
-    positionsList = Object.keys(positions).map((item) => (
-      <div key={item}>
-        <p style={{ display: "inline-block", padding: 15 }}>
-          {positions[item].title}
-        </p>
-        <p style={{ display: "inline-block", padding: 15 }}>
-          {positions[item].rate}
-        </p>
-        <input
-          type="button"
-          value="Delete"
-          onClick={() => deleteHandler(item)}
-        />
-      </div>
-    ));
+    positionsList = (
+      <table>
+        <tr>
+          <th>Position Title</th>
+          <th>Rate Per Hour</th>
+          <th>Options</th>
+        </tr>
+        {Object.keys(positions).map((item) => (
+          <tr key={item}>
+            <td>{positions[item].title}</td>
+            <td>{positions[item].rate}</td>
+            <td>
+              <input
+                type="button"
+                value="Delete"
+                onClick={() => deleteHandler(item)}
+              />
+            </td>
+          </tr>
+        ))}
+      </table>
+    );
   }
 
   return (
