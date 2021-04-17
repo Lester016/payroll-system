@@ -1,44 +1,88 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { filter } from "lodash/collection";
 
 function Position() {
   const [positions, setPositions] = useState([]);
   const [jobTitle, setJobTitle] = useState("");
   const [ratePerHour, setRatePerHour] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    let isMounted = true;
+    setIsLoading(true);
     axios
       .get("https://tup-payroll-default-rtdb.firebaseio.com/positions.json")
       .then((response) => {
-        if (isMounted) setPositions(response.data);
+        setPositions(response.data);
+        setIsLoading(false);
       })
-      .catch((error) => console.log(error));
-
-    return () => {
-      isMounted = false;
-    };
-  }, [positions]);
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  }, []);
 
   const submitHandler = (e) => {
+    setIsLoading(true);
     axios
       .post("https://tup-payroll-default-rtdb.firebaseio.com/positions.json", {
         title: jobTitle,
         rate: ratePerHour,
       })
-      .then((response) => setPositions(response.data))
-      .catch((error) => console.log(error));
+      .then((response) => {
+        setPositions({
+          ...positions,
+          [response.data.name]: {
+            rate: ratePerHour,
+            title: jobTitle,
+          },
+        });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
     e.preventDefault();
   };
-
   const deleteHandler = (key) => {
+    setIsLoading(true);
     axios
       .delete(
         `https://tup-payroll-default-rtdb.firebaseio.com/positions/${key}.json`
       )
-      .then((response) => setPositions(response.data))
-      .catch((error) => console.log(error));
+      .then((response) => {
+        let newLists;
+        newLists = filter(positions, function (o) {
+          return o[response.data.name];
+        });
+        console.log(newLists);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
   };
+
+  let positionsList = [];
+  if (positions) {
+    positionsList = Object.keys(positions).map((item) => (
+      <div key={item}>
+        <p style={{ display: "inline-block", padding: 15 }}>
+          {positions[item].title}
+        </p>
+        <p style={{ display: "inline-block", padding: 15 }}>
+          {positions[item].rate}
+        </p>
+        <input
+          type="button"
+          value="Delete"
+          onClick={() => deleteHandler(item)}
+        />
+      </div>
+    ));
+  }
 
   return (
     <div>
@@ -60,24 +104,7 @@ function Position() {
       />
       <input type="submit" value="Add" onClick={submitHandler} />
 
-      <div>
-        {positions &&
-          Object.keys(positions).map((item) => (
-            <div key={item}>
-              <p style={{ display: "inline-block", padding: 15 }}>
-                {positions[item].title}
-              </p>
-              <p style={{ display: "inline-block", padding: 15 }}>
-                {positions[item].rate}
-              </p>
-              <input
-                type="button"
-                value="Delete"
-                onClick={() => deleteHandler(item)}
-              />
-            </div>
-          ))}
-      </div>
+      <div>{isLoading ? <h1>Loading..</h1> : positionsList}</div>
     </div>
   );
 }
