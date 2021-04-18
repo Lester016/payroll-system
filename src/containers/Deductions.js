@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Table from "../components/Table";
 
 function Deductions() {
   const [deductions, setDeductions] = useState([]);
@@ -66,30 +67,11 @@ function Deductions() {
   let deductionsList = [];
   if (deductions) {
     deductionsList = (
-      <table>
-        <thead>
-          <tr>
-            <th>Description</th>
-            <th>Amount</th>
-            <th>Options</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(deductions).map((item) => (
-            <tr key={item}>
-              <td>{deductions[item].title}</td>
-              <td>{deductions[item].amount}</td>
-              <td>
-                <input
-                  type="button"
-                  value="Delete"
-                  onClick={() => deleteHandler(item)}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table
+        lists={deductions}
+        onDeleteRow={deleteHandler}
+        columns={["Description", "Amount", "Options"]}
+      />
     );
   }
 

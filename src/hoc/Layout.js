@@ -13,13 +13,13 @@ export default function Layout({ children }) {
             <Link to="/login">Login</Link>
           </li>
           <li>
-            <Link to="/register">Register</Link>
-          </li>
-          <li>
             <Link to="/positions">Positions</Link>
           </li>
           <li>
             <Link to="/deductions">Deductions</Link>
+          </li>
+          <li>
+            <Link to="/schedules">Schedules</Link>
           </li>
         </ul>
       </nav>

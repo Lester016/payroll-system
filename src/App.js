@@ -5,17 +5,17 @@ import Deductions from "./containers/Deductions";
 import Home from "./containers/Home";
 import Login from "./containers/Login";
 import Positions from "./containers/Positions";
-import Register from "./containers/Register";
+import { Schedules } from "./containers/Schedules";
 import Layout from "./hoc/Layout";
 
 function App() {
   return (
     <Layout>
       <Switch>
+        <Route path="/schedules" component={Schedules} />
         <Route path="/deductions" component={Deductions} />
         <Route path="/positions" component={Positions} />
         <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
         <Route path="/" exact component={Home} />
         <Redirect to="/" />
       </Switch>

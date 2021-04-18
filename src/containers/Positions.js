@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Table from "../components/Table";
 
-function Position() {
+const Position = () => {
   const [positions, setPositions] = useState([]);
   const [jobTitle, setJobTitle] = useState("");
   const [ratePerHour, setRatePerHour] = useState(0);
@@ -66,30 +67,11 @@ function Position() {
   let positionsList = [];
   if (positions) {
     positionsList = (
-      <table>
-        <thead>
-          <tr>
-            <th>Position Title</th>
-            <th>Rate Per Hour</th>
-            <th>Options</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.keys(positions).map((item) => (
-            <tr key={item}>
-              <td>{positions[item].title}</td>
-              <td>{positions[item].rate}</td>
-              <td>
-                <input
-                  type="button"
-                  value="Delete"
-                  onClick={() => deleteHandler(item)}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table
+        lists={positions}
+        onDeleteRow={deleteHandler}
+        columns={["Position Title", "Rate Per Hour", "Options"]}
+      />
     );
   }
 
@@ -124,6 +106,6 @@ function Position() {
       </div>
     </div>
   );
-}
+};
 
 export default Position;
