@@ -1,5 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Container from "@material-ui/core/Container";
+
 import Table from "../components/Table";
 
 const Position = () => {
@@ -78,32 +81,28 @@ const Position = () => {
   return (
     <div>
       <h1>Positions Screen</h1>
+      <Container maxWidth="xl">
+        <input
+          type="text"
+          name="title"
+          value={jobTitle}
+          placeholder="Job Title"
+          onChange={(e) => setJobTitle(e.target.value)}
+        />
+        <input
+          type="number"
+          name="rate"
+          value={ratePerHour}
+          placeholder="Rate Per Hour"
+          onChange={(e) => setRatePerHour(e.target.value)}
+        />
+        <input type="submit" value="Add" onClick={submitHandler} />
 
-      <input
-        type="text"
-        name="title"
-        value={jobTitle}
-        placeholder="Job Title"
-        onChange={(e) => setJobTitle(e.target.value)}
-      />
-      <input
-        type="number"
-        name="rate"
-        value={ratePerHour}
-        placeholder="Rate Per Hour"
-        onChange={(e) => setRatePerHour(e.target.value)}
-      />
-      <input type="submit" value="Add" onClick={submitHandler} />
-
-      <div>
-        {isLoading ? (
-          <h1>Loading..</h1>
-        ) : positions === null ? (
-          <p>No Data</p>
-        ) : (
-          positionsList
-        )}
-      </div>
+        <div>
+          {isLoading && <LinearProgress color="secondary" />}
+          {positionsList}
+        </div>
+      </Container>
     </div>
   );
 };

@@ -33,8 +33,8 @@ function Deductions() {
         setDeductions({
           ...deductions,
           [response.data.name]: {
-            title: deductionTitle,
             amount: amount,
+            title: deductionTitle,
           },
         });
         setIsLoading(false);
