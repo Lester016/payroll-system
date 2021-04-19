@@ -33,8 +33,8 @@ function Deductions() {
         setDeductions({
           ...deductions,
           [response.data.name]: {
-            amount: amount,
             title: deductionTitle,
+            amount: amount,
           },
         });
         setIsLoading(false);
@@ -71,6 +71,7 @@ function Deductions() {
         lists={deductions}
         onDeleteRow={deleteHandler}
         columns={["Description", "Amount", "Options"]}
+        propertiesOrder={["title", "amount"]}
       />
     );
   }

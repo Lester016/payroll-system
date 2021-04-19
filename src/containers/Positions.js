@@ -74,6 +74,7 @@ const Position = () => {
         lists={positions}
         onDeleteRow={deleteHandler}
         columns={["Position Title", "Rate Per Hour", "Options"]}
+        propertiesOrder={["title", "rate"]}
       />
     );
   }

@@ -26,9 +26,6 @@ const StyledTableRow = withStyles((theme) => ({
       backgroundColor: theme.palette.action.hover,
     },
   },
-  button: {
-    margin: theme.spacing(1),
-  },
 }))(TableRow);
 
 const useStyles = makeStyles({
@@ -37,7 +34,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AppTable = ({ lists, onDeleteRow, columns }) => {
+const AppTable = ({ lists, onDeleteRow, columns, propertiesOrder }) => {
   const classes = useStyles();
 
   return (
@@ -53,17 +50,15 @@ const AppTable = ({ lists, onDeleteRow, columns }) => {
         <TableBody>
           {Object.keys(lists).map((item) => (
             <StyledTableRow key={item}>
-              <StyledTableCell>
-                {lists[item][Object.keys(lists[item])[1]]}
-              </StyledTableCell>
-              <StyledTableCell>
-                {lists[item][Object.keys(lists[item])[0]]}
-              </StyledTableCell>
+              {propertiesOrder.map((column, id) => (
+                <StyledTableCell key={id}>
+                  {lists[item][column]}
+                </StyledTableCell>
+              ))}
               <StyledTableCell>
                 <Button
                   variant="contained"
                   color="secondary"
-                  className={classes.button}
                   startIcon={<DeleteIcon />}
                   onClick={() => onDeleteRow(item)}
                 >
