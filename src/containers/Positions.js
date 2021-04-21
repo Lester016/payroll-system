@@ -30,7 +30,7 @@ const Position = () => {
     axios
       .post("https://tup-payroll-default-rtdb.firebaseio.com/positions.json", {
         title: jobTitle,
-        rate: ratePerHour,
+        rate: parseFloat(ratePerHour),
       })
       .then((response) => {
         setPositions({

@@ -27,7 +27,7 @@ function Deductions() {
     axios
       .post("https://tup-payroll-default-rtdb.firebaseio.com/deductions.json", {
         title: deductionTitle,
-        amount: amount,
+        amount: parseFloat(amount),
       })
       .then((response) => {
         setDeductions({
