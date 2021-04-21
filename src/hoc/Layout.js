@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
 // MaterialUI
@@ -16,12 +15,8 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import NavItem from "../components/NavItem";
 import MailIcon from "@material-ui/icons/Mail";
-
-const drawerWidth = 200;
 
 const titleBar = {
   "/": "Home",
@@ -29,6 +24,8 @@ const titleBar = {
   "/deductions": "Deductions",
   "/schedules": "Schedules",
 };
+
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -157,30 +154,22 @@ export default function Layout({ children }) {
         <Divider />
         {/* Navigation Links */}
         <List>
-          <ListItem button component={Link} to={"/"}>
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Home"} />
-          </ListItem>
-          <ListItem button component={Link} to={"/positions"}>
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Positions"} />
-          </ListItem>
-          <ListItem button component={Link} to={"/deductions"}>
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Deductions"} />
-          </ListItem>
-          <ListItem button component={Link} to={"/schedules"}>
-            <ListItemIcon>
-              <MailIcon />
-            </ListItemIcon>
-            <ListItemText primary={"Schedules"} />
-          </ListItem>
+          <NavItem route={"/"} title={"Home"} IconComponent={MailIcon} />
+          <NavItem
+            route={"/positions"}
+            title={"Positions"}
+            IconComponent={MailIcon}
+          />
+          <NavItem
+            route={"/deductions"}
+            title={"Deductions"}
+            IconComponent={MailIcon}
+          />
+          <NavItem
+            route={"/schedules"}
+            title={"Schedules"}
+            IconComponent={MailIcon}
+          />
         </List>
       </Drawer>
 
