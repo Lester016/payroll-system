@@ -9,16 +9,13 @@ function Deductions() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
     axios
       .get("https://tup-payroll-default-rtdb.firebaseio.com/deductions.json")
       .then((response) => {
         setDeductions(response.data);
-        setIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setIsLoading(false);
       });
   }, []);
 
@@ -64,18 +61,6 @@ function Deductions() {
       });
   };
 
-  let deductionsList = [];
-  if (deductions) {
-    deductionsList = (
-      <Table
-        lists={deductions}
-        onDeleteRow={deleteHandler}
-        columns={["Description", "Amount", "Options"]}
-        propertiesOrder={["title", "amount"]}
-      />
-    );
-  }
-
   return (
     <div>
       <h1>Deductions Screen</h1>
@@ -97,13 +82,12 @@ function Deductions() {
       <input type="submit" value="Add" onClick={submitHandler} />
 
       <div>
-        {isLoading ? (
-          <h1>Loading..</h1>
-        ) : deductions === null ? (
-          <p>No Data</p>
-        ) : (
-          deductionsList
-        )}
+        <Table
+          lists={deductions}
+          onDeleteRow={deleteHandler}
+          columns={["Description", "Amount", "Options"]}
+          propertiesOrder={["title", "amount"]}
+        />
       </div>
     </div>
   );

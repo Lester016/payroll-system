@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -37,6 +38,46 @@ const useStyles = makeStyles({
 const AppTable = ({ lists, onDeleteRow, columns, propertiesOrder }) => {
   const classes = useStyles();
 
+  const loading = [];
+
+  for (let index = 0; index < 6; index++) {
+    loading.push(
+      <StyledTableRow key={index}>
+        {propertiesOrder.map((_, id) => (
+          <StyledTableCell key={id}>
+            <Skeleton variant="text" animation="wave" width={150} height={20} />
+          </StyledTableCell>
+        ))}
+        <StyledTableCell>
+          <Skeleton variant="text" animation="wave" width={100} height={40} />
+        </StyledTableCell>
+      </StyledTableRow>
+    );
+  }
+
+  let output = loading;
+
+  if (Object.keys(lists).length !== 0) {
+    output = Object.keys(lists).map((item) => (
+      <StyledTableRow key={item}>
+        {propertiesOrder.map((column, id) => (
+          <StyledTableCell key={id}>{lists[item][column]}</StyledTableCell>
+        ))}
+        <StyledTableCell>
+          <Button
+            size="small"
+            variant="contained"
+            color="secondary"
+            startIcon={<DeleteIcon />}
+            onClick={() => onDeleteRow(item)}
+          >
+            Delete
+          </Button>
+        </StyledTableCell>
+      </StyledTableRow>
+    ));
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
@@ -47,28 +88,7 @@ const AppTable = ({ lists, onDeleteRow, columns, propertiesOrder }) => {
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>
-          {Object.keys(lists).map((item) => (
-            <StyledTableRow key={item}>
-              {propertiesOrder.map((column, id) => (
-                <StyledTableCell key={id}>
-                  {lists[item][column]}
-                </StyledTableCell>
-              ))}
-              <StyledTableCell>
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<DeleteIcon />}
-                  onClick={() => onDeleteRow(item)}
-                >
-                  Delete
-                </Button>
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
+        <TableBody>{output}</TableBody>
       </Table>
     </TableContainer>
   );
