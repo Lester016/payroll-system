@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -17,9 +19,16 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  root: {
+    minWidth: 275,
+  },
 }));
 
-export default function TransitionsModal({ isModalOpen, handleClose, children }) {
+export default function TransitionsModal({
+  isModalOpen,
+  handleClose,
+  children,
+}) {
   const classes = useStyles();
 
   return (
@@ -37,12 +46,9 @@ export default function TransitionsModal({ isModalOpen, handleClose, children })
         }}
       >
         <Fade in={isModalOpen}>
-          <div className={classes.paper}>
-            <h2 id="transition-modal-title">Transition modal</h2>
-            <p id="transition-modal-description">
-              react-transition-group animates me.
-            </p>
-          </div>
+          <Card className={classes.root}>
+            <CardContent>{children}</CardContent>
+          </Card>
         </Fade>
       </Modal>
     </div>

@@ -5,6 +5,8 @@ import reportWebVitals from "./reportWebVitals";
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import thunk from "redux-thunk";
+import DateFnsUtils from "@date-io/date-fns"; // choose your lib
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 import "./index.css";
 import App from "./App";
@@ -25,7 +27,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <Router>
-        <App />
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <App />
+        </MuiPickersUtilsProvider>
       </Router>
     </Provider>
   </React.StrictMode>,
