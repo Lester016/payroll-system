@@ -57,6 +57,7 @@ const AppTable = ({ lists, onDeleteRow, columns, propertiesOrder }) => {
               ))}
               <StyledTableCell>
                 <Button
+                  size="small"
                   variant="contained"
                   color="secondary"
                   startIcon={<DeleteIcon />}
