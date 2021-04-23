@@ -3,7 +3,7 @@ import LoginCard from '../components/LoginCard'
 
 const Login = () => {
   return (
-    <LoginCard isAdmin = {false}/>
+    <LoginCard isAdmin = {true}/>
   );
 };
 
