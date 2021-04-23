@@ -3,8 +3,8 @@ import Button from "@material-ui/core/Button";
 
 import TransitionsModal from "../components/Modal";
 
-export const Schedules = () => {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+const Schedules = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpen = () => {
     setIsModalOpen(true);
@@ -30,3 +30,5 @@ export const Schedules = () => {
     </div>
   );
 };
+
+export default Schedules;

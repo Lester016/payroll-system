@@ -9,12 +9,16 @@ import NavItem from "../components/Navigations/NavItem";
 import MailIcon from "@material-ui/icons/Mail";
 import Navbar from "../components/Navigations/Navbar";
 import NavDrawer from "../components/Navigations/NavDrawer";
+import { Divider } from "@material-ui/core";
 
 const titleBar = {
-  "/": "Home",
+  "/": "Dashboard",
   "/positions": "Positions",
   "/deductions": "Deductions",
   "/schedules": "Schedules",
+  "/payroll": "Payroll",
+  "/employees": "Employees",
+  "/attendance": "Attendance",
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +65,18 @@ export default function Layout({ children }) {
       <NavDrawer handleDrawerClose={handleDrawerClose} isOpen={open}>
         {/* Navigation Links */}
         <List>
-          <NavItem route={"/"} title={"Home"} IconComponent={MailIcon} />
+          <NavItem route={"/"} title={"Dashboard"} IconComponent={MailIcon} />
+          <Divider />
+          <NavItem
+            route={"/attendance"}
+            title={"Attendance"}
+            IconComponent={MailIcon}
+          />
+          <NavItem
+            route={"/employees"}
+            title={"Employees"}
+            IconComponent={MailIcon}
+          />
           <NavItem
             route={"/positions"}
             title={"Positions"}
@@ -77,6 +92,14 @@ export default function Layout({ children }) {
             title={"Schedules"}
             IconComponent={MailIcon}
           />
+          <Divider />
+          <NavItem
+            route={"/payroll"}
+            title={"Payroll"}
+            IconComponent={MailIcon}
+          />
+
+          <Divider />
         </List>
       </NavDrawer>
 
