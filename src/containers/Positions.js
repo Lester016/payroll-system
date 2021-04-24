@@ -8,15 +8,19 @@ const Position = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [ratePerHour, setRatePerHour] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
+    setIsFetching(true);
     axios
       .get("https://tup-payroll-default-rtdb.firebaseio.com/positions.json")
       .then((response) => {
         setPositions(response.data);
+        setIsFetching(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsFetching(false);
       });
   }, []);
 
@@ -87,6 +91,7 @@ const Position = () => {
           onDeleteRow={deleteHandler}
           columns={["Position Title", "Rate Per Hour", "Options"]}
           propertiesOrder={["title", "rate"]}
+          isLoading={isFetching}
         />
       </div>
     </div>

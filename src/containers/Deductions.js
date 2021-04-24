@@ -7,14 +7,18 @@ function Deductions() {
   const [deductionTitle, setDeductionTitle] = useState("");
   const [amount, setAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
+    setIsFetching(true);
     axios
       .get("https://tup-payroll-default-rtdb.firebaseio.com/deductions.json")
       .then((response) => {
         setDeductions(response.data);
+        setIsFetching(false);
       })
       .catch((error) => {
+        setIsFetching(false);
         console.log(error);
       });
   }, []);
@@ -87,6 +91,7 @@ function Deductions() {
           onDeleteRow={deleteHandler}
           columns={["Description", "Amount", "Options"]}
           propertiesOrder={["title", "amount"]}
+          isLoading={isFetching}
         />
       </div>
     </div>

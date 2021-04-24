@@ -83,12 +83,6 @@ const AppTable = ({
         </StyledTableRow>
       ));
     }
-  } else {
-    output = <h1>No data yet</h1>;
-  }
-
-  if (JSON.stringify(lists) === "{}") {
-    output = <h1>No data yet</h1>;
   }
 
   return (
@@ -101,7 +95,15 @@ const AppTable = ({
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>{isLoading ? loading : output}</TableBody>
+        <TableBody>
+          {isLoading ? (
+            loading
+          ) : lists && JSON.stringify(lists) !== "{}" ? (
+            output
+          ) : (
+            <h1>No data yet</h1>
+          )}
+        </TableBody>
       </Table>
     </TableContainer>
   );
