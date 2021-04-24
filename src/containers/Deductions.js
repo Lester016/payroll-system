@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Table from "../components/Table";
 
 function Deductions() {
-  const [deductions, setDeductions] = useState([]);
+  const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
   const [amount, setAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
