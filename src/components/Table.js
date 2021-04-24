@@ -38,6 +38,7 @@ const useStyles = makeStyles({
 const AppTable = ({
   lists,
   onDeleteRow,
+  onEditRow,
   columns,
   propertiesOrder,
   isLoading,
@@ -73,6 +74,13 @@ const AppTable = ({
             <Button
               size="small"
               variant="contained"
+              onClick={() => onEditRow(item)}
+            >
+              Edit
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
               color="secondary"
               startIcon={<DeleteIcon />}
               onClick={() => onDeleteRow(item)}
@@ -95,15 +103,8 @@ const AppTable = ({
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>
-          {isLoading ? (
-            loading
-          ) : lists && JSON.stringify(lists) !== "{}" ? (
-            output
-          ) : (
-            <h1>No data yet</h1>
-          )}
-        </TableBody>
+        <TableBody>{isLoading ? loading : output}</TableBody>
+        {lists === null && <h1>No data yet</h1>}
       </Table>
     </TableContainer>
   );

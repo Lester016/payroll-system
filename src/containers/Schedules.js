@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Button from "@material-ui/core/Button";
-import { TimePicker } from "@material-ui/pickers";
 import axios from "axios";
 import set from "date-fns/set/index.js";
+import Button from "@material-ui/core/Button";
+import { TimePicker } from "@material-ui/pickers";
+import { CircularProgress } from "@material-ui/core";
 
 import TransitionsModal from "../components/Modal";
 import Table from "../components/Table";
@@ -14,6 +15,7 @@ const Schedules = () => {
   const [timeOut, setTimeOut] = useState(new Date());
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(null);
 
   useEffect(() => {
     setIsFetching(true);
@@ -40,6 +42,7 @@ const Schedules = () => {
     setTimeOut(new Date());
 
     setIsModalOpen(false);
+    setIsUpdating(false);
   };
 
   // Submit handler.
@@ -60,30 +63,71 @@ const Schedules = () => {
         : "0" + timeOut.getMinutes()
     } : 00`;
 
-    // Create new schedule in firebase server.
-    axios
-      .post("https://tup-payroll-default-rtdb.firebaseio.com/schedules.json", {
-        timeIn: formattedTimeIn,
-        timeOut: formattedTimeOut,
-      })
-      .then((response) => {
-        // Add the schedule to the existings schedules list.
-        setSchedules({
-          ...schedules,
-          [response.data.name]: {
+    if (isUpdating === null) {
+      // Create new schedule in firebase server.
+      axios
+        .post(
+          "https://tup-payroll-default-rtdb.firebaseio.com/schedules.json",
+          {
             timeIn: formattedTimeIn,
             timeOut: formattedTimeOut,
-          },
-        });
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        // log the error if found || catched.
-        console.log(error);
-      });
+          }
+        )
+        .then((response) => {
+          // Add the schedule to the existings schedules list.
+          setSchedules({
+            ...schedules,
+            [response.data.name]: {
+              timeIn: formattedTimeIn,
+              timeOut: formattedTimeOut,
+            },
+          });
+          setIsLoading(false);
 
-    // Close modal
-    handleClose();
+          // Close modal
+          handleClose();
+        })
+        .catch((error) => {
+          // log the error if found || catched.
+          console.log(error);
+          setIsLoading(false);
+
+          // Close modal
+          handleClose();
+        });
+    } else {
+      // Update single schedule in firebase server.
+      axios
+        .put(
+          `https://tup-payroll-default-rtdb.firebaseio.com/schedules/${isUpdating}.json`,
+          {
+            timeIn: formattedTimeIn,
+            timeOut: formattedTimeOut,
+          }
+        )
+        .then(() => {
+          // Update the schedule to the existings schedules list.
+          setSchedules({
+            ...schedules,
+            [isUpdating]: {
+              timeIn: formattedTimeIn,
+              timeOut: formattedTimeOut,
+            },
+          });
+          setIsLoading(false);
+          setIsUpdating(null);
+          // Close modal
+          handleClose();
+        })
+        .catch((error) => {
+          // log the error if found || catched.
+          console.log(error);
+          setIsLoading(false);
+          setIsUpdating(null);
+          // Close modal
+          handleClose();
+        });
+    }
   };
 
   const deleteHandler = (key) => {
@@ -104,6 +148,24 @@ const Schedules = () => {
       });
   };
 
+  const editHandler = (key) => {
+    const oldTimeIn = schedules[key].timeIn.replace(/\s/g, "");
+    const oldTimeOut = schedules[key].timeOut.replace(/\s/g, "");
+    const newTimeIn = set(new Date(), {
+      hours: oldTimeIn.substring(0, 2),
+      minutes: oldTimeIn.substring(3, 5),
+    });
+    const newTimeOut = set(new Date(), {
+      hours: oldTimeOut.substring(0, 2),
+      minutes: oldTimeOut.substring(3, 5),
+    });
+
+    setTimeIn(newTimeIn);
+    setTimeOut(newTimeOut);
+    setIsUpdating(key);
+    handleOpen();
+  };
+
   return (
     <div>
       <h1>Schedules Screen</h1>
@@ -118,39 +180,46 @@ const Schedules = () => {
       <Table
         lists={schedules}
         onDeleteRow={deleteHandler}
+        onEditRow={editHandler}
         columns={["Time In", "Time Out", "Options"]}
         propertiesOrder={["timeIn", "timeOut"]}
         isLoading={isFetching}
       />
 
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
-        <TimePicker
-          value={timeIn}
-          label="Time In"
-          onChange={(e) => setTimeIn(e)}
-        />
-        <TimePicker
-          value={timeOut}
-          label="Time Out"
-          onChange={(e) => setTimeOut(e)}
-        />
+        {!isLoading ? (
+          <>
+            <TimePicker
+              value={timeIn}
+              label="Time In"
+              onChange={(e) => setTimeIn(e)}
+            />
+            <TimePicker
+              value={timeOut}
+              label="Time Out"
+              onChange={(e) => setTimeOut(e)}
+            />
 
-        <Button
-          variant="contained"
-          size="small"
-          color="primary"
-          onClick={handleSubmit}
-        >
-          Submit
-        </Button>
-        <Button
-          variant="contained"
-          size="small"
-          color="secondary"
-          onClick={handleClose}
-        >
-          Cancel
-        </Button>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={handleSubmit}
+            >
+              {isUpdating ? "Update" : "Submit"}
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <CircularProgress />
+        )}
       </TransitionsModal>
     </div>
   );
