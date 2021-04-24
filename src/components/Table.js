@@ -35,7 +35,13 @@ const useStyles = makeStyles({
   },
 });
 
-const AppTable = ({ lists, onDeleteRow, columns, propertiesOrder }) => {
+const AppTable = ({
+  lists,
+  onDeleteRow,
+  columns,
+  propertiesOrder,
+  isLoading,
+}) => {
   const classes = useStyles();
 
   const loading = [];
@@ -55,27 +61,34 @@ const AppTable = ({ lists, onDeleteRow, columns, propertiesOrder }) => {
     );
   }
 
-  let output = loading;
+  let output;
+  if (lists) {
+    if (Object.keys(lists).length !== 0) {
+      output = Object.keys(lists).map((item) => (
+        <StyledTableRow key={item}>
+          {propertiesOrder.map((column, id) => (
+            <StyledTableCell key={id}>{lists[item][column]}</StyledTableCell>
+          ))}
+          <StyledTableCell>
+            <Button
+              size="small"
+              variant="contained"
+              color="secondary"
+              startIcon={<DeleteIcon />}
+              onClick={() => onDeleteRow(item)}
+            >
+              Delete
+            </Button>
+          </StyledTableCell>
+        </StyledTableRow>
+      ));
+    }
+  } else {
+    output = <h1>No data yet</h1>;
+  }
 
-  if (Object.keys(lists).length !== 0) {
-    output = Object.keys(lists).map((item) => (
-      <StyledTableRow key={item}>
-        {propertiesOrder.map((column, id) => (
-          <StyledTableCell key={id}>{lists[item][column]}</StyledTableCell>
-        ))}
-        <StyledTableCell>
-          <Button
-            size="small"
-            variant="contained"
-            color="secondary"
-            startIcon={<DeleteIcon />}
-            onClick={() => onDeleteRow(item)}
-          >
-            Delete
-          </Button>
-        </StyledTableCell>
-      </StyledTableRow>
-    ));
+  if (JSON.stringify(lists) === "{}") {
+    output = <h1>No data yet</h1>;
   }
 
   return (
@@ -88,7 +101,7 @@ const AppTable = ({ lists, onDeleteRow, columns, propertiesOrder }) => {
             ))}
           </TableRow>
         </TableHead>
-        <TableBody>{output}</TableBody>
+        <TableBody>{isLoading ? loading : output}</TableBody>
       </Table>
     </TableContainer>
   );

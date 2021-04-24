@@ -12,19 +12,22 @@ const Schedules = () => {
   const [schedules, setSchedules] = useState({});
   const [timeIn, setTimeIn] = useState(new Date());
   const [timeOut, setTimeOut] = useState(new Date());
+  const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsFetching(true);
     // Get || Read schedules in firebase server.
     axios
       .get("https://tup-payroll-default-rtdb.firebaseio.com/schedules.json")
       .then((response) => {
         setSchedules(response.data);
+        setIsFetching(false);
       })
       .catch((error) => {
+        setIsFetching(false);
         console.log(error);
       });
-    console.log(schedules);
   }, []);
 
   // Modal toggler.
@@ -83,6 +86,24 @@ const Schedules = () => {
     handleClose();
   };
 
+  const deleteHandler = (key) => {
+    setIsLoading(true);
+    axios
+      .delete(
+        `https://tup-payroll-default-rtdb.firebaseio.com/schedules/${key}.json`
+      )
+      .then(() => {
+        let filteredSchedules = { ...schedules };
+        delete filteredSchedules[key];
+        setSchedules(filteredSchedules);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
   return (
     <div>
       <h1>Schedules Screen</h1>
@@ -96,9 +117,10 @@ const Schedules = () => {
       </Button>
       <Table
         lists={schedules}
-        onDeleteRow={() => {}}
+        onDeleteRow={deleteHandler}
         columns={["Time In", "Time Out", "Options"]}
         propertiesOrder={["timeIn", "timeOut"]}
+        isLoading={isFetching}
       />
 
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
