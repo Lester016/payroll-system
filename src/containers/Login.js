@@ -1,9 +1,13 @@
-
+// Custom Components
 import LoginCard from '../components/LoginCard'
 
 const Login = () => {
   return (
-    <LoginCard isAdmin = {true}/>
+    <div>
+      <LoginCard isAdmin={true} title="ADMIN login"/>
+      {/* render employee */}
+      {/* <LoginCard isAdmin={false} title="Employee login"/> */}
+    </div>
   );
 };
 
