@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
-  toolbar: {
+  appBarSpacer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
@@ -62,7 +62,6 @@ export default function Layout({ children }) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-
       {/* AppBar */}
       <Navbar
         handleDrawerOpen={handleDrawerOpen}
@@ -117,7 +116,7 @@ export default function Layout({ children }) {
 
       {/* Content */}
       <main className={classes.content}>
-        <div className={classes.toolbar} />
+        <div className={classes.appBarSpacer} />
         {children}
       </main>
     </div>
