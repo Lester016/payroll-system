@@ -6,10 +6,18 @@ import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import NavItem from "../components/Navigations/NavItem";
-import MailIcon from "@material-ui/icons/Mail";
 import Navbar from "../components/Navigations/Navbar";
 import NavDrawer from "../components/Navigations/NavDrawer";
 import { Divider } from "@material-ui/core";
+
+// MaterialUI Icons
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import GroupIcon from '@material-ui/icons/Group';
+import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import MoneyOffIcon from '@material-ui/icons/MoneyOff';
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 
 const titleBar = {
   "/": "Dashboard",
@@ -65,38 +73,42 @@ export default function Layout({ children }) {
       <NavDrawer handleDrawerClose={handleDrawerClose} isOpen={open}>
         {/* Navigation Links */}
         <List>
-          <NavItem route={"/"} title={"Dashboard"} IconComponent={MailIcon} />
+          <NavItem
+            route={"/"}
+            title={"Dashboard"}
+            IconComponent={DashboardIcon}
+          />
           <Divider />
           <NavItem
             route={"/attendance"}
             title={"Attendance"}
-            IconComponent={MailIcon}
+            IconComponent={CalendarTodayIcon}
           />
           <NavItem
             route={"/employees"}
             title={"Employees"}
-            IconComponent={MailIcon}
+            IconComponent={GroupIcon}
           />
           <NavItem
             route={"/positions"}
             title={"Positions"}
-            IconComponent={MailIcon}
+            IconComponent={PersonAddIcon}
           />
           <NavItem
             route={"/deductions"}
             title={"Deductions"}
-            IconComponent={MailIcon}
-          />
-          <NavItem
-            route={"/schedules"}
-            title={"Schedules"}
-            IconComponent={MailIcon}
+            IconComponent={MoneyOffIcon}
           />
           <Divider />
           <NavItem
+            route={"/schedules"}
+            title={"Schedules"}
+            IconComponent={ScheduleIcon}
+          />
+          <NavItem
             route={"/payroll"}
             title={"Payroll"}
-            IconComponent={MailIcon}
+            IconComponent={AttachMoneyIcon}
           />
 
           <Divider />
