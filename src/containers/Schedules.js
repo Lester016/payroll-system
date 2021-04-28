@@ -36,6 +36,7 @@ const Schedules = () => {
   const handleOpen = () => {
     setIsModalOpen(true);
   };
+  
   const handleClose = () => {
     // Reset to default values.
     setTimeIn(new Date());

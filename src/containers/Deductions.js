@@ -1,12 +1,21 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+
 import Table from "../components/Table";
+import TransitionsModal from "../components/Modal";
 
 function Deductions() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
   const [amount, setAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
@@ -23,28 +32,75 @@ function Deductions() {
       });
   }, []);
 
-  const submitHandler = (e) => {
+  const handleOpen = () => {
+    setIsModalOpen(true);
+  };
+  const handleClose = () => {
+    // Reset to default values.
+    setDeductionTitle("");
+    setAmount(0);
+
+    setIsModalOpen(false);
+    setIsUpdating(false);
+  };
+
+  const handleSubmit = (e) => {
     setIsLoading(true);
-    axios
-      .post("https://tup-payroll-default-rtdb.firebaseio.com/deductions.json", {
-        title: deductionTitle,
-        amount: parseFloat(amount),
-      })
-      .then((response) => {
-        setDeductions({
-          ...deductions,
-          [response.data.name]: {
-            title: deductionTitle,
-            amount: amount,
-          },
+    if (isUpdating === null) {
+      axios
+        .post("https://tup-payroll-default-rtdb.firebaseio.com/deductions.json", {
+          title: deductionTitle,
+          amount: parseFloat(amount),
+        })
+        .then((response) => {
+          setDeductions({
+            ...deductions,
+            [response.data.name]: {
+              title: deductionTitle,
+              amount: amount,
+            },
+          });
+          setIsLoading(false);
+          handleClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+          handleClose();
         });
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false);
-      });
-    e.preventDefault();
+      e.preventDefault();
+    } else {
+      axios
+        .put(
+          `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${isUpdating}.json`,
+          {
+            title: deductionTitle,
+            amount: parseFloat(amount),
+          }
+        )
+        .then(() => {
+          // Update the schedule to the existings schedules list.
+          setDeductions({
+            ...deductions,
+            [isUpdating]: {
+              title: deductionTitle,
+              amount: amount,
+            },
+          });
+          setIsLoading(false);
+          setIsUpdating(null);
+          // Close modal
+          handleClose();
+        })
+        .catch((error) => {
+          // log the error if found || catched.
+          console.log(error);
+          setIsLoading(false);
+          setIsUpdating(null);
+          // Close modal
+          handleClose();
+        });
+    }
   };
 
   const deleteHandler = (key) => {
@@ -65,35 +121,79 @@ function Deductions() {
       });
   };
 
+  const editHandler = (key) => {
+    const oldDeductionTitle = deductions[key].title;
+    const oldAmount = deductions[key].amount;
+    setDeductionTitle(oldDeductionTitle);
+    setAmount(oldAmount);
+    setIsUpdating(key);
+    handleOpen();
+  }
+
   return (
     <div>
       <h1>Deductions Screen</h1>
+      <Paper>
+        <Toolbar>
+          {/*insert search textfield here*/}
 
-      <input
-        type="text"
-        name="title"
-        value={deductionTitle}
-        placeholder="Description"
-        onChange={(e) => setDeductionTitle(e.target.value)}
-      />
-      <input
-        type="number"
-        name="amount"
-        value={amount}
-        placeholder="Amount"
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <input type="submit" value="Add" onClick={submitHandler} />
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={handleOpen}
+          >
+            Create New
+          </Button>
+        </Toolbar>
 
-      <div>
-        <Table
-          lists={deductions}
-          onDeleteRow={deleteHandler}
-          columns={["Description", "Amount", "Options"]}
-          propertiesOrder={["title", "amount"]}
-          isLoading={isFetching}
-        />
-      </div>
+        <div>
+          <Table
+            lists={deductions}
+            onDeleteRow={deleteHandler}
+            onEditRow={editHandler}
+            columns={["Description", "Amount", "Options"]}
+            propertiesOrder={["title", "amount"]}
+            isLoading={isFetching}
+          />
+        </div>
+      </Paper>
+
+      <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
+        {!isLoading ? (
+          <>
+            <TextField
+              value={deductionTitle}
+              label="Deduction"
+              onChange={(e) => setDeductionTitle(e.target.value)}
+            />
+            <TextField
+              value={amount}
+              label="Amount"
+              onChange={(e) => setAmount(e.target.value)}
+            />
+
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={handleSubmit}
+            >
+              {isUpdating ? "Update" : "Submit"}
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <CircularProgress />
+        )}
+      </TransitionsModal>
     </div>
   );
 }
