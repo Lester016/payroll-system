@@ -103,7 +103,7 @@ const AdminLogin = ({
                           </InputAdornment>
                       ),
                   }}
-              />   
+              />
             <TextField
               variant="outlined"
               name="password"
@@ -130,13 +130,7 @@ const AdminLogin = ({
              }}
             />
 
-                  endAdornment: (
-                      <InputAdornment position="start">
-                          <LockIcon fontSize ="medium" />
-                      </InputAdornment>
-                  ),
-              }}
-              />
+                  
 
 
             </div>
