@@ -13,6 +13,9 @@ import LockIcon from '@material-ui/icons/Lock';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 const AdminLogin = ({ 
     login,
@@ -67,6 +70,19 @@ const AdminLogin = ({
 
         
     });
+
+    const [values, setValues] = React.useState({
+      password: '',     
+      showPassword: false,
+    });
+
+    const handleClickShowPassword = () => {
+      setValues({ ...values, showPassword: !values.showPassword });
+    };
+  
+    const handleMouseDownPassword = (event) => {
+      event.preventDefault();
+    };
     
     return (
         <form onSubmit={formik.handleSubmit}>
@@ -87,18 +103,33 @@ const AdminLogin = ({
                           </InputAdornment>
                       ),
                   }}
-              />     
-              <TextField
-                variant="outlined"
-                name="password"
-                label="Password"
-                className = {classes.field}
-                type="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                error={formik.touched.password && Boolean(formik.errors.password)}
-                helperText={formik.touched.password && formik.errors.password}
-                InputProps={{
+              />   
+            <TextField
+              variant="outlined"
+              name="password"
+              label="Password"
+              className = {classes.field}
+              type={values.showPassword ? 'text' : 'password'}
+              value={formik.values.password}
+              onChange={formik.handleChange('password')}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+              InputProps={{
+                endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        >
+                          {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                        <LockIcon fontSize ="medium" />
+                    </InputAdornment>
+                ),
+             }}
+            />
+
                   endAdornment: (
                       <InputAdornment position="start">
                           <LockIcon fontSize ="medium" />
@@ -106,6 +137,7 @@ const AdminLogin = ({
                   ),
               }}
               />
+
 
             </div>
 
