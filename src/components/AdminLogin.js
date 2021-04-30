@@ -86,24 +86,24 @@ const AdminLogin = ({
     
     return (
         <form onSubmit={formik.handleSubmit}>
-        <div>
-            <TextField
-                variant="outlined"
-                name="email"
-                label="Email"
-                className = {classes.field}
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                error={formik.touched.email && Boolean(formik.errors.email) }
-                helperText={formik.touched.email && formik.errors.email}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <PersonOutlineIcon fontSize = "medium" />
-                        </InputAdornment>
-                    ),
-                }}
-            />     
+            <div>
+              <TextField
+                  variant="outlined"
+                  name="email"
+                  label="Email"
+                  className = {classes.field}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  error={formik.touched.email && Boolean(formik.errors.email) }
+                  helperText={formik.touched.email && formik.errors.email}
+                  InputProps={{
+                      endAdornment: (
+                          <InputAdornment position="start">
+                              <PersonOutlineIcon fontSize = "medium" />
+                          </InputAdornment>
+                      ),
+                  }}
+              />   
             <TextField
               variant="outlined"
               name="password"
@@ -129,6 +129,15 @@ const AdminLogin = ({
                 ),
              }}
             />
+
+                  endAdornment: (
+                      <InputAdornment position="start">
+                          <LockIcon fontSize ="medium" />
+                      </InputAdornment>
+                  ),
+              }}
+              />
+
 
             </div>
 
