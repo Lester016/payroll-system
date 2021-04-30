@@ -1,6 +1,7 @@
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import "./App.css";
+
 import Deductions from "./containers/Deductions";
 import Home from "./containers/Home";
 import Login from "./containers/Login";
