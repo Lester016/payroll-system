@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import set from "date-fns/set/index.js";
+
 import Button from "@material-ui/core/Button";
-import { TimePicker } from "@material-ui/pickers";
-import { CircularProgress } from "@material-ui/core";
+import TimePicker from "@material-ui/pickers/TimePicker";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import TransitionsModal from "../components/Modal";
 import Table from "../components/Table";
@@ -36,6 +37,7 @@ const Schedules = () => {
   const handleOpen = () => {
     setIsModalOpen(true);
   };
+  
   const handleClose = () => {
     // Reset to default values.
     setTimeIn(new Date());
