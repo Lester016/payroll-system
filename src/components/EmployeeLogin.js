@@ -20,6 +20,8 @@ const EmmployeeLogin = ({
         field: {
           minWidth: '80%',
           marginTop: 30,
+          marginLeft: 20,
+          marginRight: 20,
           fontSize: 18,
           borderRadius: 5,
         },

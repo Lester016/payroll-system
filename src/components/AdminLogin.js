@@ -24,23 +24,20 @@ const AdminLogin = ({
     const useStyles = makeStyles({
       
         field: {
-          minWidth: '80%',
+          minWidth: '80%',          
           marginTop: 30,
+          marginLeft: 20,
+          marginRight: 20,
           fontSize: 18,
-          // backgroundColor: '#ffffff',
           borderRadius: 5,
         },
       
         button:{
-          // backgroundColor: '#C4C4C4',
-          // width: 150,
           marginTop: 30,
           marginBottom: 20,
           alignSelf:'center',
           fontSize: 16
         },
-
-        
       });
 
     const classes = useStyles();
@@ -98,41 +95,38 @@ const AdminLogin = ({
                   helperText={formik.touched.email && formik.errors.email}
                   InputProps={{
                       endAdornment: (
-                          <InputAdornment position="start">
+                          <InputAdornment position="end">
                               <PersonOutlineIcon fontSize = "medium" />
                           </InputAdornment>
                       ),
                   }}
               />
-            <TextField
-              variant="outlined"
-              name="password"
-              label="Password"
-              className = {classes.field}
-              type={values.showPassword ? 'text' : 'password'}
-              value={formik.values.password}
-              onChange={formik.handleChange('password')}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              InputProps={{
-                endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
+
+              <TextField
+                variant="outlined"
+                name="password"
+                label="Password"
+                className = {classes.field}
+                type={values.showPassword ? 'text' : 'password'}
+                value={formik.values.password}
+                onChange={formik.handleChange('password')}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
+                InputProps={{
+                  endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
                         >
-                          {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                            {values.showPassword ? <Visibility /> : <VisibilityOff />}
                         </IconButton>
                         <LockIcon fontSize ="medium" />
-                    </InputAdornment>
-                ),
-             }}
-            />
-
-                  
-
-
+                      </InputAdornment>
+                  ),
+                }}
+              />
             </div>
 
             <Button 
