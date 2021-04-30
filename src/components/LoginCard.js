@@ -15,10 +15,10 @@ const useStyles = makeStyles({
   card:{
     display: 'block',
     textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-    minWidth: '40%',
-    backgroundColor: '#E1E1E1',
+    // marginTop: 20,
+    // marginBottom: 20,
+    // minWidth: '40%',
+    // backgroundColor: '#E1E1E1',
     alignSelf: 'center',
   },
 });

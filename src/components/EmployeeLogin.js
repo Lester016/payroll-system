@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 
 // Form validation imports
 import * as Yup from "yup";
-import { useFormik, Formik, Form, Field, ErrorMessage } from "formik";
+import { useFormik } from "formik";
 import * as actions from "../store/actions";
 
-// Material impor
+// Material imports
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -17,22 +17,22 @@ const EmmployeeLogin = ({
 }) => {
 
     const useStyles = makeStyles({
-        card:{
-          height:'200px',
-          display: 'block',
-        //   textAlign: 'center',
-          marginTop: 20,
-          marginBottom: 20,
-          minWidth: '40%',
-          backgroundColor: '#E1E1E1',
-          alignSelf: 'flex-start',
-        },
+        // card:{
+        //   height:'200px',
+        //   display: 'block',
+        // //   textAlign: 'center',
+        //   marginTop: 20,
+        //   marginBottom: 20,
+        //   minWidth: '40%',
+        //   backgroundColor: '#E1E1E1',
+        //   alignSelf: 'flex-start',
+        // },
       
         field: {
-          minWidth: '60%',
+          minWidth: '80%',
           marginTop: 50,
           fontSize: 18,
-          backgroundColor: '#ffffff',
+          // backgroundColor: '#ffffff',
           borderRadius: 5,
         },
       

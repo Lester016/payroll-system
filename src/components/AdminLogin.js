@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 // Form validation imports
 import * as Yup from "yup";
-import { useFormik, Formik, Form, ErrorMessage } from "formik";
+import { useFormik } from "formik";
 import * as actions from "../store/actions";
 
 // Material import
@@ -19,28 +19,20 @@ const AdminLogin = ({
 }) => {
 
     const useStyles = makeStyles({
-        card:{
-          display: 'block',
-          textAlign: 'center',
-          marginTop: 20,
-          marginBottom: 20,
-          minWidth: '40%',
-          backgroundColor: '#E1E1E1',
-          alignSelf: 'center',
-        },
       
         field: {
-          minWidth: '60%',
-          marginTop: 20,
+          minWidth: '80%',
+          marginTop: 30,
           fontSize: 18,
-          backgroundColor: '#ffffff',
+          // backgroundColor: '#ffffff',
           borderRadius: 5,
         },
       
         button:{
-          backgroundColor: '#C4C4C4',
-          width: 150,
+          // backgroundColor: '#C4C4C4',
+          // width: 150,
           marginTop: 30,
+          marginBottom: 20,
           alignSelf:'center',
           fontSize: 16
         },
@@ -49,9 +41,17 @@ const AdminLogin = ({
       });
 
     const classes = useStyles();
+
     const LoginSchema = Yup.object().shape({
-        email: Yup.string().email("Invalid email").required().label("Email"),
-        password: Yup.string().required().label("Password"),
+        email: Yup
+          .string()
+          .email("Invalid email")
+          .required()
+          .label("Email"),
+        password: Yup 
+          .string()
+          .required()
+          .label("Password"),
       });
 
     const formik = useFormik({
@@ -64,10 +64,12 @@ const AdminLogin = ({
           login(values.email, values.password);
           alert(JSON.stringify(values, null, 2));
         },
+
+        
     });
     
     return (
-        <form className={classes.card} onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
         <div>
             <TextField
                 variant="outlined"
@@ -85,8 +87,7 @@ const AdminLogin = ({
                         </InputAdornment>
                     ),
                 }}
-            />
-            
+            />     
             <TextField
               variant="outlined"
               name="password"
@@ -100,21 +101,22 @@ const AdminLogin = ({
               InputProps={{
                 endAdornment: (
                     <InputAdornment position="start">
-                        <LockIcon fontSize ="medium"/>
+                        <LockIcon fontSize ="medium" />
                     </InputAdornment>
                 ),
              }}
             />
-         
+
             </div>
+
             <Button 
                 type="submit" 
                 variant="contained" 
-                color="default" 
+                color="primary" 
                 disableElevation 
                 className={classes.button} 
                 size = "small">
-                    SIGN IN
+                    Sign in
             </Button>
         </form> 
       );
