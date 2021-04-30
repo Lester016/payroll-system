@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     textAlign: 'center',
     // marginTop: 20,
     // marginBottom: 20,
-    // minWidth: '40%',
+    minWidth: '40%',
     // backgroundColor: '#E1E1E1',
     alignSelf: 'center',
   },

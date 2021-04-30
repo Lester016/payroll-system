@@ -17,29 +17,16 @@ const EmmployeeLogin = ({
 }) => {
 
     const useStyles = makeStyles({
-        // card:{
-        //   height:'200px',
-        //   display: 'block',
-        // //   textAlign: 'center',
-        //   marginTop: 20,
-        //   marginBottom: 20,
-        //   minWidth: '40%',
-        //   backgroundColor: '#E1E1E1',
-        //   alignSelf: 'flex-start',
-        // },
-      
         field: {
           minWidth: '80%',
-          marginTop: 50,
+          marginTop: 30,
           fontSize: 18,
-          // backgroundColor: '#ffffff',
           borderRadius: 5,
         },
       
         button:{
-          backgroundColor: '#C4C4C4',
-          width: 150,
           marginTop: 30,
+          marginBottom: 20,
           alignSelf:'center',
           fontSize: 16,
         },
@@ -65,7 +52,7 @@ const EmmployeeLogin = ({
     });
 
     return(
-        <form className={classes.card} onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
             <div>
                 <TextField
                 variant="outlined"
@@ -81,7 +68,7 @@ const EmmployeeLogin = ({
             <Button 
                 type="submit" 
                 variant="contained" 
-                color="default" 
+                color="primary" 
                 disableElevation 
                 className={classes.button} 
                 size = "small">

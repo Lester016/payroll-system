@@ -70,42 +70,42 @@ const AdminLogin = ({
     
     return (
         <form onSubmit={formik.handleSubmit}>
-        <div>
-            <TextField
+            <div>
+              <TextField
+                  variant="outlined"
+                  name="email"
+                  label="Email"
+                  className = {classes.field}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  error={formik.touched.email && Boolean(formik.errors.email) }
+                  helperText={formik.touched.email && formik.errors.email}
+                  InputProps={{
+                      endAdornment: (
+                          <InputAdornment position="start">
+                              <PersonOutlineIcon fontSize = "medium" />
+                          </InputAdornment>
+                      ),
+                  }}
+              />     
+              <TextField
                 variant="outlined"
-                name="email"
-                label="Email"
+                name="password"
+                label="Password"
                 className = {classes.field}
-                value={formik.values.email}
+                type="password"
+                value={formik.values.password}
                 onChange={formik.handleChange}
-                error={formik.touched.email && Boolean(formik.errors.email) }
-                helperText={formik.touched.email && formik.errors.email}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
                 InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="start">
-                            <PersonOutlineIcon fontSize = "medium" />
-                        </InputAdornment>
-                    ),
-                }}
-            />     
-            <TextField
-              variant="outlined"
-              name="password"
-              label="Password"
-              className = {classes.field}
-              type="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              InputProps={{
-                endAdornment: (
-                    <InputAdornment position="start">
-                        <LockIcon fontSize ="medium" />
-                    </InputAdornment>
-                ),
-             }}
-            />
+                  endAdornment: (
+                      <InputAdornment position="start">
+                          <LockIcon fontSize ="medium" />
+                      </InputAdornment>
+                  ),
+              }}
+              />
 
             </div>
 
