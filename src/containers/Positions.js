@@ -45,11 +45,12 @@ const Position = () => {
     setRatePerHour(0);
 
     setIsModalOpen(false);
-    setIsUpdating(false);
+    setIsUpdating(null);
   };
 
   const handleSubmit = (e) => {
     setIsLoading(true);
+    console.log(isUpdating);
     if (isUpdating === null) {
       axios
         .post("https://tup-payroll-default-rtdb.firebaseio.com/positions.json", {
@@ -92,7 +93,7 @@ const Position = () => {
             },
           });
           setIsLoading(false);
-          setIsUpdating(null);
+          console.log(isUpdating);
           // Close modal
           handleClose();
         })
@@ -100,7 +101,6 @@ const Position = () => {
           // log the error if found || catched.
           console.log(error);
           setIsLoading(false);
-          setIsUpdating(null);
           // Close modal
           handleClose();
         });

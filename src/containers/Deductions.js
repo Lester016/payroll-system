@@ -44,7 +44,7 @@ function Deductions() {
     setAmount(0);
 
     setIsModalOpen(false);
-    setIsUpdating(false);
+    setIsUpdating(null);
   };
 
   const handleSubmit = (e) => {
@@ -91,7 +91,6 @@ function Deductions() {
             },
           });
           setIsLoading(false);
-          setIsUpdating(null);
           // Close modal
           handleClose();
         })
@@ -99,7 +98,6 @@ function Deductions() {
           // log the error if found || catched.
           console.log(error);
           setIsLoading(false);
-          setIsUpdating(null);
           // Close modal
           handleClose();
         });
