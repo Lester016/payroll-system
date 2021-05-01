@@ -1,23 +1,22 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
-// MaterialUI
-import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import NavItem from "../components/Navigations/NavItem";
 import Navbar from "../components/Navigations/Navbar";
 import NavDrawer from "../components/Navigations/NavDrawer";
-import { Divider } from "@material-ui/core";
 
-// MaterialUI Icons
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import GroupIcon from '@material-ui/icons/Group';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import MoneyOffIcon from '@material-ui/icons/MoneyOff';
-import ScheduleIcon from '@material-ui/icons/Schedule';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+// MaterialUI
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import Divider from "@material-ui/core/Divider";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
+import GroupIcon from "@material-ui/icons/Group";
+import PersonAddIcon from "@material-ui/icons/PersonAdd";
+import MoneyOffIcon from "@material-ui/icons/MoneyOff";
+import ScheduleIcon from "@material-ui/icons/Schedule";
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 
 const titleBar = {
   "/": "Dashboard",
@@ -62,6 +61,7 @@ export default function Layout({ children }) {
   return (
     <div className={classes.root}>
       <CssBaseline />
+
       {/* AppBar */}
       <Navbar
         handleDrawerOpen={handleDrawerOpen}
