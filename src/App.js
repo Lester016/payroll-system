@@ -1,7 +1,6 @@
 import { Switch, Route, Redirect } from "react-router-dom";
 
 import "./App.css";
-
 import Deductions from "./containers/Deductions";
 import Home from "./containers/Home";
 import Login from "./containers/Login";
@@ -15,10 +14,10 @@ import ClientTimeIn from "./containers/ClientTimeIn";
 
 function App() {
   return (
-    <Layout>
-      <Switch>
-        <Route path="/login/client" component={ClientTimeIn} />
-        <Route path="/login/admin" component={Login} />
+    <Switch>
+      <Route path="/login/client" component={ClientTimeIn} />
+      <Route path="/login/admin" component={Login} />
+      <Layout>
         <Route path="/attendance" component={Attendance} />
         <Route path="/employees" component={Employees} />
         <Route path="/payroll" component={Payroll} />
@@ -27,8 +26,8 @@ function App() {
         <Route path="/positions" component={Positions} />
         <Route path="/" exact component={Home} />
         <Redirect to="/" />
-      </Switch>
-    </Layout>
+      </Layout>
+    </Switch>
   );
 }
 
