@@ -1,17 +1,18 @@
-import React, {useState} from "react";
-import { withStyles, makeStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
 
+// Material UI
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import TablePagination from '@material-ui/core/TablePagination';
+import TablePagination from "@material-ui/core/TablePagination";
 import Table from "@material-ui/core/Table";
 import Button from "@material-ui/core/Button";
 import Skeleton from "@material-ui/lab/Skeleton";
 
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -54,18 +55,20 @@ const AppTable = ({
 
   const loading = [];
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (_, newPage) => {
     setPage(newPage);
-  }
+  };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  }
-  
+  };
+
   const listsAfterPaging = () => {
-    return Object.entries(lists).slice(page*rowsPerPage, (page+1)*rowsPerPage).map(entry => entry[0]);
-  }
+    return Object.entries(lists)
+      .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+      .map((entry) => entry[0]);
+  };
 
   for (let index = 0; index < 6; index++) {
     loading.push(
@@ -95,7 +98,7 @@ const AppTable = ({
               size="small"
               variant="contained"
               color="primary"
-              startIcon={<EditIcon/>}
+              startIcon={<EditIcon />}
               onClick={() => onEditRow(item)}
             >
               Edit
