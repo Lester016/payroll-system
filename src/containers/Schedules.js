@@ -4,8 +4,9 @@ import set from "date-fns/set/index.js";
 
 // Material UI
 import Button from "@material-ui/core/Button";
-import TimePicker from "@material-ui/pickers/TimePicker";
-import CircularProgress from "@material-ui/core/CircularProgress";
+// Dont change these imports.
+import { TimePicker } from "@material-ui/pickers";
+import { CircularProgress } from "@material-ui/core";
 
 import TransitionsModal from "../components/Modal";
 import Table from "../components/Table";
