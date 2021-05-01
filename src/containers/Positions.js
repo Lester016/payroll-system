@@ -1,13 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Toolbar from '@material-ui/core/Toolbar';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import AddIcon from '@material-ui/icons/Add';
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import Toolbar from "@material-ui/core/Toolbar";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import AddIcon from "@material-ui/icons/Add";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -50,13 +49,15 @@ const Position = () => {
 
   const handleSubmit = (e) => {
     setIsLoading(true);
-    console.log(isUpdating);
     if (isUpdating === null) {
       axios
-        .post("https://tup-payroll-default-rtdb.firebaseio.com/positions.json", {
-          title: jobTitle,
-          rate: parseFloat(ratePerHour),
-        })
+        .post(
+          "https://tup-payroll-default-rtdb.firebaseio.com/positions.json",
+          {
+            title: jobTitle,
+            rate: parseFloat(ratePerHour),
+          }
+        )
         .then((response) => {
           setPositions({
             ...positions,
@@ -93,7 +94,7 @@ const Position = () => {
             },
           });
           setIsLoading(false);
-          console.log(isUpdating);
+
           // Close modal
           handleClose();
         })
@@ -101,6 +102,7 @@ const Position = () => {
           // log the error if found || catched.
           console.log(error);
           setIsLoading(false);
+
           // Close modal
           handleClose();
         });
@@ -132,7 +134,7 @@ const Position = () => {
     setRatePerHour(oldRatePerHour);
     setIsUpdating(key);
     handleOpen();
-  }
+  };
 
   return (
     <div>
@@ -145,7 +147,7 @@ const Position = () => {
             size="small"
             variant="contained"
             color="primary"
-            startIcon={<AddIcon/>}
+            startIcon={<AddIcon />}
             onClick={handleOpen}
           >
             Create New
@@ -163,7 +165,7 @@ const Position = () => {
           />
         </div>
       </Paper>
-      
+
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (
           <>
