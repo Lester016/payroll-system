@@ -136,7 +136,7 @@ const AppTable = ({
         page={page}
         rowsPerPageOptions={pages}
         rowsPerPage={rowsPerPage}
-        count={Object.keys(lists).length}
+        count={lists && Object.keys(lists).length}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />

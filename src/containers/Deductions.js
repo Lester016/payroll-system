@@ -1,13 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Toolbar from '@material-ui/core/Toolbar';
-import CircularProgress from '@material-ui/core/CircularProgress';
-
-import AddIcon from '@material-ui/icons/Add';
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import Toolbar from "@material-ui/core/Toolbar";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import AddIcon from "@material-ui/icons/Add";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -35,6 +34,7 @@ function Deductions() {
       });
   }, []);
 
+  // Modal toggler.
   const handleOpen = () => {
     setIsModalOpen(true);
   };
@@ -51,10 +51,13 @@ function Deductions() {
     setIsLoading(true);
     if (isUpdating === null) {
       axios
-        .post("https://tup-payroll-default-rtdb.firebaseio.com/deductions.json", {
-          title: deductionTitle,
-          amount: parseFloat(amount),
-        })
+        .post(
+          "https://tup-payroll-default-rtdb.firebaseio.com/deductions.json",
+          {
+            title: deductionTitle,
+            amount: parseFloat(amount),
+          }
+        )
         .then((response) => {
           setDeductions({
             ...deductions,
@@ -129,7 +132,7 @@ function Deductions() {
     setAmount(oldAmount);
     setIsUpdating(key);
     handleOpen();
-  }
+  };
 
   return (
     <div>
@@ -142,7 +145,7 @@ function Deductions() {
             size="small"
             variant="contained"
             color="primary"
-            startIcon={<AddIcon/>}
+            startIcon={<AddIcon />}
             onClick={handleOpen}
           >
             Create New
