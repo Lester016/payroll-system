@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import set from "date-fns/set/index.js";
 
+// Material UI
 import Button from "@material-ui/core/Button";
 import TimePicker from "@material-ui/pickers/TimePicker";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -37,14 +38,14 @@ const Schedules = () => {
   const handleOpen = () => {
     setIsModalOpen(true);
   };
-  
+
   const handleClose = () => {
     // Reset to default values.
     setTimeIn(new Date());
     setTimeOut(new Date());
 
     setIsModalOpen(false);
-    setIsUpdating(false);
+    setIsUpdating(null);
   };
 
   // Submit handler.
