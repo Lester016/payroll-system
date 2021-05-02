@@ -8,6 +8,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TablePagination from "@material-ui/core/TablePagination";
+import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Table from "@material-ui/core/Table";
 import Button from "@material-ui/core/Button";
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -17,7 +18,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: theme.palette.text.secondary,
     color: theme.palette.common.white,
   },
   body: {
@@ -37,6 +38,17 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
+  visuallyHidden: {
+    border: 0,
+    clip: "rect(0 0 0 0)",
+    height: 1,
+    margin: -1,
+    overflow: "hidden",
+    padding: 0,
+    position: "absolute",
+    top: 20,
+    width: 1,
+  },
 });
 
 const AppTable = ({
@@ -53,6 +65,9 @@ const AppTable = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
 
+  const [order, setOrder] = useState();
+  const [orderBy, setOrderBy] = useState();
+
   const loading = [];
 
   const handleChangePage = (_, newPage) => {
@@ -64,8 +79,37 @@ const AppTable = ({
     setPage(0);
   };
 
-  const listsAfterPaging = (output) => {
-    return output.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  }
+
+  function getComparator(order, orderBy) {
+    return order === "desc"
+      ? (a, b) => descendingComparator(a, b, orderBy)
+      : (a, b) => -descendingComparator(a, b, orderBy);
+  }
+
+  function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = comparator(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+  }
+
+  const listsAfterPagingAndSorting = (output) => {
+    return stableSort(output, getComparator(order, orderBy)).slice(
+      page * rowsPerPage,
+      (page + 1) * rowsPerPage
+    );
   };
 
   const reversedObjectToArray = () => {
@@ -74,14 +118,14 @@ const AppTable = ({
     for (let key in lists) {
       result.push(Object.assign({ id: key }, lists[key]));
     }
-    result.reverse();
 
-    /*
-    const result = Object.entries(lists).map((e) => ({ [e[0]]: e[1] }));
-    result.reverse();
-    */
+    return result.reverse();
+  };
 
-    return result;
+  const handleSortRequest = (cellId) => {
+    const isAsc = orderBy === cellId && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(cellId);
   };
 
   for (let index = 0; index < 6; index++) {
@@ -103,7 +147,7 @@ const AppTable = ({
   if (lists) {
     if (Object.keys(lists).length !== 0) {
       output = reversedObjectToArray();
-      output = listsAfterPaging(output).map((item) => (
+      output = listsAfterPagingAndSorting(output).map((item) => (
         <StyledTableRow key={item.id}>
           {propertiesOrder.map((column, id) => (
             <StyledTableCell key={id}>{item[column]}</StyledTableCell>
@@ -139,7 +183,21 @@ const AppTable = ({
         <TableHead>
           <TableRow>
             {columns.map((item, id) => (
-              <StyledTableCell key={id}>{item}</StyledTableCell>
+              <StyledTableCell key={id}>
+                {item.disableSorting ? (
+                  item.label
+                ) : (
+                  <TableSortLabel
+                    active={orderBy === item.id}
+                    direction={orderBy === item.id ? order : "asc"}
+                    onClick={() => {
+                      handleSortRequest(item.id);
+                    }}
+                  >
+                    {item.label}
+                  </TableSortLabel>
+                )}
+              </StyledTableCell>
             ))}
           </TableRow>
         </TableHead>

@@ -20,6 +20,22 @@ const Position = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
+  const columnHeads = [
+    {
+      id: "title",
+      label: "Position Title",
+    },
+    {
+      id: "rate",
+      label: "Rate Per Hour",
+    },
+    {
+      id: "options",
+      label: "Options",
+      disableSorting: true,
+    },
+  ];
+
   useEffect(() => {
     setIsFetching(true);
     axios
@@ -159,8 +175,8 @@ const Position = () => {
             lists={positions}
             onDeleteRow={deleteHandler}
             onEditRow={editHandler}
-            columns={["Position Title", "Rate Per Hour", "Options"]}
-            propertiesOrder={["title", "rate"]}
+            columns={columnHeads}
+            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
             isLoading={isFetching}
           />
         </div>
