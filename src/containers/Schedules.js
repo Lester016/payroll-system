@@ -4,9 +4,12 @@ import set from "date-fns/set/index.js";
 
 // Material UI
 import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import AddIcon from "@material-ui/icons/Add";
+
 // Dont change these imports.
 import { TimePicker } from "@material-ui/pickers";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, Toolbar } from "@material-ui/core";
 
 import TransitionsModal from "../components/Modal";
 import Table from "../components/Table";
@@ -19,6 +22,22 @@ const Schedules = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
+
+  const columnHeads = [
+    {
+      id: "timeIn",
+      label: "Time In",
+    },
+    {
+      id: "timeOut",
+      label: "Time Out",
+    },
+    {
+      id: "options",
+      label: "Options",
+      disableSorting: true,
+    },
+  ];
 
   useEffect(() => {
     setIsFetching(true);
@@ -173,22 +192,31 @@ const Schedules = () => {
   return (
     <div>
       <h1>Schedules Screen</h1>
-      <Button
-        size="small"
-        variant="contained"
-        color="primary"
-        onClick={handleOpen}
-      >
-        Create New
-      </Button>
-      <Table
-        lists={schedules}
-        onDeleteRow={deleteHandler}
-        onEditRow={editHandler}
-        columns={["Time In", "Time Out", "Options"]}
-        propertiesOrder={["timeIn", "timeOut"]}
-        isLoading={isFetching}
-      />
+      <Paper>
+        <Toolbar>
+          {/*insert search textfield here*/}
+          <Button
+            size="small"
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleOpen}
+          >
+            Create New
+          </Button>
+        </Toolbar>
+
+        <div>
+          <Table
+            lists={schedules}
+            onDeleteRow={deleteHandler}
+            onEditRow={editHandler}
+            columns={columnHeads}
+            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
+            isLoading={isFetching}
+          />
+        </div>
+      </Paper>
 
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (

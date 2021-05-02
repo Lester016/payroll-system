@@ -20,6 +20,22 @@ function Deductions() {
   const [isUpdating, setIsUpdating] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
 
+  const columnHeads = [
+    {
+      id: "title",
+      label: "Description",
+    },
+    {
+      id: "amount",
+      label: "Amount",
+    },
+    {
+      id: "options",
+      label: "Options",
+      disableSorting: true,
+    },
+  ];
+
   useEffect(() => {
     setIsFetching(true);
     axios
@@ -157,8 +173,8 @@ function Deductions() {
             lists={deductions}
             onDeleteRow={deleteHandler}
             onEditRow={editHandler}
-            columns={["Description", "Amount", "Options"]}
-            propertiesOrder={["title", "amount"]}
+            columns={columnHeads}
+            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
             isLoading={isFetching}
           />
         </div>
