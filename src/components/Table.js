@@ -64,10 +64,24 @@ const AppTable = ({
     setPage(0);
   };
 
-  const listsAfterPaging = () => {
-    return Object.entries(lists)
-      .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-      .map((entry) => entry[0]);
+  const listsAfterPaging = (output) => {
+    return output.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+  };
+
+  const reversedObjectToArray = () => {
+    const result = [];
+
+    for (let key in lists) {
+      result.push(Object.assign({ id: key }, lists[key]));
+    }
+    result.reverse();
+
+    /*
+    const result = Object.entries(lists).map((e) => ({ [e[0]]: e[1] }));
+    result.reverse();
+    */
+
+    return result;
   };
 
   for (let index = 0; index < 6; index++) {
@@ -88,10 +102,11 @@ const AppTable = ({
   let output;
   if (lists) {
     if (Object.keys(lists).length !== 0) {
-      output = listsAfterPaging().map((item) => (
-        <StyledTableRow key={item}>
+      output = reversedObjectToArray();
+      output = listsAfterPaging(output).map((item) => (
+        <StyledTableRow key={item.id}>
           {propertiesOrder.map((column, id) => (
-            <StyledTableCell key={id}>{lists[item][column]}</StyledTableCell>
+            <StyledTableCell key={id}>{item[column]}</StyledTableCell>
           ))}
           <StyledTableCell>
             <Button
@@ -99,7 +114,7 @@ const AppTable = ({
               variant="contained"
               color="primary"
               startIcon={<EditIcon />}
-              onClick={() => onEditRow(item)}
+              onClick={() => onEditRow(item.id)}
             >
               Edit
             </Button>
@@ -108,7 +123,7 @@ const AppTable = ({
               variant="contained"
               color="secondary"
               startIcon={<DeleteIcon />}
-              onClick={() => onDeleteRow(item)}
+              onClick={() => onDeleteRow(item.id)}
             >
               Delete
             </Button>
