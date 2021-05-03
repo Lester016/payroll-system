@@ -55,6 +55,7 @@ const AppTable = ({
   lists,
   onDeleteRow,
   onEditRow,
+  filterFn,
   columns,
   propertiesOrder,
   isLoading,
@@ -106,7 +107,7 @@ const AppTable = ({
   }
 
   const listsAfterPagingAndSorting = (output) => {
-    return stableSort(output, getComparator(order, orderBy)).slice(
+    return stableSort(filterFn.fn(output), getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       (page + 1) * rowsPerPage
     );

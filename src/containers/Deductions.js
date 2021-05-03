@@ -5,8 +5,10 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Toolbar from "@material-ui/core/Toolbar";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AddIcon from "@material-ui/icons/Add";
+import SearchIcon from "@material-ui/icons/Search";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -19,6 +21,11 @@ function Deductions() {
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
+  const [filterFn, setFilterFn] = useState({
+    fn: (items) => {
+      return items;
+    },
+  });
 
   const columnHeads = [
     {
@@ -36,6 +43,7 @@ function Deductions() {
     },
   ];
 
+  // Get deductions in the database
   useEffect(() => {
     setIsFetching(true);
     axios
@@ -63,9 +71,12 @@ function Deductions() {
     setIsUpdating(null);
   };
 
+  /* ----- HANDLES ----- */
+  // Submit handle
   const handleSubmit = (e) => {
     setIsLoading(true);
     if (isUpdating === null) {
+      //Submit new deduction
       axios
         .post(
           "https://tup-payroll-default-rtdb.firebaseio.com/deductions.json",
@@ -75,23 +86,30 @@ function Deductions() {
           }
         )
         .then((response) => {
+          // Submit the deduction to the existings deductions list.
           setDeductions({
             ...deductions,
             [response.data.name]: {
               title: deductionTitle,
-              amount: amount,
+              amount: parseFloat(amount),
             },
           });
           setIsLoading(false);
+
+          // Close modal
           handleClose();
         })
         .catch((error) => {
+          // Log the error if found || catched.
           console.log(error);
           setIsLoading(false);
+
+          // Close modal
           handleClose();
         });
       e.preventDefault();
     } else {
+      //Edit existing deduction
       axios
         .put(
           `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${isUpdating}.json`,
@@ -101,7 +119,7 @@ function Deductions() {
           }
         )
         .then(() => {
-          // Update the schedule to the existings schedules list.
+          // Update the deduction to the existings deductions list.
           setDeductions({
             ...deductions,
             [isUpdating]: {
@@ -114,16 +132,18 @@ function Deductions() {
           handleClose();
         })
         .catch((error) => {
-          // log the error if found || catched.
+          // Log the error if found || catched.
           console.log(error);
           setIsLoading(false);
+
           // Close modal
           handleClose();
         });
     }
   };
 
-  const deleteHandler = (key) => {
+  // Delete handle
+  const handleDelete = (key) => {
     setIsLoading(true);
     axios
       .delete(
@@ -141,7 +161,8 @@ function Deductions() {
       });
   };
 
-  const editHandler = (key) => {
+  // Edit handle
+  const handleEdit = (key) => {
     const oldDeductionTitle = deductions[key].title;
     const oldAmount = deductions[key].amount;
     setDeductionTitle(oldDeductionTitle);
@@ -150,12 +171,36 @@ function Deductions() {
     handleOpen();
   };
 
+  // Handles change in Search Bar
+  const handleSearch = (e) => {
+    let target = e.target;
+    setFilterFn({
+      fn: (items) => {
+        if (target.value === "") return items;
+        else
+          return items.filter((x) =>
+            x.title.toLowerCase().includes(target.value.toLowerCase())
+          );
+      },
+    });
+  };
+
   return (
     <div>
       <h1>Deductions Screen</h1>
       <Paper>
         <Toolbar>
-          {/*insert search textfield here*/}
+          <TextField
+            label="Search..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleSearch}
+          />
 
           <Button
             size="small"
@@ -171,8 +216,9 @@ function Deductions() {
         <div>
           <Table
             lists={deductions}
-            onDeleteRow={deleteHandler}
-            onEditRow={editHandler}
+            onDeleteRow={handleDelete}
+            onEditRow={handleEdit}
+            filterFn={filterFn}
             columns={columnHeads}
             propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
             isLoading={isFetching}

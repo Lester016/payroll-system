@@ -58,7 +58,6 @@ const Schedules = () => {
   const handleOpen = () => {
     setIsModalOpen(true);
   };
-
   const handleClose = () => {
     // Reset to default values.
     setTimeIn(new Date());
@@ -68,7 +67,8 @@ const Schedules = () => {
     setIsUpdating(null);
   };
 
-  // Submit handler.
+  /* ----- HANDLES ----- */
+  // Submit handle
   const handleSubmit = () => {
     setIsLoading(true);
 
@@ -153,7 +153,8 @@ const Schedules = () => {
     }
   };
 
-  const deleteHandler = (key) => {
+  // Delete handle
+  const handleDelete = (key) => {
     setIsLoading(true);
     axios
       .delete(
@@ -171,7 +172,8 @@ const Schedules = () => {
       });
   };
 
-  const editHandler = (key) => {
+  // Edit handle
+  const handleEdit = (key) => {
     const oldTimeIn = schedules[key].timeIn.replace(/\s/g, "");
     const oldTimeOut = schedules[key].timeOut.replace(/\s/g, "");
     const newTimeIn = set(new Date(), {
@@ -194,7 +196,6 @@ const Schedules = () => {
       <h1>Schedules Screen</h1>
       <Paper>
         <Toolbar>
-          {/*insert search textfield here*/}
           <Button
             size="small"
             variant="contained"
@@ -209,8 +210,8 @@ const Schedules = () => {
         <div>
           <Table
             lists={schedules}
-            onDeleteRow={deleteHandler}
-            onEditRow={editHandler}
+            onDeleteRow={handleDelete}
+            onEditRow={handleEdit}
             columns={columnHeads}
             propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
             isLoading={isFetching}
