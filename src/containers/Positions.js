@@ -1,20 +1,25 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import Toolbar from "@material-ui/core/Toolbar";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import {
+  TextField,
+  Button,
+  Paper,
+  Toolbar,
+  InputAdornment,
+  CircularProgress,
+} from "@material-ui/core/";
 import AddIcon from "@material-ui/icons/Add";
 import SearchIcon from "@material-ui/icons/Search";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
+import Snack from "../components/Snack";
 
 const Position = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSnackOpen, setIsSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [positions, setPositions] = useState({});
   const [jobTitle, setJobTitle] = useState("");
   const [ratePerHour, setRatePerHour] = useState(0);
@@ -71,6 +76,17 @@ const Position = () => {
     setIsUpdating(null);
   };
 
+  // Snackbar toggler
+  const handleSnackOpen = () => {
+    setIsSnackOpen(true);
+  };
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsSnackOpen(false);
+  };
+
   /* ----- HANDLES ----- */
   // Submit handle
   const handleSubmit = (e) => {
@@ -98,6 +114,10 @@ const Position = () => {
 
           // Close modal
           handleClose();
+
+          // Open snackbar
+          setSnackMessage("Success submit!");
+          handleSnackOpen();
         })
         .catch((error) => {
           // Log the error if found || catched.
@@ -131,6 +151,10 @@ const Position = () => {
 
           // Close modal
           handleClose();
+
+          // Open snackbar
+          setSnackMessage("Success edit!");
+          handleSnackOpen();
         })
         .catch((error) => {
           // Log the error if found || catched.
@@ -155,6 +179,9 @@ const Position = () => {
         delete filteredPositions[key];
         setPositions(filteredPositions);
         setIsLoading(false);
+
+        setSnackMessage("Success delete!");
+        handleSnackOpen();
       })
       .catch((error) => {
         console.log(error);
@@ -262,6 +289,12 @@ const Position = () => {
           <CircularProgress />
         )}
       </TransitionsModal>
+
+      <Snack
+        open={isSnackOpen}
+        message={snackMessage}
+        handleClose={handleSnackClose}
+      />
     </div>
   );
 };
