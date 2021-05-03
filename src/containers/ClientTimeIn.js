@@ -3,15 +3,41 @@ import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 
 // Material UI
-import { makeStyles } from "@material-ui/core/styles";
-import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import {
+  Button, 
+  Paper, 
+  InputAdornment,  
+  makeStyles, 
+  TextField
+} from "@material-ui/core/";
+
+import { PersonOutline } from "@material-ui/icons/"
+
 
 const useStyles = makeStyles({
-  field: {},
-  button: {},
+  container:{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign:'center',
+    marginTop: 100
+  },
+
+  paper:{
+    textAlign:'center',
+    width: 450,
+  },
+  field: {
+    marginTop: 30,
+    width: '80%',
+    minWidth: 200
+  },
+  button: {
+    marginTop: 20,
+    marginBottom: 30,
+    width: '20%',
+    minWidth: 100
+  },
 });
 
 const ClientTimeIn = () => {
@@ -31,36 +57,42 @@ const ClientTimeIn = () => {
       }}
     >
       {({ touched, errors }) => (
-        <Form>
+      <div className= {classes.container}>
+        <Form >
           <h1>Client Time In Screen</h1>
-          <Field
-            type="text"
-            name="userID"
-            as={TextField}
-            variant="outlined"
-            label="Employee ID"
-            className={classes.field}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <PersonOutlineIcon fontSize="medium" />
-                </InputAdornment>
-              ),
-            }}
-            error={touched.userID && errors.userID}
-            helperText={touched.userID && errors.userID}
-          />
+          <Paper className ={classes.paper} >
+            <div >
+              <Field
+                type="text"
+                name="userID"
+                as={TextField}
+                variant="outlined"
+                label="Employee ID"
+                className={classes.field}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <PersonOutline fontSize="medium" />
+                    </InputAdornment>
+                  ),
+                }}
+                error={touched.userID && errors.userID}
+                helperText={touched.userID && errors.userID}
+              />
+            </div>
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disableElevation
-            className={classes.button}
-          >
-            Time in
-          </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disableElevation
+              className={classes.button}
+            >
+              Time in
+            </Button>
+          </Paper>
         </Form>
+      </div>
       )}
     </Formik>
   );
