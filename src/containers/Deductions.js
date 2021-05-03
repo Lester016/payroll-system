@@ -12,9 +12,12 @@ import SearchIcon from "@material-ui/icons/Search";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
+import Snack from "../components/Snack";
 
-function Deductions() {
+const Deductions = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSnackOpen, setIsSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
   const [amount, setAmount] = useState(0);
@@ -58,7 +61,7 @@ function Deductions() {
       });
   }, []);
 
-  // Modal toggler.
+  // Modal toggler
   const handleOpen = () => {
     setIsModalOpen(true);
   };
@@ -69,6 +72,17 @@ function Deductions() {
 
     setIsModalOpen(false);
     setIsUpdating(null);
+  };
+
+  // Snackbar toggler
+  const handleSnackOpen = () => {
+    setIsSnackOpen(true);
+  };
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsSnackOpen(false);
   };
 
   /* ----- HANDLES ----- */
@@ -98,6 +112,10 @@ function Deductions() {
 
           // Close modal
           handleClose();
+
+          // Open snackbar
+          setSnackMessage("Success submit!");
+          handleSnackOpen();
         })
         .catch((error) => {
           // Log the error if found || catched.
@@ -128,8 +146,13 @@ function Deductions() {
             },
           });
           setIsLoading(false);
+
           // Close modal
           handleClose();
+
+          // Open snackbar
+          setSnackMessage("Success edit!");
+          handleSnackOpen();
         })
         .catch((error) => {
           // Log the error if found || catched.
@@ -154,6 +177,9 @@ function Deductions() {
         delete filteredPositions[key];
         setDeductions(filteredPositions);
         setIsLoading(false);
+
+        setSnackMessage("Success delete!");
+        handleSnackOpen();
       })
       .catch((error) => {
         console.log(error);
@@ -261,8 +287,14 @@ function Deductions() {
           <CircularProgress />
         )}
       </TransitionsModal>
+
+      <Snack
+        open={isSnackOpen}
+        message={snackMessage}
+        handleClose={handleSnackClose}
+      />
     </div>
   );
-}
+};
 
 export default Deductions;
