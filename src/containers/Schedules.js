@@ -2,26 +2,45 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import set from "date-fns/set/index.js";
 
-// Material UI
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import AddIcon from "@material-ui/icons/Add";
-
-// Dont change these imports.
+import { makeStyles } from "@material-ui/core/styles";
+import { Button, Paper, Toolbar, CircularProgress } from "@material-ui/core";
 import { TimePicker } from "@material-ui/pickers";
-import { CircularProgress, Toolbar } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 
 import TransitionsModal from "../components/Modal";
 import Table from "../components/Table";
+import Snack from "../components/Snack";
+
+const useStyles = makeStyles({
+  visuallyHidden: {
+    border: 0,
+    clip: "rect(0 0 0 0)",
+    height: 1,
+    margin: -1,
+    overflow: "hidden",
+    padding: 0,
+    position: "absolute",
+    top: 20,
+    width: 1,
+  },
+});
 
 const Schedules = () => {
+  const classes = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSnackOpen, setIsSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [schedules, setSchedules] = useState({});
   const [timeIn, setTimeIn] = useState(new Date());
   const [timeOut, setTimeOut] = useState(new Date());
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
+  const [filterFn, setFilterFn] = useState({
+    fn: (items) => {
+      return items;
+    },
+  });
 
   const columnHeads = [
     {
@@ -39,6 +58,7 @@ const Schedules = () => {
     },
   ];
 
+  // Get schedules in the database
   useEffect(() => {
     setIsFetching(true);
     // Get || Read schedules in firebase server.
@@ -58,7 +78,6 @@ const Schedules = () => {
   const handleOpen = () => {
     setIsModalOpen(true);
   };
-
   const handleClose = () => {
     // Reset to default values.
     setTimeIn(new Date());
@@ -68,7 +87,19 @@ const Schedules = () => {
     setIsUpdating(null);
   };
 
-  // Submit handler.
+  // Snackbar toggler
+  const handleSnackOpen = () => {
+    setIsSnackOpen(true);
+  };
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsSnackOpen(false);
+  };
+
+  /* ----- HANDLES ----- */
+  // Submit handle
   const handleSubmit = () => {
     setIsLoading(true);
 
@@ -109,6 +140,10 @@ const Schedules = () => {
 
           // Close modal
           handleClose();
+
+          // Open snackbar
+          setSnackMessage("Success submit!");
+          handleSnackOpen();
         })
         .catch((error) => {
           // log the error if found || catched.
@@ -139,8 +174,13 @@ const Schedules = () => {
           });
           setIsLoading(false);
           setIsUpdating(null);
+
           // Close modal
           handleClose();
+
+          // Open snackbar
+          setSnackMessage("Success edit!");
+          handleSnackOpen();
         })
         .catch((error) => {
           // log the error if found || catched.
@@ -153,7 +193,8 @@ const Schedules = () => {
     }
   };
 
-  const deleteHandler = (key) => {
+  // Delete handle
+  const handleDelete = (key) => {
     setIsLoading(true);
     axios
       .delete(
@@ -164,6 +205,9 @@ const Schedules = () => {
         delete filteredSchedules[key];
         setSchedules(filteredSchedules);
         setIsLoading(false);
+
+        setSnackMessage("Success delete!");
+        handleSnackOpen();
       })
       .catch((error) => {
         console.log(error);
@@ -171,7 +215,8 @@ const Schedules = () => {
       });
   };
 
-  const editHandler = (key) => {
+  // Edit handle
+  const handleEdit = (key) => {
     const oldTimeIn = schedules[key].timeIn.replace(/\s/g, "");
     const oldTimeOut = schedules[key].timeOut.replace(/\s/g, "");
     const newTimeIn = set(new Date(), {
@@ -189,12 +234,40 @@ const Schedules = () => {
     handleOpen();
   };
 
+  // Handles change in Search Bar
+  /*Error if filterFn is not found in Table.js*/
+  const handleSearch = (e) => {
+    let target = e.target;
+    setFilterFn({
+      fn: (items) => {
+        if (target.value === "") return items;
+        else
+          return items.filter((x) =>
+            x.title.toLowerCase().includes(target.value.toLowerCase())
+          );
+      },
+    });
+  };
+
   return (
     <div>
       <h1>Schedules Screen</h1>
       <Paper>
         <Toolbar>
-          {/*insert search textfield here*/}
+          {/* NOT NEEDED ANYWAY, CAN BE DELETED EXCEPT THE SETFILTERFN FUNCTION
+          <TextField
+            className={classes.visuallyHidden}
+            label="Search..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleSearch}
+          />*/}
+
           <Button
             size="small"
             variant="contained"
@@ -209,8 +282,9 @@ const Schedules = () => {
         <div>
           <Table
             lists={schedules}
-            onDeleteRow={deleteHandler}
-            onEditRow={editHandler}
+            onDeleteRow={handleDelete}
+            onEditRow={handleEdit}
+            filterFn={filterFn}
             columns={columnHeads}
             propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
             isLoading={isFetching}
@@ -253,6 +327,12 @@ const Schedules = () => {
           <CircularProgress />
         )}
       </TransitionsModal>
+
+      <Snack
+        open={isSnackOpen}
+        message={snackMessage}
+        handleClose={handleSnackClose}
+      />
     </div>
   );
 };
