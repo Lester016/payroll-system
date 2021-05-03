@@ -9,8 +9,8 @@ import {
   InputAdornment,
   CircularProgress,
 } from "@material-ui/core/";
-import AddIcon from "@material-ui/icons/Add";
-import SearchIcon from "@material-ui/icons/Search";
+
+import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons/";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -23,8 +23,8 @@ const Deductions = () => {
   const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
   const [amount, setAmount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
