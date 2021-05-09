@@ -47,7 +47,7 @@ const ClientTimeIn = () => {
                 </InputAdornment>
               ),
             }}
-            error={touched.userID && errors.userID}
+            error={touched.userID && errors.userID !== undefined}
             helperText={touched.userID && errors.userID}
           />
 
