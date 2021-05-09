@@ -43,7 +43,7 @@ const ClientTimeIn = () => {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <PersonOutlineIcon fontSize="medium" />
+                  <PersonOutlineIcon />
                 </InputAdornment>
               ),
             }}
