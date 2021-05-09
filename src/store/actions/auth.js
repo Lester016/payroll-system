@@ -25,7 +25,7 @@ export const authFailed = (error) => {
 };
 
 export const login = (email, password) => {
-  let url = "/api/users/login";
+  let url = "https://tup-payroll.herokuapp.com/api/users/login";
 
   const config = {
     headers: {
