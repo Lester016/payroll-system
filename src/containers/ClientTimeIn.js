@@ -60,26 +60,24 @@ const ClientTimeIn = () => {
       <div className= {classes.container}>
         <Form >
           <h1>Client Time In Screen</h1>
-          <Paper className ={classes.paper} >
-            <div >
-              <Field
-                type="text"
-                name="userID"
-                as={TextField}
-                variant="outlined"
-                label="Employee ID"
-                className={classes.field}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <PersonOutline fontSize="medium" />
-                    </InputAdornment>
-                  ),
-                }}
-                error={touched.userID && errors.userID}
-                helperText={touched.userID && errors.userID}
-              />
-            </div>
+          <Paper className ={classes.paper}>
+            <Field
+              type="text"
+              name="userID"
+              as={TextField}
+              variant="outlined"
+              label="Employee ID"
+              className={classes.field}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <PersonOutline />
+                  </InputAdornment>
+                ),
+              }}
+              error={touched.userID && errors.userID !== undefined}
+              helperText={touched.userID && errors.userID}
+            />
 
             <Button
               type="submit"
