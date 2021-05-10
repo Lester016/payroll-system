@@ -15,6 +15,7 @@ import Skeleton from "@material-ui/lab/Skeleton";
 
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import PrintIcon from '@material-ui/icons/Print';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -59,6 +60,9 @@ const AppTable = ({
   columns,
   propertiesOrder,
   isLoading,
+  isPayroll = false,
+  printPayslip,
+  printPayroll,
 }) => {
   const classes = useStyles();
 
@@ -154,24 +158,53 @@ const AppTable = ({
             <StyledTableCell key={id}>{item[column]}</StyledTableCell>
           ))}
           <StyledTableCell>
-            <Button
-              size="small"
-              variant="contained"
-              color="primary"
-              startIcon={<EditIcon />}
-              onClick={() => onEditRow(item.id)}
-            >
-              Edit
-            </Button>
-            <Button
-              size="small"
-              variant="contained"
-              color="secondary"
-              startIcon={<DeleteIcon />}
-              onClick={() => onDeleteRow(item.id)}
-            >
-              Delete
-            </Button>
+            {!isPayroll? 
+              ( <div>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<EditIcon />}
+                    onClick={() => onEditRow(item.id)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => onDeleteRow(item.id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              ):(
+                <div>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<PrintIcon />}
+                    // onClick={() => printPayslip()}
+                  >
+                    Payslip
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<PrintIcon />}
+                    // onClick={() => printPayroll()}
+                  >
+                    Payroll
+                  </Button>
+                </div>
+              )
+            }
+            
+
+            
           </StyledTableCell>
         </StyledTableRow>
       ));
