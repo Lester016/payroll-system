@@ -2,6 +2,7 @@ import { useState } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
+import { Redirect } from "react-router";
 
 // Material UI
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,7 +22,7 @@ const useStyles = makeStyles({
   button: {},
 });
 
-const Login = ({ login }) => {
+const Login = ({ login, isAuthenticated, loading }) => {
   // Validations Schema.
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required().label("Email"),
@@ -29,7 +30,10 @@ const Login = ({ login }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-
+  const classes = useStyles();
+  if (isAuthenticated) {
+    return <Redirect to="/" />;
+  }
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -38,15 +42,12 @@ const Login = ({ login }) => {
     event.preventDefault();
   };
 
-  const classes = useStyles();
-
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
       validationSchema={LoginSchema}
       onSubmit={(values) => {
         login(values.email, values.password);
-        alert(values.email, values.password);
       }}
     >
       {({ touched, errors }) => (
@@ -95,16 +96,19 @@ const Login = ({ login }) => {
             error={touched.password && errors.password !== undefined}
             helperText={touched.password && errors.password}
           />
-
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disableElevation
-            className={classes.button}
-          >
-            Sign in
-          </Button>
+          {loading ? (
+            <h1>Loading</h1>
+          ) : (
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disableElevation
+              className={classes.button}
+            >
+              Sign in
+            </Button>
+          )}
         </Form>
       )}
     </Formik>
@@ -113,6 +117,7 @@ const Login = ({ login }) => {
 
 const mapStateToProps = (state) => {
   return {
+    isAuthenticated: state.auth.token !== null,
     loading: state.auth.loading,
     error: state.auth.error,
   };
