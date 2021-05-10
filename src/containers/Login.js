@@ -83,20 +83,24 @@ const Login = ({ login }) => {
           <Paper className ={classes.paper} >
           <div>
           <Field
+            as={TextField}
             type="email"
             name="email"
-            as={TextField}
             variant="outlined"
             label="Email"
             className={classes.field}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
+<<<<<<< HEAD
                   <PersonOutline fontSize="medium" />
+=======
+                  <PersonOutlineIcon />
+>>>>>>> 8c78fe7b6437212042a830b256c707c5e89d9fcf
                 </InputAdornment>
               ),
             }}
-            error={touched.email && errors.email}
+            error={touched.email && errors.email !== undefined}
             helperText={touched.email && errors.email}
           />
 
@@ -117,11 +121,15 @@ const Login = ({ login }) => {
                   >
                     {showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
+<<<<<<< HEAD
                   <Lock fontSize="medium" />
+=======
+                  <LockIcon />
+>>>>>>> 8c78fe7b6437212042a830b256c707c5e89d9fcf
                 </InputAdornment>
               ),
             }}
-            error={touched.password && errors.password}
+            error={touched.password && errors.password !== undefined}
             helperText={touched.password && errors.password}
           />
           </div>
