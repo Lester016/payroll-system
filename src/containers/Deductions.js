@@ -15,6 +15,7 @@ import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons/";
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
+import NumberInputComponent from "../components/NumberInputComponent";
 
 const Deductions = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,7 +23,8 @@ const Deductions = () => {
   const [snackMessage, setSnackMessage] = useState("");
   const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState();
+  const [errors, setErrors] = useState({});
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -87,83 +89,98 @@ const Deductions = () => {
     setIsSnackOpen(false);
   };
 
+  // Submit and Edit validation
+  const validate = () => {
+    let temp = {};
+    temp.deductionTitle = deductionTitle ? "" : "This field is required.";
+    temp.amount = amount ? "" : "This field is required.";
+
+    setErrors({
+      ...temp,
+    });
+
+    return Object.values(temp).every((x) => x === "");
+  };
+
   /* ----- HANDLES ----- */
   // Submit handle
   const handleSubmit = (e) => {
-    setIsLoading(true);
-    if (isUpdating === null) {
-      //Submit new deduction
-      axios
-        .post(
-          "https://tup-payroll-default-rtdb.firebaseio.com/deductions.json",
-          {
-            title: deductionTitle,
-            amount: parseFloat(amount),
-          }
-        )
-        .then((response) => {
-          // Submit the deduction to the existings deductions list.
-          setDeductions({
-            ...deductions,
-            [response.data.name]: {
+    if (validate()) {
+      setIsLoading(true);
+      if (isUpdating === null) {
+        //Submit new deduction
+        axios
+          .post(
+            "https://tup-payroll-default-rtdb.firebaseio.com/deductions.json",
+            {
               title: deductionTitle,
               amount: parseFloat(amount),
-            },
+            }
+          )
+          .then((response) => {
+            // Submit the deduction to the existings deductions list.
+            setDeductions({
+              ...deductions,
+              [response.data.name]: {
+                title: deductionTitle,
+                amount: parseFloat(amount),
+              },
+            });
+            setIsLoading(false);
+
+            // Close modal
+            handleClose();
+
+            // Open snackbar
+            setSnackMessage("Success submit!");
+            handleSnackOpen();
+          })
+          .catch((error) => {
+            // Log the error if found || catched.
+            console.log(error);
+            setIsLoading(false);
+
+            // Close modal
+            handleClose();
           });
-          setIsLoading(false);
-
-          // Close modal
-          handleClose();
-
-          // Open snackbar
-          setSnackMessage("Success submit!");
-          handleSnackOpen();
-        })
-        .catch((error) => {
-          // Log the error if found || catched.
-          console.log(error);
-          setIsLoading(false);
-
-          // Close modal
-          handleClose();
-        });
-      e.preventDefault();
-    } else {
-      //Edit existing deduction
-      axios
-        .put(
-          `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${isUpdating}.json`,
-          {
-            title: deductionTitle,
-            amount: parseFloat(amount),
-          }
-        )
-        .then(() => {
-          // Update the deduction to the existings deductions list.
-          setDeductions({
-            ...deductions,
-            [isUpdating]: {
+        e.preventDefault();
+      } else {
+        //Edit existing deduction
+        axios
+          .put(
+            `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${isUpdating}.json`,
+            {
               title: deductionTitle,
-              amount: amount,
-            },
+              amount: parseFloat(amount),
+            }
+          )
+          .then(() => {
+            // Update the deduction to the existings deductions list.
+            setDeductions({
+              ...deductions,
+              [isUpdating]: {
+                title: deductionTitle,
+                amount: amount,
+              },
+            });
+            setIsLoading(false);
+
+            // Close modal
+            handleClose();
+
+            // Open snackbar
+            setSnackMessage("Success edit!");
+            handleSnackOpen();
+          })
+          .catch((error) => {
+            // Log the error if found || catched.
+            console.log(error);
+            setIsLoading(false);
+
+            // Close modal
+            handleClose();
           });
-          setIsLoading(false);
-
-          // Close modal
-          handleClose();
-
-          // Open snackbar
-          setSnackMessage("Success edit!");
-          handleSnackOpen();
-        })
-        .catch((error) => {
-          // Log the error if found || catched.
-          console.log(error);
-          setIsLoading(false);
-
-          // Close modal
-          handleClose();
-        });
+      }
     }
   };
 
@@ -261,11 +278,22 @@ const Deductions = () => {
               value={deductionTitle}
               label="Deduction"
               onChange={(e) => setDeductionTitle(e.target.value)}
+              {...(errors.deductionTitle && {
+                error: true,
+                helperText: errors.deductionTitle,
+              })}
             />
             <TextField
               value={amount}
               label="Amount"
               onChange={(e) => setAmount(e.target.value)}
+              InputProps={{
+                inputComponent: NumberInputComponent,
+              }}
+              {...(errors.amount && {
+                error: true,
+                helperText: errors.amount,
+              })}
             />
 
             <Button
