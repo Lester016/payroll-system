@@ -92,7 +92,7 @@ const Login = ({ login }) => {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <PersonOutlineIcon />
+                  <PersonOutline/>
                 </InputAdornment>
               ),
             }}
@@ -117,7 +117,7 @@ const Login = ({ login }) => {
                   >
                     {showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
-                  <LockIcon />
+                  <Lock/>
                 </InputAdornment>
               ),
             }}
