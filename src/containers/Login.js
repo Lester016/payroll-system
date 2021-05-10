@@ -5,46 +5,46 @@ import { connect } from "react-redux";
 
 // Material UI
 import {
-  Button, 
-  Paper, 
-  IconButton, 
-  InputAdornment,  
-  makeStyles, 
-  TextField
+  Button,
+  Paper,
+  IconButton,
+  InputAdornment,
+  makeStyles,
+  TextField,
 } from "@material-ui/core/";
 
 import {
-   Lock,
-   PersonOutline, 
-   Visibility, 
-   VisibilityOff
-} from "@material-ui/icons/"
+  Lock,
+  PersonOutline,
+  Visibility,
+  VisibilityOff,
+} from "@material-ui/icons/";
 
 import * as actions from "../store/actions";
 
 const useStyles = makeStyles({
-  container:{
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign:'center',
-    marginTop: 100
+  container: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    marginTop: 100,
   },
 
-  paper:{
-    textAlign:'center',
+  paper: {
+    textAlign: "center",
     width: 450,
   },
   field: {
     marginTop: 30,
-    width: '80%',
-    minWidth: 200
+    width: "80%",
+    minWidth: 200,
   },
   button: {
     marginTop: 20,
     marginBottom: 30,
-    width: '20%',
-    minWidth: 100
+    width: "20%",
+    minWidth: 100,
   },
 });
 
@@ -77,65 +77,65 @@ const Login = ({ login }) => {
       }}
     >
       {({ touched, errors }) => (
-        <div className= {classes.container}>
-        <Form>
-          <h1>Login Screen</h1>
-          <Paper className ={classes.paper} >
-          <div>
-          <Field
-            as={TextField}
-            type="email"
-            name="email"
-            variant="outlined"
-            label="Email"
-            className={classes.field}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <PersonOutline/>
-                </InputAdornment>
-              ),
-            }}
-            error={touched.email && errors.email !== undefined}
-            helperText={touched.email && errors.email}
-          />
+        <div className={classes.container}>
+          <Form>
+            <h1>Login Screen</h1>
+            <Paper className={classes.paper}>
+              <div>
+                <Field
+                  as={TextField}
+                  type="email"
+                  name="email"
+                  variant="outlined"
+                  label="Email"
+                  className={classes.field}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <PersonOutline />
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={touched.email && errors.email !== undefined}
+                  helperText={touched.email && errors.email}
+                />
 
-          <Field
-            type={showPassword ? "text" : "password"}
-            name="password"
-            as={TextField}
-            variant="outlined"
-            label="Password"
-            className={classes.field}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                  <Lock/>
-                </InputAdornment>
-              ),
-            }}
-            error={touched.password && errors.password !== undefined}
-            helperText={touched.password && errors.password}
-          />
-          </div>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disableElevation
-            className={classes.button}
-          >
-            Sign in
-          </Button>
-          </Paper>
-        </Form>
+                <Field
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  as={TextField}
+                  variant="outlined"
+                  label="Password"
+                  className={classes.field}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                        <Lock />
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={touched.password && errors.password !== undefined}
+                  helperText={touched.password && errors.password}
+                />
+              </div>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disableElevation
+                className={classes.button}
+              >
+                Sign in
+              </Button>
+            </Paper>
+          </Form>
         </div>
       )}
     </Formik>
