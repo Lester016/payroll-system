@@ -32,6 +32,14 @@ const reducer = (state = initialState, action) => {
         loading: false,
         error: action.error,
       };
+    case actionTypes.AUTH_CLEAR_TOKENS:
+      return {
+        ...state,
+        token: null,
+        userId: null,
+        email: null,
+        name: null,
+      };
     default:
       return state;
   }

@@ -1,4 +1,6 @@
 import { Switch, Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { useEffect } from "react";
 
 import "./App.css";
 import Deductions from "./containers/Deductions";
@@ -12,8 +14,13 @@ import Employees from "./containers/Employees";
 import Layout from "./hoc/Layout";
 import ClientTimeIn from "./containers/ClientTimeIn";
 import PrivateRoute from "./hoc/PrivateRoute";
+import * as actions from "./store/actions";
 
-function App() {
+function App({ onAutoSignup }) {
+  useEffect(() => {
+    onAutoSignup();
+  }, [onAutoSignup]);
+
   return (
     <Switch>
       <Route path="/login/client" component={ClientTimeIn} />
@@ -33,4 +40,10 @@ function App() {
   );
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAutoSignup: () => dispatch(actions.authCheckState()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(App);
