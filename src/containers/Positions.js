@@ -9,12 +9,13 @@ import {
   InputAdornment,
   CircularProgress,
 } from "@material-ui/core/";
-import AddIcon from "@material-ui/icons/Add";
-import SearchIcon from "@material-ui/icons/Search";
+
+import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons/";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
+import NumberInputComponent from "../components/NumberInputComponent";
 
 const Position = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,7 +23,8 @@ const Position = () => {
   const [snackMessage, setSnackMessage] = useState("");
   const [positions, setPositions] = useState({});
   const [jobTitle, setJobTitle] = useState("");
-  const [ratePerHour, setRatePerHour] = useState(0);
+  const [ratePerHour, setRatePerHour] = useState();
+  const [errors, setErrors] = useState({});
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -87,83 +89,98 @@ const Position = () => {
     setIsSnackOpen(false);
   };
 
+  // Submit and Edit validation
+  const validate = () => {
+    let temp = {};
+    temp.jobTitle = jobTitle ? "" : "This field is required.";
+    temp.ratePerHour = ratePerHour ? "" : "This field is required.";
+
+    setErrors({
+      ...temp,
+    });
+
+    return Object.values(temp).every((x) => x === "");
+  };
+
   /* ----- HANDLES ----- */
   // Submit handle
   const handleSubmit = (e) => {
-    setIsLoading(true);
-    if (isUpdating === null) {
-      // Submit new position
-      axios
-        .post(
-          "https://tup-payroll-default-rtdb.firebaseio.com/positions.json",
-          {
-            title: jobTitle,
-            rate: parseFloat(ratePerHour),
-          }
-        )
-        .then((response) => {
-          // Submit the position to the existings positions list.
-          setPositions({
-            ...positions,
-            [response.data.name]: {
+    if (validate()) {
+      setIsLoading(true);
+      if (isUpdating === null) {
+        // Submit new position
+        axios
+          .post(
+            "https://tup-payroll-default-rtdb.firebaseio.com/positions.json",
+            {
+              title: jobTitle,
               rate: parseFloat(ratePerHour),
-              title: jobTitle,
-            },
+            }
+          )
+          .then((response) => {
+            // Submit the position to the existings positions list.
+            setPositions({
+              ...positions,
+              [response.data.name]: {
+                rate: parseFloat(ratePerHour),
+                title: jobTitle,
+              },
+            });
+            setIsLoading(false);
+
+            // Close modal
+            handleClose();
+
+            // Open snackbar
+            setSnackMessage("Success submit!");
+            handleSnackOpen();
+          })
+          .catch((error) => {
+            // Log the error if found || catched.
+            console.log(error);
+            setIsLoading(false);
+
+            // Close modal
+            handleClose();
           });
-          setIsLoading(false);
-
-          // Close modal
-          handleClose();
-
-          // Open snackbar
-          setSnackMessage("Success submit!");
-          handleSnackOpen();
-        })
-        .catch((error) => {
-          // Log the error if found || catched.
-          console.log(error);
-          setIsLoading(false);
-
-          // Close modal
-          handleClose();
-        });
-      e.preventDefault();
-    } else {
-      // Edit existing position
-      axios
-        .put(
-          `https://tup-payroll-default-rtdb.firebaseio.com/positions/${isUpdating}.json`,
-          {
-            title: jobTitle,
-            rate: parseFloat(ratePerHour),
-          }
-        )
-        .then(() => {
-          // Update the position to the existings positions list.
-          setPositions({
-            ...positions,
-            [isUpdating]: {
-              rate: ratePerHour,
+        e.preventDefault();
+      } else {
+        // Edit existing position
+        axios
+          .put(
+            `https://tup-payroll-default-rtdb.firebaseio.com/positions/${isUpdating}.json`,
+            {
               title: jobTitle,
-            },
+              rate: parseFloat(ratePerHour),
+            }
+          )
+          .then(() => {
+            // Update the position to the existings positions list.
+            setPositions({
+              ...positions,
+              [isUpdating]: {
+                rate: ratePerHour,
+                title: jobTitle,
+              },
+            });
+            setIsLoading(false);
+
+            // Close modal
+            handleClose();
+
+            // Open snackbar
+            setSnackMessage("Success edit!");
+            handleSnackOpen();
+          })
+          .catch((error) => {
+            // Log the error if found || catched.
+            console.log(error);
+            setIsLoading(false);
+
+            // Close modal
+            handleClose();
           });
-          setIsLoading(false);
-
-          // Close modal
-          handleClose();
-
-          // Open snackbar
-          setSnackMessage("Success edit!");
-          handleSnackOpen();
-        })
-        .catch((error) => {
-          // Log the error if found || catched.
-          console.log(error);
-          setIsLoading(false);
-
-          // Close modal
-          handleClose();
-        });
+      }
     }
   };
 
@@ -261,11 +278,22 @@ const Position = () => {
               value={jobTitle}
               label="Job Title"
               onChange={(e) => setJobTitle(e.target.value)}
+              {...(errors.jobTitle && {
+                error: true,
+                helperText: errors.jobTitle,
+              })}
             />
             <TextField
               value={ratePerHour}
               label="Rate Per Hour"
               onChange={(e) => setRatePerHour(e.target.value)}
+              InputProps={{
+                inputComponent: NumberInputComponent,
+              }}
+              {...(errors.ratePerHour && {
+                error: true,
+                helperText: errors.ratePerHour,
+              })}
             />
 
             <Button
