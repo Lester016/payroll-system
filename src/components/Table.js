@@ -2,20 +2,22 @@ import React, { useState } from "react";
 
 // Material UI
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Table from "@material-ui/core/Table";
-import Button from "@material-ui/core/Button";
+
+import {
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  TableSortLabel,
+  Table,
+  Button,
+} from "@material-ui/core";
+
 import Skeleton from "@material-ui/lab/Skeleton";
 
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import PrintIcon from '@material-ui/icons/Print';
+import { Edit, Delete, Print } from "@material-ui/icons";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -158,53 +160,49 @@ const AppTable = ({
             <StyledTableCell key={id}>{item[column]}</StyledTableCell>
           ))}
           <StyledTableCell>
-            {!isPayroll? 
-              ( <div>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    startIcon={<EditIcon />}
-                    onClick={() => onEditRow(item.id)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<DeleteIcon />}
-                    onClick={() => onDeleteRow(item.id)}
-                  >
-                    Delete
-                  </Button>
-                </div>
-              ):(
-                <div>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="primary"
-                    startIcon={<PrintIcon />}
-                    // onClick={() => printPayslip()}
-                  >
-                    Payslip
-                  </Button>
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<PrintIcon />}
-                    // onClick={() => printPayroll()}
-                  >
-                    Payroll
-                  </Button>
-                </div>
-              )
-            }
-            
-
-            
+            {!isPayroll ? (
+              <div>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Edit />}
+                  onClick={() => onEditRow(item.id)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<Delete />}
+                  onClick={() => onDeleteRow(item.id)}
+                >
+                  Delete
+                </Button>
+              </div>
+            ) : (
+              <div>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Print />}
+                  onClick={() => printPayslip()}
+                >
+                  Payslip
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<Print />}
+                  onClick={() => printPayroll()}
+                >
+                  Payroll
+                </Button>
+              </div>
+            )}
           </StyledTableCell>
         </StyledTableRow>
       ));
