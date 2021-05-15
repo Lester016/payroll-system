@@ -192,15 +192,6 @@ const AppTable = ({
                 >
                   Payslip
                 </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<Print />}
-                  onClick={() => printPayroll()}
-                >
-                  Payroll
-                </Button>
               </div>
             )}
           </StyledTableCell>
