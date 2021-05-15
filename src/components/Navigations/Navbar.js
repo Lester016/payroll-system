@@ -1,20 +1,24 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // MaterialUI
 import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
+
+import {
+  makeStyles,
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Avatar,
+  ClickAwayListener,
+  Grow,
+  Paper,
+  Popper,
+  MenuItem,
+  MenuList,
+} from "@material-ui/core";
+
 import MenuIcon from "@material-ui/icons/Menu";
-import Avatar from '@material-ui/core/Avatar';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
 
 import { drawerWidth } from "../../config/layout";
 
@@ -45,11 +49,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Navbar = ({ isOpen, title, handleDrawerOpen}) => {
+const Navbar = ({ isOpen, title, handleDrawerOpen }) => {
   const classes = useStyles();
 
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef(null);
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null);
 
   const handleAvatarToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -64,14 +68,14 @@ const Navbar = ({ isOpen, title, handleDrawerOpen}) => {
   };
 
   function handleListKeyDown(event) {
-    if (event.key === 'Tab') {
+    if (event.key === "Tab") {
       event.preventDefault();
       setOpen(false);
     }
   }
 
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
+  const prevOpen = useRef(open);
+  useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
@@ -101,37 +105,47 @@ const Navbar = ({ isOpen, title, handleDrawerOpen}) => {
         <Typography className={classes.title} variant="h6" noWrap>
           {title}
         </Typography>
-         
-          <IconButton
-            className={classes.avatar}
-            size="small"
-            ref={anchorRef}
-            aria-controls={open ? 'menu-list-grow' : undefined}
-            aria-haspopup="true"
-            onClick={handleAvatarToggle}
-          >
-            <Avatar 
-              alt="Andrei" 
-              src="/broken-image.jpg">
-            </Avatar>
-          </IconButton>
-          <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal placement="bottom-end">
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                style={{ transformOrigin: placement === 'bottom-end' ? 'right top' : 'right bottom' }}
-              >
-                <Paper>
-                  <ClickAwayListener onClickAway={handleAvatarClose}>
-                    <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                      <MenuItem>Logout</MenuItem>
-                    </MenuList>
-                  </ClickAwayListener>
-                </Paper>
-              </Grow>
-            )}
-          </Popper>
-               
+
+        <IconButton
+          className={classes.avatar}
+          size="small"
+          ref={anchorRef}
+          aria-controls={open ? "menu-list-grow" : undefined}
+          aria-haspopup="true"
+          onClick={handleAvatarToggle}
+        >
+          <Avatar alt="Andrei" src="/broken-image.jpg"></Avatar>
+        </IconButton>
+        <Popper
+          open={open}
+          anchorEl={anchorRef.current}
+          role={undefined}
+          transition
+          disablePortal
+          placement="bottom-end"
+        >
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{
+                transformOrigin:
+                  placement === "bottom-end" ? "right top" : "right bottom",
+              }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={handleAvatarClose}>
+                  <MenuList
+                    autoFocusItem={open}
+                    id="menu-list-grow"
+                    onKeyDown={handleListKeyDown}
+                  >
+                    <MenuItem>Logout</MenuItem>
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
       </Toolbar>
     </AppBar>
   );
