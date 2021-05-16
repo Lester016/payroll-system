@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
 import {
   TextField,
   Button,
@@ -8,9 +7,8 @@ import {
   Toolbar,
   InputAdornment,
   CircularProgress,
-} from "@material-ui/core/";
-
-import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons/";
+} from "@material-ui/core";
+import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -28,7 +26,12 @@ const Position = () => {
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+<<<<<<< HEAD
   const [deleteKey, setdeleteKey] = useState(null);
+=======
+  const [deleteKey, setDeleteKey] = useState(null);
+
+>>>>>>> c2933e4e70646ac981156630608782d74237ce18
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -80,11 +83,11 @@ const Position = () => {
   };
 
   const DeleteOpen = (key) => {
-    setdeleteKey(key);
+    setDeleteKey(key);
   };
   const DeleteClose = () => {
     // Reset to default values.
-    setdeleteKey(null);
+    setDeleteKey(null);
     setIsUpdating(null);
   };
 
@@ -209,7 +212,7 @@ const Position = () => {
 
         setSnackMessage("Success delete!");
         handleSnackOpen();
-        setdeleteKey(null);
+        setDeleteKey(null);
       })
       .catch((error) => {
         setIsLoading(false);

@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
-// MaterialUI
 import clsx from "clsx";
-
 import {
   makeStyles,
   AppBar,
@@ -17,10 +14,10 @@ import {
   MenuItem,
   MenuList,
 } from "@material-ui/core";
-
-import MenuIcon from "@material-ui/icons/Menu";
+import { Menu as MenuIcon } from "@material-ui/icons";
 
 import { drawerWidth } from "../../config/layout";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -114,7 +111,7 @@ const Navbar = ({ isOpen, title, handleDrawerOpen }) => {
           aria-haspopup="true"
           onClick={handleAvatarToggle}
         >
-          <Avatar alt="Andrei" src="/broken-image.jpg"></Avatar>
+          <Avatar alt="Andrei" src=""></Avatar>
         </IconButton>
         <Popper
           open={open}
@@ -139,7 +136,9 @@ const Navbar = ({ isOpen, title, handleDrawerOpen }) => {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem component={Link} to={"/logout"}>
+                      Logout
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
