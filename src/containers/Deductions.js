@@ -29,7 +29,6 @@ const Deductions = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [deleteKey, setdeleteKey] = useState(null);
-
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -72,9 +71,9 @@ const Deductions = () => {
     setIsModalOpen(true);
   };
   const handleClose = () => {
-    // Reset to default values.
+    // Reset to default values
     setDeductionTitle("");
-    setAmount(0);
+    setAmount();
 
     setIsModalOpen(false);
     setIsUpdating(null);
@@ -282,10 +281,13 @@ const Deductions = () => {
         </div>
       </Paper>
 
-      <TransitionsModal handleClose={DeleteClose} isModalOpen={deleteKey ? true : false}>
+      <TransitionsModal
+        handleClose={DeleteClose}
+        isModalOpen={deleteKey ? true : false}
+      >
         {!isLoading ? (
           <>
-          Are you sure you want to delete?
+            Are you sure you want to delete?
             <Button
               variant="contained"
               size="small"

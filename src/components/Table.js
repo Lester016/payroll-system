@@ -17,13 +17,7 @@ import {
 
 import Skeleton from "@material-ui/lab/Skeleton";
 
-<<<<<<< HEAD
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import PrintIcon from "@material-ui/icons/Print";
-=======
 import { Edit, Delete, Print } from "@material-ui/icons";
->>>>>>> f7d08b82239528b2a3e62851f5fce3f218114932
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -172,11 +166,7 @@ const AppTable = ({
                   size="small"
                   variant="contained"
                   color="primary"
-<<<<<<< HEAD
-                  startIcon={<EditIcon />}
-=======
                   startIcon={<Edit />}
->>>>>>> f7d08b82239528b2a3e62851f5fce3f218114932
                   onClick={() => onEditRow(item.id)}
                 >
                   Edit
@@ -185,11 +175,7 @@ const AppTable = ({
                   size="small"
                   variant="contained"
                   color="secondary"
-<<<<<<< HEAD
-                  startIcon={<DeleteIcon />}
-=======
                   startIcon={<Delete />}
->>>>>>> f7d08b82239528b2a3e62851f5fce3f218114932
                   onClick={() => onDeleteRow(item.id)}
                 >
                   Delete
@@ -201,28 +187,11 @@ const AppTable = ({
                   size="small"
                   variant="contained"
                   color="primary"
-<<<<<<< HEAD
-                  startIcon={<PrintIcon />}
-                  // onClick={() => printPayslip()}
-                >
-                  Payslip
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<PrintIcon />}
-                  // onClick={() => printPayroll()}
-                >
-                  Payroll
-                </Button>
-=======
                   startIcon={<Print />}
                   onClick={() => printPayslip()}
                 >
                   Payslip
                 </Button>
->>>>>>> f7d08b82239528b2a3e62851f5fce3f218114932
               </div>
             )}
           </StyledTableCell>
