@@ -302,10 +302,13 @@ const Schedules = () => {
         </div>
       </Paper>
 
-      <TransitionsModal handleClose={DeleteClose} isModalOpen={deleteKey ? true : false}>
+      <TransitionsModal
+        handleClose={DeleteClose}
+        isModalOpen={deleteKey ? true : false}
+      >
         {!isLoading ? (
           <>
-          Are you sure you want to delete?
+            Are you sure you want to delete?
             <Button
               variant="contained"
               size="small"
