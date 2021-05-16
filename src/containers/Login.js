@@ -2,7 +2,7 @@ import { useState } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
-
+import { Redirect } from "react-router";
 // Material UI
 import {
   Button,
@@ -11,14 +11,13 @@ import {
   InputAdornment,
   makeStyles,
   TextField,
-} from "@material-ui/core/";
-
+} from "@material-ui/core";
 import {
-  Lock,
-  PersonOutline,
-  Visibility,
-  VisibilityOff,
-} from "@material-ui/icons/";
+  Lock as LockIcon,
+  PersonOutline as PersonOutlineIcon,
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+} from "@material-ui/icons";
 
 import * as actions from "../store/actions";
 
@@ -40,7 +39,7 @@ const useStyles = makeStyles({
     width: "80%",
     minWidth: 200,
   },
-  button: { 
+  button: {
     marginTop: 20,
     marginBottom: 30,
     width: "20%",
@@ -48,7 +47,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Login = ({ login }) => {
+const Login = ({ login, isAuthenticated, loading }) => {
   // Validations Schema.
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required().label("Email"),
@@ -56,7 +55,10 @@ const Login = ({ login }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-
+  const classes = useStyles();
+  if (isAuthenticated) {
+    return <Redirect to="/" />;
+  }
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -65,66 +67,67 @@ const Login = ({ login }) => {
     event.preventDefault();
   };
 
-  const classes = useStyles();
-
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
       validationSchema={LoginSchema}
       onSubmit={(values) => {
         login(values.email, values.password);
-        alert(values.email, values.password);
       }}
     >
       {({ touched, errors }) => (
-        <div className={classes.container}>
-          <Form>
+        <Form className={classes.container}>
+          <Paper className={classes.paper}>
             <h1>Login Screen</h1>
-            <Paper className={classes.paper}>
-              <div>
-                <Field
-                  as={TextField}
-                  type="email"
-                  name="email"
-                  variant="outlined"
-                  label="Email"
-                  className={classes.field}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <PersonOutline />
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={touched.email && errors.email !== undefined}
-                  helperText={touched.email && errors.email}
-                />
+            <Field
+              as={TextField}
+              type="email"
+              name="email"
+              variant="outlined"
+              label="Email"
+              className={classes.field}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <PersonOutlineIcon />
+                  </InputAdornment>
+                ),
+              }}
+              error={touched.email && errors.email !== undefined}
+              helperText={touched.email && errors.email}
+            />
 
-                <Field
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  as={TextField}
-                  variant="outlined"
-                  label="Password"
-                  className={classes.field}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                        >
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                        <Lock />
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={touched.password && errors.password !== undefined}
-                  helperText={touched.password && errors.password}
-                />
-              </div>
+            <Field
+              type={showPassword ? "text" : "password"}
+              name="password"
+              as={TextField}
+              variant="outlined"
+              label="Password"
+              className={classes.field}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                    <LockIcon />
+                  </InputAdornment>
+                ),
+              }}
+              error={touched.password && errors.password !== undefined}
+              helperText={touched.password && errors.password}
+            />
+            {loading ? (
+              <h1>Loading</h1>
+            ) : (
               <Button
                 type="submit"
                 variant="contained"
@@ -134,9 +137,9 @@ const Login = ({ login }) => {
               >
                 Sign in
               </Button>
-            </Paper>
-          </Form>
-        </div>
+            )}
+          </Paper>
+        </Form>
       )}
     </Formik>
   );
@@ -144,6 +147,7 @@ const Login = ({ login }) => {
 
 const mapStateToProps = (state) => {
   return {
+    isAuthenticated: state.auth.token !== null,
     loading: state.auth.loading,
     error: state.auth.error,
   };

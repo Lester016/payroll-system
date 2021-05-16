@@ -25,7 +25,7 @@ export const authFailed = (error) => {
 };
 
 export const login = (email, password) => {
-  let url = "/api/users/login";
+  let url = "https://tup-payroll.herokuapp.com/api/users/login";
 
   const config = {
     headers: {
@@ -38,8 +38,9 @@ export const login = (email, password) => {
     axios
       .post(url, { email, password }, config)
       .then((res) => {
-        localStorage.setItem("tokenID", res.data.token);
-        localStorage.setItem("userID", res.data._id);
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userId", res.data._id);
+        localStorage.setItem("email", res.data.email);
         localStorage.setItem("name", res.data.name);
         console.log(res.data);
         dispatch(
@@ -54,5 +55,31 @@ export const login = (email, password) => {
       .catch((error) => {
         dispatch(authFailed(error.response.data.message));
       });
+  };
+};
+
+export const clearTokens = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("email");
+  localStorage.removeItem("name");
+  return {
+    type: actionTypes.AUTH_CLEAR_TOKENS,
+  };
+};
+
+export const authCheckState = () => {
+  return (dispatch) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      dispatch(clearTokens()); // or just return
+    } else {
+      const userId = localStorage.getItem("userId");
+      const email = localStorage.getItem("email");
+      const name = localStorage.getItem("name");
+
+      dispatch(authSuccess(token, userId, email, name));
+    }
   };
 };

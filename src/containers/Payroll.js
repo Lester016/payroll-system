@@ -10,7 +10,7 @@ import { Paper } from "@material-ui/core/";
 import jsPDF from "jspdf";
 
 function Payroll() {
-  const [filterFn, setFilterFn] = useState({
+  const [filterFn] = useState({
     fn: (items) => {
       return items;
     },

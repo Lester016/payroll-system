@@ -1,32 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import set from "date-fns/set/index.js";
-
-import { makeStyles } from "@material-ui/core/styles";
 import { Button, Paper, Toolbar, CircularProgress } from "@material-ui/core";
 import { TimePicker } from "@material-ui/pickers";
-import AddIcon from "@material-ui/icons/Add";
+import { Add as AddIcon } from "@material-ui/icons";
 
 import TransitionsModal from "../components/Modal";
 import Table from "../components/Table";
 import Snack from "../components/Snack";
 
-const useStyles = makeStyles({
-  visuallyHidden: {
-    border: 0,
-    clip: "rect(0 0 0 0)",
-    height: 1,
-    margin: -1,
-    overflow: "hidden",
-    padding: 0,
-    position: "absolute",
-    top: 20,
-    width: 1,
-  },
-});
-
 const Schedules = () => {
-  const classes = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
@@ -36,8 +19,8 @@ const Schedules = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
-  const [deleteKey, setdeleteKey] = useState(null);
-  const [filterFn, setFilterFn] = useState({
+  const [deleteKey, setDeleteKey] = useState(null);
+  const [filterFn] = useState({
     fn: (items) => {
       return items;
     },
@@ -89,11 +72,11 @@ const Schedules = () => {
   };
 
   const DeleteOpen = (key) => {
-    setdeleteKey(key);
+    setDeleteKey(key);
   };
   const DeleteClose = () => {
     // Reset to default values.
-    setdeleteKey(null);
+    setDeleteKey(null);
     setIsUpdating(null);
   };
 
@@ -115,17 +98,17 @@ const Schedules = () => {
 
     const formattedTimeIn = `${
       timeIn.getHours() > 9 ? timeIn.getHours() : "0" + timeIn.getHours()
-    } : ${
+    }:${
       timeIn.getMinutes() > 9 ? timeIn.getMinutes() : "0" + timeIn.getMinutes()
-    } : 00`;
+    }:00`;
 
     const formattedTimeOut = `${
       timeOut.getHours() > 9 ? timeOut.getHours() : "0" + timeOut.getHours()
-    } : ${
+    }:${
       timeOut.getMinutes() > 9
         ? timeOut.getMinutes()
         : "0" + timeOut.getMinutes()
-    } : 00`;
+    }:00`;
 
     if (isUpdating === null) {
       // Create new schedule in firebase server.
@@ -218,7 +201,7 @@ const Schedules = () => {
 
         setSnackMessage("Success delete!");
         handleSnackOpen();
-        setdeleteKey(null);
+        setDeleteKey(null);
       })
       .catch((error) => {
         console.log(error);
@@ -228,8 +211,8 @@ const Schedules = () => {
 
   // Edit handle
   const handleEdit = (key) => {
-    const oldTimeIn = schedules[key].timeIn.replace(/\s/g, "");
-    const oldTimeOut = schedules[key].timeOut.replace(/\s/g, "");
+    const oldTimeIn = schedules[key].timeIn;
+    const oldTimeOut = schedules[key].timeOut;
     const newTimeIn = set(new Date(), {
       hours: oldTimeIn.substring(0, 2),
       minutes: oldTimeIn.substring(3, 5),
@@ -245,39 +228,10 @@ const Schedules = () => {
     handleOpen();
   };
 
-  // Handles change in Search Bar
-  /*Error if filterFn is not found in Table.js*/
-  const handleSearch = (e) => {
-    let target = e.target;
-    setFilterFn({
-      fn: (items) => {
-        if (target.value === "") return items;
-        else
-          return items.filter((x) =>
-            x.title.toLowerCase().includes(target.value.toLowerCase())
-          );
-      },
-    });
-  };
-
   return (
     <div>
       <Paper>
         <Toolbar>
-          {/* NOT NEEDED ANYWAY, CAN BE DELETED EXCEPT THE SETFILTERFN FUNCTION
-          <TextField
-            className={classes.visuallyHidden}
-            label="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />*/}
-
           <Button
             size="small"
             variant="contained"

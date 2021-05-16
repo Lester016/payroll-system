@@ -243,7 +243,7 @@ const AppTable = ({
         page={page}
         rowsPerPageOptions={pages}
         rowsPerPage={rowsPerPage}
-        count={lists && Object.keys(lists).length}
+        count={lists ? Object.keys(lists).length : 0}
         onChangePage={handleChangePage}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
