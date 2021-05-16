@@ -11,7 +11,6 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import GroupIcon from "@material-ui/icons/Group";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import MoneyOffIcon from "@material-ui/icons/MoneyOff";
@@ -79,11 +78,6 @@ export default function Layout({ children }) {
           />
           <Divider />
           <NavItem
-            route={"/attendance"}
-            title={"Attendance"}
-            IconComponent={CalendarTodayIcon}
-          />
-          <NavItem
             route={"/employees"}
             title={"Employees"}
             IconComponent={GroupIcon}
@@ -98,12 +92,12 @@ export default function Layout({ children }) {
             title={"Deductions"}
             IconComponent={MoneyOffIcon}
           />
-          <Divider />
           <NavItem
             route={"/schedules"}
             title={"Schedules"}
             IconComponent={ScheduleIcon}
           />
+          <Divider />
           <NavItem
             route={"/payroll"}
             title={"Payroll"}

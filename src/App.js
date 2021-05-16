@@ -6,19 +6,15 @@ import Home from "./containers/Home";
 import Login from "./containers/Login";
 import Positions from "./containers/Positions";
 import Schedules from "./containers/Schedules";
-import Attendance from "./containers/Attendance";
 import Payroll from "./containers/Payroll";
 import Employees from "./containers/Employees";
 import Layout from "./hoc/Layout";
-import ClientTimeIn from "./containers/ClientTimeIn";
 
 function App() {
   return (
     <Switch>
-      <Route path="/login/client" component={ClientTimeIn} />
       <Route path="/login/admin" component={Login} />
       <Layout>
-        <Route path="/attendance" component={Attendance} />
         <Route path="/employees" component={Employees} />
         <Route path="/payroll" component={Payroll} />
         <Route path="/schedules" component={Schedules} />

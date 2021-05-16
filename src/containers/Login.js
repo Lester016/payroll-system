@@ -40,7 +40,7 @@ const useStyles = makeStyles({
     width: "80%",
     minWidth: 200,
   },
-  button: { 
+  button: {
     marginTop: 20,
     marginBottom: 30,
     width: "20%",

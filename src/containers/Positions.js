@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
 import {
   TextField,
   Button,
@@ -8,9 +7,8 @@ import {
   Toolbar,
   InputAdornment,
   CircularProgress,
-} from "@material-ui/core/";
-
-import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons/";
+} from "@material-ui/core";
+import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -208,7 +206,6 @@ const Position = () => {
         setPositions(filteredPositions);
         setIsLoading(false);
 
-        
         setSnackMessage("Success delete!");
         handleSnackOpen();
         setdeleteKey(null);
@@ -282,10 +279,13 @@ const Position = () => {
         </div>
       </Paper>
 
-      <TransitionsModal handleClose={DeleteClose} isModalOpen={deleteKey ? true : false}>
+      <TransitionsModal
+        handleClose={DeleteClose}
+        isModalOpen={deleteKey ? true : false}
+      >
         {!isLoading ? (
           <>
-          Are you sure you want to delete?
+            Are you sure you want to delete?
             <Button
               variant="contained"
               size="small"
