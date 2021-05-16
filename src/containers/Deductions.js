@@ -26,7 +26,7 @@ const Deductions = () => {
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [deleteKey, setdeleteKey] = useState(null);
+  const [deleteKey, setDeleteKey] = useState(null);
 
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -79,11 +79,11 @@ const Deductions = () => {
   };
 
   const DeleteOpen = (key) => {
-    setdeleteKey(key);
+    setDeleteKey(key);
   };
   const DeleteClose = () => {
     // Reset to default values.
-    setdeleteKey(null);
+    setDeleteKey(null);
     setIsUpdating(null);
   };
 
@@ -208,7 +208,7 @@ const Deductions = () => {
 
         setSnackMessage("Success delete!");
         handleSnackOpen();
-        setdeleteKey(null);
+        setDeleteKey(null);
       })
       .catch((error) => {
         console.log(error);

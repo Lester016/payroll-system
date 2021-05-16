@@ -19,7 +19,7 @@ const Schedules = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
-  const [deleteKey, setdeleteKey] = useState(null);
+  const [deleteKey, setDeleteKey] = useState(null);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -72,11 +72,11 @@ const Schedules = () => {
   };
 
   const DeleteOpen = (key) => {
-    setdeleteKey(key);
+    setDeleteKey(key);
   };
   const DeleteClose = () => {
     // Reset to default values.
-    setdeleteKey(null);
+    setDeleteKey(null);
     setIsUpdating(null);
   };
 
@@ -201,7 +201,7 @@ const Schedules = () => {
 
         setSnackMessage("Success delete!");
         handleSnackOpen();
-        setdeleteKey(null);
+        setDeleteKey(null);
       })
       .catch((error) => {
         console.log(error);
