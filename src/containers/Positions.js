@@ -29,7 +29,6 @@ const Position = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [deleteKey, setdeleteKey] = useState(null);
-
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -72,9 +71,9 @@ const Position = () => {
     setIsModalOpen(true);
   };
   const handleClose = () => {
-    // Reset to default values.
+    // Reset to default values
     setJobTitle("");
-    setRatePerHour(0);
+    setRatePerHour();
 
     setIsModalOpen(false);
     setIsUpdating(null);
@@ -208,7 +207,6 @@ const Position = () => {
         setPositions(filteredPositions);
         setIsLoading(false);
 
-        
         setSnackMessage("Success delete!");
         handleSnackOpen();
         setdeleteKey(null);
@@ -282,10 +280,13 @@ const Position = () => {
         </div>
       </Paper>
 
-      <TransitionsModal handleClose={DeleteClose} isModalOpen={deleteKey ? true : false}>
+      <TransitionsModal
+        handleClose={DeleteClose}
+        isModalOpen={deleteKey ? true : false}
+      >
         {!isLoading ? (
           <>
-          Are you sure you want to delete?
+            Are you sure you want to delete?
             <Button
               variant="contained"
               size="small"
