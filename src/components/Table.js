@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import NumberFormat from "react-number-format";
 
 // Material UI
 import { withStyles, makeStyles } from "@material-ui/core/styles";
@@ -156,9 +157,19 @@ const AppTable = ({
       output = reversedObjectToArray();
       output = listsAfterPagingAndSorting(output).map((item) => (
         <StyledTableRow key={item.id}>
-          {propertiesOrder.map((column, id) => (
-            <StyledTableCell key={id}>{item[column]}</StyledTableCell>
-          ))}
+          {propertiesOrder.map((column, id) =>
+            column === "amount" || column === "rate" ? (
+              <StyledTableCell key={id}>
+                <NumberFormat
+                  value={item[column]}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                />
+              </StyledTableCell>
+            ) : (
+              <StyledTableCell key={id}>{item[column]}</StyledTableCell>
+            )
+          )}
           <StyledTableCell>
             {!isPayroll ? (
               <div>
