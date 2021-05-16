@@ -28,6 +28,8 @@ const Position = () => {
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [deleteKey, setdeleteKey] = useState(null);
+
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
@@ -75,6 +77,15 @@ const Position = () => {
     setRatePerHour(0);
 
     setIsModalOpen(false);
+    setIsUpdating(null);
+  };
+
+  const DeleteOpen = (key) => {
+    setdeleteKey(key);
+  };
+  const DeleteClose = () => {
+    // Reset to default values.
+    setdeleteKey(null);
     setIsUpdating(null);
   };
 
@@ -185,23 +196,24 @@ const Position = () => {
   };
 
   // Delete handle
-  const handleDelete = (key) => {
+  const handleDelete = () => {
     setIsLoading(true);
     axios
       .delete(
-        `https://tup-payroll-default-rtdb.firebaseio.com/positions/${key}.json`
+        `https://tup-payroll-default-rtdb.firebaseio.com/positions/${deleteKey}.json`
       )
       .then(() => {
         let filteredPositions = { ...positions };
-        delete filteredPositions[key];
+        delete filteredPositions[deleteKey];
         setPositions(filteredPositions);
         setIsLoading(false);
 
+        
         setSnackMessage("Success delete!");
         handleSnackOpen();
+        setdeleteKey(null);
       })
       .catch((error) => {
-        console.log(error);
         setIsLoading(false);
       });
   };
@@ -232,7 +244,6 @@ const Position = () => {
 
   return (
     <div>
-      <h1>Positions Screen</h1>
       <Paper>
         <Toolbar>
           <TextField
@@ -261,7 +272,7 @@ const Position = () => {
         <div>
           <Table
             lists={positions}
-            onDeleteRow={handleDelete}
+            onDeleteRow={DeleteOpen}
             onEditRow={handleEdit}
             filterFn={filterFn}
             columns={columnHeads}
@@ -270,6 +281,32 @@ const Position = () => {
           />
         </div>
       </Paper>
+
+      <TransitionsModal handleClose={DeleteClose} isModalOpen={deleteKey ? true : false}>
+        {!isLoading ? (
+          <>
+          Are you sure you want to delete?
+            <Button
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={DeleteClose}
+            >
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <CircularProgress />
+        )}
+      </TransitionsModal>
 
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (

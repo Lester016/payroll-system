@@ -2,20 +2,28 @@ import React, { useState } from "react";
 
 // Material UI
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Table from "@material-ui/core/Table";
-import Button from "@material-ui/core/Button";
+
+import {
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  TableSortLabel,
+  Table,
+  Button,
+} from "@material-ui/core";
+
 import Skeleton from "@material-ui/lab/Skeleton";
 
+<<<<<<< HEAD
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import PrintIcon from "@material-ui/icons/Print";
+=======
+import { Edit, Delete, Print } from "@material-ui/icons";
+>>>>>>> f7d08b82239528b2a3e62851f5fce3f218114932
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -164,7 +172,11 @@ const AppTable = ({
                   size="small"
                   variant="contained"
                   color="primary"
+<<<<<<< HEAD
                   startIcon={<EditIcon />}
+=======
+                  startIcon={<Edit />}
+>>>>>>> f7d08b82239528b2a3e62851f5fce3f218114932
                   onClick={() => onEditRow(item.id)}
                 >
                   Edit
@@ -173,7 +185,11 @@ const AppTable = ({
                   size="small"
                   variant="contained"
                   color="secondary"
+<<<<<<< HEAD
                   startIcon={<DeleteIcon />}
+=======
+                  startIcon={<Delete />}
+>>>>>>> f7d08b82239528b2a3e62851f5fce3f218114932
                   onClick={() => onDeleteRow(item.id)}
                 >
                   Delete
@@ -185,6 +201,7 @@ const AppTable = ({
                   size="small"
                   variant="contained"
                   color="primary"
+<<<<<<< HEAD
                   startIcon={<PrintIcon />}
                   // onClick={() => printPayslip()}
                 >
@@ -199,6 +216,13 @@ const AppTable = ({
                 >
                   Payroll
                 </Button>
+=======
+                  startIcon={<Print />}
+                  onClick={() => printPayslip()}
+                >
+                  Payslip
+                </Button>
+>>>>>>> f7d08b82239528b2a3e62851f5fce3f218114932
               </div>
             )}
           </StyledTableCell>
