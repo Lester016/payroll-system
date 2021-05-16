@@ -1,4 +1,6 @@
 import { Switch, Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { useEffect } from "react";
 
 import "./App.css";
 import Deductions from "./containers/Deductions";
@@ -9,22 +11,35 @@ import Schedules from "./containers/Schedules";
 import Payroll from "./containers/Payroll";
 import Employees from "./containers/Employees";
 import Layout from "./hoc/Layout";
+import PrivateRoute from "./hoc/PrivateRoute";
+import * as actions from "./store/actions";
 
-function App() {
+function App({ onAutoSignup }) {
+  useEffect(() => {
+    onAutoSignup();
+  }, [onAutoSignup]);
+
   return (
     <Switch>
       <Route path="/login/admin" component={Login} />
+
       <Layout>
-        <Route path="/employees" component={Employees} />
-        <Route path="/payroll" component={Payroll} />
-        <Route path="/schedules" component={Schedules} />
-        <Route path="/deductions" component={Deductions} />
-        <Route path="/positions" component={Positions} />
-        <Route path="/" exact component={Home} />
+        <PrivateRoute path="/employees" component={Employees} />
+        <PrivateRoute path="/payroll" component={Payroll} />
+        <PrivateRoute path="/schedules" component={Schedules} />
+        <PrivateRoute path="/deductions" component={Deductions} />
+        <PrivateRoute path="/positions" component={Positions} />
+        <PrivateRoute path="/" exact component={Home} />
         <Redirect to="/" />
       </Layout>
     </Switch>
   );
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAutoSignup: () => dispatch(actions.authCheckState()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(App);
