@@ -26,12 +26,8 @@ const Position = () => {
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-<<<<<<< HEAD
-  const [deleteKey, setdeleteKey] = useState(null);
-=======
   const [deleteKey, setDeleteKey] = useState(null);
 
->>>>>>> c2933e4e70646ac981156630608782d74237ce18
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
