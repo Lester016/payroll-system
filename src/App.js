@@ -13,6 +13,7 @@ import Employees from "./containers/Employees";
 import Layout from "./hoc/Layout";
 import PrivateRoute from "./hoc/PrivateRoute";
 import * as actions from "./store/actions";
+import Logout from "./containers/Logout";
 
 function App({ onAutoSignup }) {
   useEffect(() => {
@@ -21,7 +22,7 @@ function App({ onAutoSignup }) {
 
   return (
     <Switch>
-      <Route path="/login/admin" component={Login} />
+      <Route path="/login" exact component={Login} />
 
       <Layout>
         <PrivateRoute path="/employees" component={Employees} />
@@ -29,6 +30,7 @@ function App({ onAutoSignup }) {
         <PrivateRoute path="/schedules" component={Schedules} />
         <PrivateRoute path="/deductions" component={Deductions} />
         <PrivateRoute path="/positions" component={Positions} />
+        <PrivateRoute path="/logout" component={Logout} />
         <PrivateRoute path="/" exact component={Home} />
         <Redirect to="/" />
       </Layout>

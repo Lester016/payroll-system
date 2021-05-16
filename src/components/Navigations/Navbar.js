@@ -17,6 +17,7 @@ import {
 import { Menu as MenuIcon } from "@material-ui/icons";
 
 import { drawerWidth } from "../../config/layout";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -135,7 +136,9 @@ const Navbar = ({ isOpen, title, handleDrawerOpen }) => {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem component={Link} to={"/logout"}>
+                      Logout
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
