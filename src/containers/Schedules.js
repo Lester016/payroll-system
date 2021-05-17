@@ -20,7 +20,7 @@ const Schedules = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
   const [deleteKey, setDeleteKey] = useState(null);
-  const [filterFn, setFilterFn] = useState({
+  const [filterFn] = useState({
     fn: (items) => {
       return items;
     },

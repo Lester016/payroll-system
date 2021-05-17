@@ -70,9 +70,9 @@ const Position = () => {
     setIsModalOpen(true);
   };
   const handleClose = () => {
-    // Reset to default values.
+    // Reset to default values
     setJobTitle("");
-    setRatePerHour(0);
+    setRatePerHour();
 
     setIsModalOpen(false);
     setIsUpdating(null);

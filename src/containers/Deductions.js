@@ -70,9 +70,9 @@ const Deductions = () => {
     setIsModalOpen(true);
   };
   const handleClose = () => {
-    // Reset to default values.
+    // Reset to default values
     setDeductionTitle("");
-    setAmount(0);
+    setAmount();
 
     setIsModalOpen(false);
     setIsUpdating(null);
