@@ -1,7 +1,13 @@
 import React from "react";
 
+import EmployeeForm from "./EmployeeForm";
+
 function Employees() {
-  return <div></div>;
+  return (
+    <>
+      <EmployeeForm />
+    </>
+  );
 }
 
 export default Employees;
