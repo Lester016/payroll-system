@@ -103,19 +103,19 @@ export default function EmployeeForm() {
 
   const LoadingTUP = (
     <>
-      <Grid item sm={12} md={6} lg={3}>
+      <Grid item xs={12} sm={12} md={6} lg={3}>
         <FormControl disabled>
           <InputLabel>Campus</InputLabel>
           <Select value={campus} onChange={handleCampus}></Select>
         </FormControl>
       </Grid>
-      <Grid item sm={12} md={6} lg={3}>
+      <Grid item xs={12} sm={12} md={6} lg={3}>
         <FormControl disabled>
           <InputLabel>College</InputLabel>
           <Select value={college} onChange={handleCollege}></Select>
         </FormControl>
       </Grid>
-      <Grid item sm={12} md={6} lg={3}>
+      <Grid item xs={12} sm={12} md={6} lg={3}>
         <FormControl disabled>
           <InputLabel>Department</InputLabel>
           <Select value={dept} onChange={handleDept}></Select>
@@ -128,13 +128,13 @@ export default function EmployeeForm() {
     <Container component={Paper} className={classes.root}>
       <Grid container spacing={3}>
         {/*First Row - First Name, Last Name, Gender*/}
-        <Grid item sm={12} md={4}>
+        <Grid item xs={12} sm={12} md={4}>
           <TextField variant="outlined" label="First Name" />
         </Grid>
-        <Grid item sm={12} md={4}>
+        <Grid item xs={12} sm={12} md={4}>
           <TextField variant="outlined" label="Last Name" />
         </Grid>
-        <Grid item sm={12} md={4}>
+        <Grid item xs={12} sm={12} md={4}>
           <FormLabel component="legend">Gender</FormLabel>
           <RadioGroup row name="gender1" value={gender} onChange={handleGender}>
             <FormControlLabel
@@ -151,7 +151,7 @@ export default function EmployeeForm() {
           LoadingTUP
         ) : (
           <>
-            <Grid item sm={12} md={6} lg={3}>
+            <Grid item xs={12} sm={12} md={6} lg={3}>
               <FormControl>
                 <InputLabel>Campus</InputLabel>
                 <Select value={campus.name} onChange={handleCampus}>
@@ -161,7 +161,7 @@ export default function EmployeeForm() {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item sm={12} md={6} lg={3}>
+            <Grid item xs={12} sm={12} md={6} lg={3}>
               {campus.name === "" || campus.idx >= tup.colleges.length ? (
                 <FormControl disabled>
                   <InputLabel>College</InputLabel>
@@ -178,7 +178,7 @@ export default function EmployeeForm() {
                 </FormControl>                
               )}
             </Grid>
-            <Grid item sm={12} md={6} lg={3}>
+            <Grid item xs={12} sm={12} md={6} lg={3}>
             {college.name === "" || (tup.departments[campus.idx] === undefined ? true : college.idx >= tup.departments[campus.idx].length) ? (
                 <FormControl disabled>
                   <InputLabel>Department</InputLabel>
@@ -197,7 +197,7 @@ export default function EmployeeForm() {
             </Grid>
           </>
         )}
-        <Grid item sm={12} md={6} lg={3}>
+        <Grid item xs={12} sm={12} md={6} lg={3}>
           <FormLabel component="legend">Type</FormLabel>
           <RadioGroup row name="type1" value={type} onChange={handleType}>
             <FormControlLabel
@@ -214,13 +214,13 @@ export default function EmployeeForm() {
         </Grid>
 
         {/*Third Row - Address, Contact Info, Birthday*/}
-        <Grid item sm={12} md={6}>
+        <Grid item xs={12} sm={12} md={6}>
           <TextField variant="outlined" label="Address" />
         </Grid>
-        <Grid item sm={12} md={3}>
+        <Grid item xs={12} sm={12} md={3}>
           <TextField variant="outlined" label="Contact Number" />
         </Grid>
-        <Grid item sm={12} md={3}>
+        <Grid item xs={12} sm={12} md={3}>
           <TextField
             label="Birth Date"
             type="date"
@@ -231,7 +231,7 @@ export default function EmployeeForm() {
         </Grid>
 
         {/*Fourth Row - Address, Contact Info*/}
-        <Grid item sm={12} md={4}>
+        <Grid item xs={12} sm={12} md={4}>
           <InputLabel>Position</InputLabel>
           <Select value={position} onChange={handlePosition}>
             <MenuItem value="Assistant Professor I">
@@ -239,7 +239,7 @@ export default function EmployeeForm() {
             </MenuItem>
           </Select>
         </Grid>
-        <Grid item sm={12} md={4}>
+        <Grid item xs={12} sm={12} md={4}>
           <Typography>
             <NumberFormat
               value={salary}
