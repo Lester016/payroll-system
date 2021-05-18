@@ -2,21 +2,25 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import NumberFormat from "react-number-format";
 
-import Container from "@material-ui/core/Container";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
+import {
+  Container,
+  Paper,
+  Grid,
+  TextField,
+  Typography,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  InputLabel,
+  Select,
+  MenuItem,
+  Fab,
+  Chip,
+} from "@material-ui/core";
 
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormLabel from "@material-ui/core/FormLabel";
-
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
+import AddIcon from "@material-ui/icons/Add";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -33,49 +37,57 @@ const useStyle = makeStyles((theme) => ({
   fullWidth: {
     width: "100%",
   },
+  chipsContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
+    "& > *": {
+      margin: theme.spacing(0.5),
+    },
+  },
 }));
 
 export default function EmployeeForm() {
   const classes = useStyle();
 
   const [isFetching, setIsFetching] = useState(false);
+  const [tup, setTUP] = useState({});
   const [gender, setGender] = useState("male");
+  const [type, setType] = useState("regular");
+  const [position, setPosition] = useState("");
+  const [salary, setSalary] = useState(0);
   const [campus, setCampus] = useState({
-      name: "",
-      idx: -1,
+    name: "",
+    idx: -1,
   });
   const [college, setCollege] = useState({
     name: "",
     idx: -1,
-});
+  });
   const [dept, setDept] = useState({
     name: "",
     idx: -1,
-});
-  const [type, setType] = useState("regular");
-  const [position, setPosition] = useState("");
-  const [salary, setSalary] = useState(0);
-  const [tup, setTUP] = useState({});
+  });
 
   const handleGender = (event) => {
     setGender(event.target.value);
   };
   const handleCampus = (event) => {
     setCampus({
-        name: event.target.value,
-        idx: tup.campuses.indexOf(event.target.value)
+      name: event.target.value,
+      idx: tup.campuses.indexOf(event.target.value),
     });
   };
   const handleCollege = (event) => {
     setCollege({
-        name: event.target.value,
-        idx: tup.colleges[campus.idx].indexOf(event.target.value),
+      name: event.target.value,
+      idx: tup.colleges[campus.idx].indexOf(event.target.value),
     });
   };
   const handleDept = (event) => {
     setDept({
-        name: event.target.value,
-        idx: tup.departments[campus.idx][college.idx].indexOf(event.target.value),
+      name: event.target.value,
+      idx: tup.departments[campus.idx][college.idx].indexOf(event.target.value),
     });
   };
   const handleType = (event) => {
@@ -84,6 +96,13 @@ export default function EmployeeForm() {
   const handlePosition = (event) => {
     setPosition(event.target.value);
     setSalary("");
+  };
+
+  const handleChipClick = () => {
+    console.info("You clicked the Chip.");
+  };
+  const handleChipDelete = () => {
+    console.info("You clicked the delete icon.");
   };
 
   // Get positions in the database
@@ -123,6 +142,17 @@ export default function EmployeeForm() {
       </Grid>
     </>
   );
+
+  let DummyChips = [];
+  for (let i = 0; i < 8; i++) {
+    DummyChips.push(
+      <Chip
+        label="Clickable deletable"
+        onClick={handleChipClick}
+        onDelete={handleChipDelete}
+      />
+    );
+  }
 
   return (
     <Container component={Paper} className={classes.root}>
@@ -165,7 +195,10 @@ export default function EmployeeForm() {
               {campus.name === "" || campus.idx >= tup.colleges.length ? (
                 <FormControl disabled>
                   <InputLabel>College</InputLabel>
-                  <Select value={college.name} onChange={handleCollege}></Select>
+                  <Select
+                    value={college.name}
+                    onChange={handleCollege}
+                  ></Select>
                 </FormControl>
               ) : (
                 <FormControl>
@@ -175,11 +208,14 @@ export default function EmployeeForm() {
                       <MenuItem value={item}>{item}</MenuItem>
                     ))}
                   </Select>
-                </FormControl>                
+                </FormControl>
               )}
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={3}>
-            {college.name === "" || (tup.departments[campus.idx] === undefined ? true : college.idx >= tup.departments[campus.idx].length) ? (
+              {college.name === "" ||
+              (tup.departments[campus.idx] === undefined
+                ? true
+                : college.idx >= tup.departments[campus.idx].length) ? (
                 <FormControl disabled>
                   <InputLabel>Department</InputLabel>
                   <Select value={dept.name} onChange={handleDept}></Select>
@@ -248,6 +284,15 @@ export default function EmployeeForm() {
               prefix="₱"
             />
           </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper elevation={4}>
+            <Typography variant="h6">Deductions</Typography>{" "}
+            <Fab color="primary" aria-label="add">
+              <AddIcon />
+            </Fab>
+            <div className={classes.chipsContainer}>{DummyChips}</div>
+          </Paper>
         </Grid>
       </Grid>
     </Container>
