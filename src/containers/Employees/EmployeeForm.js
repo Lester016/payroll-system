@@ -167,20 +167,10 @@ export default function EmployeeForm() {
   const LoadingTUP = (
     <>
       <Grid item xs={12} sm={12} md={6} lg={3}>
-        <Select
-          name="campus"
-          label="Campus"
-          value=""
-          isDisabled={true}
-        />
+        <Select name="campus" label="Campus" value="" isDisabled={true} />
       </Grid>
       <Grid item xs={12} sm={12} md={6} lg={3}>
-        <Select
-          name="college"
-          label="College"
-          value=""
-          isDisabled={true}
-        />
+        <Select name="college" label="College" value="" isDisabled={true} />
       </Grid>
       <Grid item xs={12} sm={12} md={6} lg={3}>
         <Select
@@ -372,11 +362,19 @@ export default function EmployeeForm() {
         {/*Bottom Part - Deductions*/}
         <Grid item xs={12}>
           <Paper elevation={4}>
-            <Typography variant="h6">Deductions</Typography>{" "}
-            <Fab color="primary" aria-label="add">
-              <AddIcon />
-            </Fab>
-            <div className={classes.chipsContainer}>{DummyChips}</div>
+            <Grid container alignItems="center">
+              <Grid item>
+                <Typography variant="h6">Deductions</Typography>
+              </Grid>
+              <Grid item>
+                <Fab color="primary" aria-label="add">
+                  <AddIcon />
+                </Fab>
+              </Grid>
+              <Grid item xs={12}>
+                <div className={classes.chipsContainer}>{DummyChips}</div>
+              </Grid>
+            </Grid>
           </Paper>
         </Grid>
       </Grid>
