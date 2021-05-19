@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import NumberFormat from "react-number-format";
-
+import AddIcon from "@material-ui/icons/Add";
+import { KeyboardDatePicker } from "@material-ui/pickers";
 import {
   Container,
   Paper,
@@ -9,10 +10,8 @@ import {
   Typography,
   Fab,
   Chip,
+  makeStyles,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-import { KeyboardDatePicker } from "@material-ui/pickers";
 
 import TextField from "../../components/TextField";
 import RadioGroup from "../../components/RadioGroup";
@@ -83,27 +82,16 @@ export default function EmployeeForm() {
   // Get tup in the database
   useEffect(() => {
     setIsFetching(true);
+    let url = "https://tup-payroll-default-rtdb.firebaseio.com";
     axios
-      .get("https://tup-payroll-default-rtdb.firebaseio.com/tup.json")
-      .then((response) => {
-        setTUP(response.data);
-        setIsFetching(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsFetching(false);
-      });
-  }, []);
-
-  // Get positions in the database
-  useEffect(() => {
-    setIsFetching(true);
-    axios
-      .get("https://tup-payroll-default-rtdb.firebaseio.com/positions.json")
-      .then((response) => {
-        setPositions(response.data);
-        setIsFetching(false);
-      })
+      .all([axios.get(`${url}/tup.json`), axios.get(`${url}/positions.json`)])
+      .then(
+        axios.spread((...responses) => {
+          setTUP(responses[0].data);
+          setPositions(responses[1].data);
+          setIsFetching(false);
+        })
+      )
       .catch((error) => {
         console.log(error);
         setIsFetching(false);
@@ -143,9 +131,11 @@ export default function EmployeeForm() {
       },
     });
   };
+
   const handleType = (event) => {
     setValues({ ...values, type: event.target.value });
   };
+
   const handlePosition = (event) => {
     const foundPosition = Object.values(positions).find(
       (x) => x.title === event.target.value
@@ -156,6 +146,7 @@ export default function EmployeeForm() {
       salary: foundPosition.rate,
     });
   };
+
   // Deduction Chip Handles
   const handleChipClick = () => {
     console.info("You clicked the Chip.");
