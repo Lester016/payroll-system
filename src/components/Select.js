@@ -5,14 +5,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-export default function Select({
-  name,
-  label,
-  value,
-  onChange,
-  isDisabled,
-  options,
-}) {
+const Select = ({ name, label, value, onChange, isDisabled, options }) => {
   return (
     <FormControl disabled={isDisabled}>
       <InputLabel>{label}</InputLabel>
@@ -32,4 +25,6 @@ export default function Select({
       </MaterialSelect>
     </FormControl>
   );
-}
+};
+
+export default Select;
