@@ -8,7 +8,6 @@ export default function TextField({
   onChange,
   ...other
 }) {
-
   return (
     <MaterialTextField
       variant={variant}

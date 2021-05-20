@@ -5,7 +5,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-export function Select({
+export default function Select({
   name,
   label,
   value,

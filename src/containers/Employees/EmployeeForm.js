@@ -135,7 +135,7 @@ export default function EmployeeForm() {
       },
     });
   };
-  
+
   const handleType = (event) => {
     setValues({ ...values, type: event.target.value });
   };
@@ -155,7 +155,7 @@ export default function EmployeeForm() {
   const handleChipClick = () => {
     console.info("You clicked the Chip.");
   };
-  
+
   const handleChipDelete = () => {
     console.info("You clicked the delete icon.");
   };
