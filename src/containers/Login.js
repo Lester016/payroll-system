@@ -3,11 +3,8 @@ import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
-import Grid from '@material-ui/core/Grid';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import TUPgif from '../asset/TUPgif.gif';
 import TUP_LOGO from '../asset/TUP_LOGO.png';
-// Material UI
 import {
   Button,
   Paper,
@@ -15,6 +12,9 @@ import {
   InputAdornment,
   makeStyles,
   TextField,
+  Typography,
+  CircularProgress,
+  Grid,
 } from "@material-ui/core";
 import {
   Lock as LockIcon,
@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = ({ login, isAuthenticated, loading }) => {
+const Login = ({ login, isAuthenticated, loading, error }) => {
   // Validations Schema.
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required().label("Email"),
@@ -77,9 +77,11 @@ const Login = ({ login, isAuthenticated, loading }) => {
 
   const [showPassword, setShowPassword] = useState(false);
   const classes = useStyles();
+
   if (isAuthenticated) {
     return <Redirect to="/" />;
   }
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
