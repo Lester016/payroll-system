@@ -9,7 +9,7 @@ import Login from "./containers/Login";
 import Positions from "./containers/Positions";
 import Schedules from "./containers/Schedules";
 import Payroll from "./containers/Payroll";
-import Employees from "./containers/Employees";
+import Employees from "./containers/Employees/Employees";
 import Layout from "./hoc/Layout";
 import PrivateRoute from "./hoc/PrivateRoute";
 import * as actions from "./store/actions";
