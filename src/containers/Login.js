@@ -3,6 +3,10 @@ import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
+import Grid from '@material-ui/core/Grid';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import TUPgif from '../asset/TUPgif.gif';
+import TUP_LOGO from '../asset/TUP_LOGO.png';
 // Material UI
 import {
   Button,
@@ -21,18 +25,25 @@ import {
 
 import * as actions from "../store/actions";
 
-const useStyles = makeStyles({
-  container: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    marginTop: 100,
+const useStyles = makeStyles((theme) => ({
+  root: {
+    height: '85vh',
   },
-
-  paper: {
-    textAlign: "center",
-    width: 450,
+  image: {
+    backgroundImage: "url("+ TUPgif +")",
+    backgroundRepeat: 'no-repeat',
+    backgroundColor:
+      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  },
+  form: {
+    // textAlign: "center",
+    // width: 450,
+    margin: theme.spacing(6, 4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   field: {
     marginTop: 30,
@@ -41,11 +52,21 @@ const useStyles = makeStyles({
   },
   button: {
     marginTop: 20,
-    marginBottom: 30,
-    width: "20%",
-    minWidth: 100,
+    backgroundColor: '#bf1d38',
+    '&:hover': {
+      backgroundColor: '#a6172f',
+    },
+    
   },
-});
+  paper: {
+    marginTop: '40px',
+    margin: theme.spacing(8),
+  },
+  progressBar:{
+    color: '#bf1d38',
+    marginTop: 10,
+  },
+}));
 
 const Login = ({ login, isAuthenticated, loading }) => {
   // Validations Schema.
@@ -68,80 +89,87 @@ const Login = ({ login, isAuthenticated, loading }) => {
   };
 
   return (
-    <Formik
-      initialValues={{ email: "", password: "" }}
-      validationSchema={LoginSchema}
-      onSubmit={(values) => {
-        login(values.email, values.password);
-      }}
-    >
-      {({ touched, errors }) => (
-        <Form className={classes.container}>
-          <Paper className={classes.paper}>
-            <h1>Login Screen</h1>
-            <Field
-              as={TextField}
-              type="email"
-              name="email"
-              variant="outlined"
-              label="Email"
-              className={classes.field}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <PersonOutlineIcon />
-                  </InputAdornment>
-                ),
-              }}
-              error={touched.email && errors.email !== undefined}
-              helperText={touched.email && errors.email}
-            />
+    <Paper className={classes.paper} elevation={20}>
+      <Grid container component="main" className={classes.root}>
+        
+        <Grid item xs={false} sm={true} md={7} className={classes.image} />
+        <Grid item xs={12} sm={12} md={5} component={Paper} elevation={0}>
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={LoginSchema}
+          onSubmit={(values) => {
+            login(values.email, values.password);
+          }}
+        >
+          {({ touched, errors }) => (
+            <Form className={classes.form}>
+                <img src={TUP_LOGO} alt="logo" width='100'></img>
+                <h1>Welcome back!</h1>
+                <Field
+                  as={TextField}
+                  type="email"
+                  name="email"
+                  variant="outlined"
+                  label="Email"
+                  className={classes.field}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <PersonOutlineIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={touched.email && errors.email !== undefined}
+                  helperText={touched.email && errors.email}
+                />
 
-            <Field
-              type={showPassword ? "text" : "password"}
-              name="password"
-              as={TextField}
-              variant="outlined"
-              label="Password"
-              className={classes.field}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                    >
-                      {showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                    <LockIcon />
-                  </InputAdornment>
-                ),
-              }}
-              error={touched.password && errors.password !== undefined}
-              helperText={touched.password && errors.password}
-            />
-            {loading ? (
-              <h1>Loading</h1>
-            ) : (
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                disableElevation
-                className={classes.button}
-              >
-                Sign in
-              </Button>
-            )}
-          </Paper>
-        </Form>
-      )}
-    </Formik>
+                <Field
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  as={TextField}
+                  variant="outlined"
+                  label="Password"
+                  className={classes.field}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {showPassword ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </IconButton>
+                        <LockIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  error={touched.password && errors.password !== undefined}
+                  helperText={touched.password && errors.password}
+                />
+                {loading ? (
+                  <CircularProgress className={classes.progressBar}/>
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disableElevation
+                    className={classes.button}
+                  >
+                    Sign in
+                  </Button>
+                )}
+            </Form>
+          )}
+        </Formik>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };
 
