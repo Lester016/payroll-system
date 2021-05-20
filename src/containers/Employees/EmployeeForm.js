@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import NumberFormat from "react-number-format";
 
 import {
+  makeStyles,
   Container,
   Paper,
   Grid,
@@ -10,7 +11,6 @@ import {
   Fab,
   Chip,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 
@@ -83,37 +83,27 @@ export default function EmployeeForm() {
   // Get tup in the database
   useEffect(() => {
     setIsFetching(true);
+    let url = "https://tup-payroll-default-rtdb.firebaseio.com";
     axios
-      .get("https://tup-payroll-default-rtdb.firebaseio.com/tup.json")
-      .then((response) => {
-        setTUP(response.data);
-        setIsFetching(false);
-      })
+      .all([axios.get(`${url}/tup.json`), axios.get(`${url}/positions.json`)])
+      .then(
+        axios.spread((...response) => {
+          setTUP(response[0].data);
+          setPositions(response[1].data);
+          setIsFetching(false);
+        })
+      )
       .catch((error) => {
         console.log(error);
         setIsFetching(false);
       });
   }, []);
 
-  // Get positions in the database
-  useEffect(() => {
-    setIsFetching(true);
-    axios
-      .get("https://tup-payroll-default-rtdb.firebaseio.com/positions.json")
-      .then((response) => {
-        setPositions(response.data);
-        setIsFetching(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsFetching(false);
-      });
-  }, []);
-
-  // Employee Form Handles
+  // EMPLOYEE FORM HANDLES
   const handleGender = (event) => {
     setValues({ ...values, gender: event.target.value });
   };
+
   const handleCampus = (event) => {
     setValues({
       ...values,
@@ -123,6 +113,7 @@ export default function EmployeeForm() {
       },
     });
   };
+
   const handleCollege = (event) => {
     setValues({
       ...values,
@@ -132,6 +123,7 @@ export default function EmployeeForm() {
       },
     });
   };
+
   const handleDept = (event) => {
     setValues({
       ...values,
@@ -143,9 +135,11 @@ export default function EmployeeForm() {
       },
     });
   };
+  
   const handleType = (event) => {
     setValues({ ...values, type: event.target.value });
   };
+
   const handlePosition = (event) => {
     const foundPosition = Object.values(positions).find(
       (x) => x.title === event.target.value
@@ -156,10 +150,12 @@ export default function EmployeeForm() {
       salary: foundPosition.rate,
     });
   };
-  // Deduction Chip Handles
+
+  // DEDUCTION CHIP HANDLES
   const handleChipClick = () => {
     console.info("You clicked the Chip.");
   };
+  
   const handleChipDelete = () => {
     console.info("You clicked the delete icon.");
   };

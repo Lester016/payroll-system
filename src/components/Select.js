@@ -5,28 +5,31 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-export default function Select(props) {
-  const { name, label, value="", onChange, isDisabled ,options} = props;
-
+export function Select({
+  name,
+  label,
+  value,
+  onChange,
+  isDisabled,
+  options,
+}) {
   return (
-    <>
-      <FormControl disabled={isDisabled}>
-        <InputLabel>{label}</InputLabel>
-        <MaterialSelect
-          label={label}
-          name={name}
-          value={value}
-          defaultValue=""
-          onChange={onChange}
-        >
-          {options &&
-            options.map((item) => (
-              <MenuItem key={item.toLowerCase()} value={item}>
-                {item}
-              </MenuItem>
-            ))}
-        </MaterialSelect>
-      </FormControl>
-    </>
+    <FormControl disabled={isDisabled}>
+      <InputLabel>{label}</InputLabel>
+      <MaterialSelect
+        label={label}
+        name={name}
+        value={value}
+        defaultValue=""
+        onChange={onChange}
+      >
+        {options &&
+          options.map((item) => (
+            <MenuItem key={item.toLowerCase()} value={item}>
+              {item}
+            </MenuItem>
+          ))}
+      </MaterialSelect>
+    </FormControl>
   );
 }
