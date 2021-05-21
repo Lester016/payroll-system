@@ -3,18 +3,20 @@ import {
   InputLabel,
   Select as MaterialSelect,
   MenuItem,
+  FormHelperText,
 } from "@material-ui/core";
 
-export default function Select({
+const Select = ({
   name,
   label,
   value,
   onChange,
   isDisabled,
+  error = null,
   options,
-}) {
+}) => {
   return (
-    <FormControl disabled={isDisabled}>
+    <FormControl disabled={isDisabled} {...(error && { error: true })}>
       <InputLabel>{label}</InputLabel>
       <MaterialSelect
         label={label}
@@ -30,6 +32,9 @@ export default function Select({
             </MenuItem>
           ))}
       </MaterialSelect>
+      {error && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   );
-}
+};
+
+export default Select;

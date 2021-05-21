@@ -6,7 +6,7 @@ import {
   FormLabel,
 } from "@material-ui/core";
 
-export default function RadioGroup({ name, label, value, onChange, items }) {
+const RadioGroup = ({ name, label, value, onChange, items }) => {
   return (
     <FormControl>
       <FormLabel>{label}</FormLabel>
@@ -22,4 +22,6 @@ export default function RadioGroup({ name, label, value, onChange, items }) {
       </MaterialRadioGroup>
     </FormControl>
   );
-}
+};
+
+export default RadioGroup;

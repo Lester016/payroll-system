@@ -5,9 +5,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
-export default function Snack(props) {
-  const { open, message, handleClose } = props;
-
+const Snack = ({ open, message, handleClose }) => {
   return (
     <Snackbar
       anchorOrigin={{
@@ -35,4 +33,6 @@ export default function Snack(props) {
       }
     />
   );
-}
+};
+
+export default Snack;
