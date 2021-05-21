@@ -35,7 +35,7 @@ const useStyle = makeStyles((theme) => ({
       margin: theme.spacing(0.5),
     },
   },
-  test: {
+  button: {
     margin: theme.spacing(0, 1),
   },
 }));
@@ -98,7 +98,6 @@ export default function EmployeeForm() {
         })
       )
       .catch((error) => {
-        console.log(error);
         setIsFetching(false);
       });
   }, []);
@@ -170,8 +169,12 @@ export default function EmployeeForm() {
   // FORM VALIDATION
   const validate = (fieldValues = values) => {
     let temp = {};
-    temp.firstName = (/^[a-z ,.'-]+$/i).test(fieldValues.firstName.trim()) ? "" : "This field is required.";
-    temp.lastName = (/^[a-z ,.'-]+$/i).test(fieldValues.lastName.trim()) ? "" : "This field is required.";
+    temp.firstName = /^[a-z ,.'-]+$/i.test(fieldValues.firstName.trim())
+      ? ""
+      : "This field is required.";
+    temp.lastName = /^[a-z ,.'-]+$/i.test(fieldValues.lastName.trim())
+      ? ""
+      : "This field is required.";
     temp.campus = fieldValues.campus.name ? "" : "This field is required.";
     temp.college = fieldValues.college.name ? "" : "This field is required.";
     temp.dept = fieldValues.dept.name ? "" : "This field is required.";
@@ -413,7 +416,7 @@ export default function EmployeeForm() {
             color="primary"
             startIcon={<AddIcon />}
             onClick={handleSubmit}
-            className={classes.test}
+            className={classes.button}
           >
             Create New
           </Button>
@@ -423,7 +426,7 @@ export default function EmployeeForm() {
             color="secondary"
             startIcon={<AddIcon />}
             onClick={handleReset}
-            className={classes.test}
+            className={classes.button}
           >
             Reset
           </Button>
