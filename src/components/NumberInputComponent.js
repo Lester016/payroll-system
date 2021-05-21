@@ -1,8 +1,6 @@
 import NumberFormat from "react-number-format";
 
-const NumberInputComponent = (props) => {
-  const { inputRef, onChange, ...other } = props;
-
+const NumberInputComponent = ({ inputRef, onChange, name, ...other }) => {
   return (
     <NumberFormat
       {...other}
@@ -10,7 +8,7 @@ const NumberInputComponent = (props) => {
       onValueChange={(values) => {
         onChange({
           target: {
-            name: props.name,
+            name: name,
             value: values.value,
           },
         });

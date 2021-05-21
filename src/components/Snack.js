@@ -5,7 +5,9 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
-const Snack = ({ open, message, handleClose }) => {
+const Snack = (props) => {
+  const { open, message, handleClose } = props;
+
   return (
     <Snackbar
       anchorOrigin={{
