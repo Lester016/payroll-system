@@ -170,8 +170,8 @@ export default function EmployeeForm() {
   // FORM VALIDATION
   const validate = (fieldValues = values) => {
     let temp = {};
-    temp.firstName = fieldValues.firstName ? "" : "This field is required.";
-    temp.lastName = fieldValues.lastName ? "" : "This field is required.";
+    temp.firstName = (/^[a-z ,.'-]+$/i).test(fieldValues.firstName.trim()) ? "" : "This field is required.";
+    temp.lastName = (/^[a-z ,.'-]+$/i).test(fieldValues.lastName.trim()) ? "" : "This field is required.";
     temp.campus = fieldValues.campus.name ? "" : "This field is required.";
     temp.college = fieldValues.college.name ? "" : "This field is required.";
     temp.dept = fieldValues.dept.name ? "" : "This field is required.";
