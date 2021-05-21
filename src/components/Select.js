@@ -3,11 +3,12 @@ import {
   InputLabel,
   Select as MaterialSelect,
   MenuItem,
+  FormHelperText,
 } from "@material-ui/core";
 
-const Select = ({ name, label, value, onChange, isDisabled, options }) => {
+const Select = ({ name, label, value, onChange, isDisabled, error = null, options }) => {
   return (
-    <FormControl disabled={isDisabled}>
+    <FormControl disabled={isDisabled} {...(error && { error: true })}>
       <InputLabel>{label}</InputLabel>
       <MaterialSelect
         label={label}
@@ -23,6 +24,7 @@ const Select = ({ name, label, value, onChange, isDisabled, options }) => {
             </MenuItem>
           ))}
       </MaterialSelect>
+      {error && <FormHelperText>{error}</FormHelperText>}
     </FormControl>
   );
 };
