@@ -254,7 +254,7 @@ export default function Home() {
       <h1>Welcome, Admin!</h1>
       <Grid container spacing={3}>
         {/* GENDER CHART */}
-        <Grid item xs={12} xs={12} sm={10} md={4}>
+        <Grid item xs={12} sm={10} md={4}>
           <Card className={classes.chart}>
             <div className={classes.left} style={{ position: "relative" }}>
               <Doughnut data={genderData} options={genderConfig} />
@@ -262,7 +262,7 @@ export default function Home() {
           </Card>
         </Grid>
         {/* PAYROLL CHART */}
-        <Grid item xs={12} xs={12} sm={10} md={4}>
+        <Grid item xs={12} sm={10} md={4}>
           <Card className={classes.chart}>
             <div className={classes.left} style={{ position: "relative" }}>
               <Doughnut data={budgetData} options={budgetConfig} />
@@ -270,7 +270,7 @@ export default function Home() {
           </Card>
         </Grid>
         {/* POSITION CHART */}
-        <Grid item xs={12} xs={12} sm={10} md={4}>
+        <Grid item xs={12} sm={10} md={4}>
           <Card className={classes.chart}>
             <div className={classes.left} style={{ position: "relative" }}>
               <Doughnut data={positionData} options={positionConfig} />
