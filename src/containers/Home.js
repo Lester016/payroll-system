@@ -1,8 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Card from "@material-ui/core/Card";
-import Grid from "@material-ui/core/Grid";
+import { Card, Grid } from "@material-ui/core";
 
 import { Doughnut, Bar } from "react-chartjs-2";
 
@@ -28,7 +27,7 @@ const genderConfig = {
   plugins: {
     title: {
       display: true,
-      text: "GENDER",
+      text: "GENDER DISTRIBUTION",
       font: {
         size: 20,
       },
@@ -67,7 +66,12 @@ const positionData = {
         position[2].employeeCount,
         position[3].employeeCount,
       ],
-      backgroundColor: ["red", "blue", "green", "gray"],
+      backgroundColor: [
+        "rgb(255, 99, 132)",
+        "rgb(54, 162, 235)",
+        "rgb(255, 205, 86)",
+        "rgb(150, 26, 222)",
+      ],
       hoverOffset: 4,
     },
   ],
@@ -92,7 +96,7 @@ const positionConfig = {
   },
 };
 
-// BUDGET SET UP FOR BUDGET CHART
+// PAYROLL BUDGET SET UP FOR BUDGET CHART
 const budget = [
   { campus: "TUP-Manila", payroll: 3500200 },
   { campus: "TUP-Taguig", payroll: 2600600 },
@@ -131,7 +135,7 @@ const budgetConfig = {
   plugins: {
     title: {
       display: true,
-      text: "PAYROLL BUDGET FOR TUP CAMPUSES",
+      text: "PAYROLL BUDGET",
       font: {
         size: 20,
       },
@@ -148,16 +152,23 @@ const budgetConfig = {
 
 // COLLEGE SET UP FOR COLLEGE CHART
 const college = [
-  { department: "College of Science", employees: 350 },
-  { department: "College of Architecture and Fine Arts", employees: 100 },
-  { department: "College of Liberal Arts", employees: 120 },
-  { department: "College of Industrial Technology", employees: 100 },
-  { department: "College of Engineering", employees: 150 },
-  { department: "College of Industrial Education", employees: 120 },
+  { department: "COS", employees: 350 },
+  { department: "CAFA", employees: 100 },
+  { department: "CLA", employees: 120 },
+  { department: "CIT", employees: 100 },
+  { department: "COE", employees: 150 },
+  { department: "CIE", employees: 120 },
 ];
 
 const collegeData = {
-  labels: ["COS", "CAFA", "CLA", "CIT", "COE", "CIE"],
+  labels: [
+    college[0].department,
+    college[1].department,
+    college[2].department,
+    college[3].department,
+    college[4].department,
+    college[5].department,
+  ],
   datasets: [
     {
       data: [
@@ -168,8 +179,23 @@ const collegeData = {
         college[4].employees,
         college[5].employees,
       ],
-      backgroundColor: ["red", "green", "blue", "orange", "yellow", "gray"],
-      borderColor: ["red", "green", "blue", "orange", "yellow", "gray"],
+      backgroundColor: [
+        "#FF4C4C",
+        "#3DCC3D",
+        "#4C4CFF",
+        "#FFC04C",
+        "#FFFF4C",
+        "#CCCCCC",
+      ],
+
+      borderColor: [
+        "#FF0000",
+        "#008000",
+        "#0000FF",
+        "#FFA500",
+        "#FFFF00",
+        "#808080",
+      ],
       borderWidth: 1,
     },
   ],
@@ -177,9 +203,12 @@ const collegeData = {
 
 const collegeConfig = {
   plugins: {
+    legend: {
+      display: false,
+    },
     title: {
       display: true,
-      text: "EMPLOYEE DISTRIBUTION",
+      text: "EMPLOYEE DISTRIBUTION AMONG DEPARTMENTS",
       font: {
         size: 20,
       },
@@ -232,7 +261,6 @@ export default function Home() {
             </div>
           </Card>
         </Grid>
-
         {/* PAYROLL CHART */}
         <Grid item xs={12} xs={12} sm={10} md={4}>
           <Card className={classes.chart}>
@@ -241,7 +269,6 @@ export default function Home() {
             </div>
           </Card>
         </Grid>
-
         {/* POSITION CHART */}
         <Grid item xs={12} xs={12} sm={10} md={4}>
           <Card className={classes.chart}>
