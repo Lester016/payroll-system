@@ -35,7 +35,7 @@ const useStyle = makeStyles((theme) => ({
       margin: theme.spacing(0.5),
     },
   },
-  test: {
+  button: {
     margin: theme.spacing(0, 1),
   },
 }));
@@ -175,10 +175,9 @@ export default function EmployeeForm() {
     temp.campus = fieldValues.campus.name ? "" : "This field is required.";
     temp.college = fieldValues.college.name ? "" : "This field is required.";
     temp.dept = fieldValues.dept.name ? "" : "This field is required.";
-    temp.email = /^[^\s@]+@[^\s@]+$/.test(fieldValues.email)
+    temp.email = (/\S+@\S+\.\S+/).test(fieldValues.email.trim())
       ? ""
       : "Email adress is invalid.";
-    console.log(temp.email);
     temp.contactInfo =
       fieldValues.contactInfo.length === 11
         ? ""
@@ -413,7 +412,7 @@ export default function EmployeeForm() {
             color="primary"
             startIcon={<AddIcon />}
             onClick={handleSubmit}
-            className={classes.test}
+            className={classes.button}
           >
             Create New
           </Button>
@@ -423,7 +422,7 @@ export default function EmployeeForm() {
             color="secondary"
             startIcon={<AddIcon />}
             onClick={handleReset}
-            className={classes.test}
+            className={classes.button}
           >
             Reset
           </Button>
