@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import set from "date-fns/set/index.js";
-import { Button, Paper, Toolbar, CircularProgress } from "@material-ui/core";
+import { Button, Paper, Toolbar, CircularProgress, makeStyles } from "@material-ui/core";
 import { TimePicker } from "@material-ui/pickers";
-import { Add as AddIcon } from "@material-ui/icons";
+import { Add as AddIcon , Delete, Cancel} from "@material-ui/icons";
 
 import TransitionsModal from "../components/Modal";
 import Table from "../components/Table";
@@ -25,6 +25,14 @@ const Schedules = () => {
       return items;
     },
   });
+
+  const useStyles= makeStyles(theme=>({
+    root:{
+      margin:theme.spacing(1)
+    }
+  }));
+
+  const classes = useStyles();
 
   const columnHeads = [
     {
@@ -262,12 +270,16 @@ const Schedules = () => {
       >
         {!isLoading ? (
           <>
-            Are you sure you want to delete?
+          <center>
+            <h4> Are you sure you want to delete that?</h4>
             <Button
               variant="contained"
               size="small"
               color="secondary"
               onClick={handleDelete}
+              text-align="center"
+              startIcon={<Delete/>}
+              classes={{root: classes.root}}
             >
               Delete
             </Button>
@@ -276,9 +288,11 @@ const Schedules = () => {
               size="small"
               color="primary"
               onClick={DeleteClose}
+              startIcon={<Cancel/>}
             >
               Cancel
             </Button>
+          </center>
           </>
         ) : (
           <CircularProgress />

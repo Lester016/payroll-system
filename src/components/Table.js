@@ -30,7 +30,7 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const StyledTableRow = withStyles((theme) => ({
+const StyledTableRow = withStyles(theme=> ({
   root: {
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
@@ -38,7 +38,10 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme=>({
+  root:{
+    margin:theme.spacing(1)
+  },
   table: {
     minWidth: 700,
   },
@@ -53,7 +56,7 @@ const useStyles = makeStyles({
     top: 20,
     width: 1,
   },
-});
+}));
 
 const AppTable = ({
   lists,
@@ -179,6 +182,7 @@ const AppTable = ({
                   color="primary"
                   startIcon={<Edit />}
                   onClick={() => onEditRow(item.id)}
+                  classes={{root: classes.root}}
                 >
                   Edit
                 </Button>
