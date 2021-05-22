@@ -7,7 +7,6 @@ import Deductions from "./containers/Deductions";
 import Home from "./containers/Home";
 import Login from "./containers/Login";
 import Positions from "./containers/Positions";
-import Schedules from "./containers/Schedules";
 import Payroll from "./containers/Payroll";
 import Employees from "./containers/Employees/Employees";
 import Layout from "./hoc/Layout";
@@ -27,7 +26,6 @@ function App({ onAutoSignup }) {
       <Layout>
         <PrivateRoute path="/employees" component={Employees} />
         <PrivateRoute path="/payroll" component={Payroll} />
-        <PrivateRoute path="/schedules" component={Schedules} />
         <PrivateRoute path="/deductions" component={Deductions} />
         <PrivateRoute path="/positions" component={Positions} />
         <PrivateRoute path="/logout" component={Logout} />
