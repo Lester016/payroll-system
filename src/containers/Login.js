@@ -3,8 +3,8 @@ import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
-import TUPgif from '../asset/TUPgif.gif';
-import TUP_LOGO from '../asset/TUP_LOGO.png';
+import TUPGif from '../asset/TUPGif.gif';
+import TUPLogo from '../asset/TUPLogo.png';
 import {
   Button,
   Paper,
@@ -30,12 +30,13 @@ const useStyles = makeStyles((theme) => ({
     height: '85vh',
   },
   image: {
-    backgroundImage: "url("+ TUPgif +")",
+    backgroundImage: "url("+ TUPGif +")",
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+    borderRadius: '3px',
   },
   form: {
     // textAlign: "center",
@@ -105,7 +106,7 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
         >
           {({ touched, errors }) => (
             <Form className={classes.form}>
-                <img src={TUP_LOGO} alt="logo" width='100'></img>
+                <img src={TUPLogo} alt="logo" width='100'></img>
                 <h1>Welcome back!</h1>
                 <Field
                   as={TextField}
@@ -153,6 +154,12 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
                   error={touched.password && errors.password !== undefined}
                   helperText={touched.password && errors.password}
                 />
+                <Typography
+                  variant="subtitle1"
+                  style={{ marginTop: 15, color:"red"}}
+                >
+                  {error ? error: null}
+                </Typography>
                 {loading ? (
                   <CircularProgress className={classes.progressBar}/>
                 ) : (
