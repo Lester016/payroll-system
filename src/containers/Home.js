@@ -1,7 +1,11 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Card, Grid } from "@material-ui/core";
+import { Card, Grid, Typography } from "@material-ui/core";
+
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
+import HelpIcon from "@material-ui/icons/Help";
 
 import { Doughnut, Bar } from "react-chartjs-2";
 
@@ -171,6 +175,7 @@ const collegeData = {
   ],
   datasets: [
     {
+      maxBarThickness: 50,
       data: [
         college[0].employees,
         college[1].employees,
@@ -221,15 +226,21 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
 
+  textCard: {
+    display: "flex",
+    color: theme.palette.text.secondary,
+    height: 150,
+  },
+
   cardTitle: {
-    fontSize: 60,
-    color: "white",
+    fontSize: 50,
+    color: "#ffffff",
     fontWeight: "bold",
   },
 
   cardDescription: {
     fontSize: 15,
-    color: "white",
+    color: "#ffffff",
   },
 
   chart: {
@@ -239,20 +250,90 @@ const useStyles = makeStyles((theme) => ({
 
   left: {
     flex: 2,
+    margin: 10,
   },
 
   icon: {
+    flex: 1,
     fontSize: 100,
+    marginTop: 10,
+    marginRight: -10,
   },
 }));
 
 export default function Home() {
   const classes = useStyles();
 
+  const totalEmployees = 1050;
+  const totalPayrollGiven = 500;
+
   return (
     <div className={classes.root}>
       <h1>Welcome, Admin!</h1>
       <Grid container spacing={3}>
+        <Grid item xs={12} sm={10} md={4}>
+          <Card
+            className={classes.textCard}
+            style={{ backgroundColor: "rgb(255, 99, 132)" }}
+          >
+            <div className={classes.left}>
+              <Typography className={classes.cardTitle}>
+                {totalEmployees}
+              </Typography>
+              <Typography className={classes.cardDescription}>
+                Total Employees
+              </Typography>
+            </div>
+            <PeopleAltIcon className={classes.icon} />
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={10} md={4}>
+          <Card
+            className={classes.textCard}
+            style={{ backgroundColor: "rgb(54, 162, 235)" }}
+          >
+            <div className={classes.left}>
+              <Typography className={classes.cardTitle}>100</Typography>
+              <Typography className={classes.cardDescription}>
+                Total Dummies
+              </Typography>
+            </div>
+            <HelpIcon className={classes.icon} />
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={10} md={4}>
+          <Card
+            className={classes.textCard}
+            style={{ backgroundColor: "rgb(255, 205, 86)" }}
+          >
+            <div className={classes.left}>
+              <Typography className={classes.cardTitle}>
+                {totalPayrollGiven}
+              </Typography>
+
+              <Typography
+                className={classes.cardTitle}
+                style={{ fontSize: 20 }}
+              >
+                out of {totalEmployees}
+              </Typography>
+              <Typography className={classes.cardDescription}>
+                Distributed Payroll
+              </Typography>
+            </div>
+            <AttachMoneyIcon className={classes.icon} />
+          </Card>
+        </Grid>
+        {/* BAR CHART */}
+        <Grid item xs={12} sm={10} md={12}>
+          <Card className={classes.chart}>
+            <div className={classes.left} style={{ position: "relative" }}>
+              <Bar data={collegeData} options={collegeConfig} />
+            </div>
+          </Card>
+        </Grid>
         {/* GENDER CHART */}
         <Grid item xs={12} sm={10} md={4}>
           <Card className={classes.chart}>
@@ -274,16 +355,6 @@ export default function Home() {
           <Card className={classes.chart}>
             <div className={classes.left} style={{ position: "relative" }}>
               <Doughnut data={positionData} options={positionConfig} />
-            </div>
-          </Card>
-        </Grid>
-      </Grid>
-      <Grid container spacing={3}>
-        {/* BAR CHART */}
-        <Grid item xs={12} sm={10} md={12}>
-          <Card className={classes.chart}>
-            <div className={classes.left} style={{ position: "relative" }}>
-              <Bar data={collegeData} options={collegeConfig} />
             </div>
           </Card>
         </Grid>
