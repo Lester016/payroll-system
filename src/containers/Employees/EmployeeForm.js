@@ -275,10 +275,6 @@ const EmployeeForm = ({ handleFormClose }) => {
       }
     }
   };
-  const handleReset = () => {
-    setValues(initialValues);
-    setErrors({});
-  };
 
   const LoadingTUP = (
     <>
