@@ -6,7 +6,6 @@ import { KeyboardDatePicker } from "@material-ui/pickers";
 import {
   makeStyles,
   Container,
-  Paper,
   Grid,
   Typography,
   Button,
@@ -51,38 +50,20 @@ const typeItems = [
   { id: "part-timer", title: "Part-Timer" },
 ];
 
-export default function EmployeeForm() {
+const EmployeeForm = ({
+  values,
+  setValues,
+  errors,
+  setErrors,
+  onSubmit,
+  onEdit,
+  onReset,
+}) => {
   const classes = useStyle();
 
   const [isFetching, setIsFetching] = useState(false);
   const [tup, setTUP] = useState({});
   const [positions, setPositions] = useState({});
-  const [errors, setErrors] = useState({});
-  const [values, setValues] = useState({
-    firstName: "",
-    lastName: "",
-    gender: "male",
-    campus: {
-      name: "",
-      idx: -1,
-    },
-    college: {
-      name: "",
-      idx: -1,
-    },
-    dept: {
-      name: "",
-      idx: -1,
-    },
-    type: "regular",
-    email: "",
-    contactInfo: "",
-    address: "",
-    birthDate: new Date(),
-    position: "",
-    salary: 0,
-    deductions: [],
-  });
 
   // Get TUP & Positions in the database
   useEffect(() => {
@@ -162,42 +143,10 @@ export default function EmployeeForm() {
     );
     setValues({
       ...values,
-      position: foundPosition.title,
-      salary: foundPosition.rate,
+      positionTitle: foundPosition.title,
+      positionRate: foundPosition.rate,
     });
   };
-
-  // FORM VALIDATION
-  const validate = (fieldValues = values) => {
-    let temp = {};
-    temp.firstName = (/^[a-z ,.'-]+$/i).test(fieldValues.firstName.trim()) ? "" : "This field is required.";
-    temp.lastName = (/^[a-z ,.'-]+$/i).test(fieldValues.lastName.trim()) ? "" : "This field is required.";
-    temp.campus = fieldValues.campus.name ? "" : "This field is required.";
-    temp.college = fieldValues.college.name ? "" : "This field is required.";
-    temp.dept = fieldValues.dept.name ? "" : "This field is required.";
-    temp.email = (/\S+@\S+\.\S+/).test(fieldValues.email.trim())
-      ? ""
-      : "Email adress is invalid.";
-    temp.contactInfo =
-      fieldValues.contactInfo.length === 11
-        ? ""
-        : "Contact Number must be 11 digits.";
-    temp.position = fieldValues.position ? "" : "This field is required.";
-
-    setErrors({
-      ...temp,
-    });
-
-    if (fieldValues === values)
-      return Object.values(temp).every((x) => x === "");
-  };
-
-  // EMPLOYEE FORM HANDLES
-  const handleSubmit = () => {
-    if (validate()) {
-    }
-  };
-  const handleReset = () => {};
 
   const LoadingTUP = (
     <>
@@ -219,7 +168,7 @@ export default function EmployeeForm() {
   );
 
   return (
-    <Container component={Paper} className={classes.root}>
+    <Container className={classes.root}>
       <Grid container spacing={3} justify="center" alignItems="center">
         {/*First Row - First Name, Last Name, Gender*/}
         <Grid item xs={12} sm={12} md={4}>
@@ -387,17 +336,17 @@ export default function EmployeeForm() {
             <Select
               name="position"
               label="Position"
-              value={values.position}
+              value={values.positionTitle}
               onChange={handlePosition}
               options={Object.values(positions).map((item) => item.title)}
-              error={errors.position}
+              error={errors.positionTitle}
             />
           )}
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Typography>
             <NumberFormat
-              value={values.salary}
+              value={values.positionRate}
               displayType={"text"}
               thousandSeparator={true}
               prefix="₱"
@@ -411,7 +360,7 @@ export default function EmployeeForm() {
             variant="contained"
             color="primary"
             startIcon={<AddIcon />}
-            onClick={handleSubmit}
+            onClick={onSubmit}
             className={classes.button}
           >
             Create New
@@ -421,7 +370,7 @@ export default function EmployeeForm() {
             variant="contained"
             color="secondary"
             startIcon={<AddIcon />}
-            onClick={handleReset}
+            onClick={onReset}
             className={classes.button}
           >
             Reset
@@ -430,4 +379,6 @@ export default function EmployeeForm() {
       </Grid>
     </Container>
   );
-}
+};
+
+export default EmployeeForm;

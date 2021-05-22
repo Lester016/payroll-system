@@ -166,6 +166,10 @@ const AppTable = ({
                   thousandSeparator={true}
                 />
               </StyledTableCell>
+            ) : column === "position" ? (
+              <StyledTableCell key={id}>{item[column].title}</StyledTableCell>
+            ) : column === "name" ? (
+              <StyledTableCell key={id}>{`${item["firstName"]} ${item["lastName"]}`}</StyledTableCell>
             ) : (
               <StyledTableCell key={id}>{item[column]}</StyledTableCell>
             )
@@ -178,7 +182,7 @@ const AppTable = ({
                   variant="contained"
                   color="primary"
                   startIcon={<Edit />}
-                  onClick={() => onEditRow(item.id)}
+                  onClick={() => onEditRow(item.id ? item.id : item._id)}
                 >
                   Edit
                 </Button>
@@ -187,7 +191,7 @@ const AppTable = ({
                   variant="contained"
                   color="secondary"
                   startIcon={<Delete />}
-                  onClick={() => onDeleteRow(item.id)}
+                  onClick={() => onDeleteRow(item.id ? item.id : item._id)}
                 >
                   Delete
                 </Button>
