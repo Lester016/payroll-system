@@ -88,6 +88,7 @@ const AppTable = ({
   };
 
   function descendingComparator(a, b, orderBy) {
+    if (orderBy === "name") {orderBy = "firstName";}
     if (b[orderBy] < a[orderBy]) {
       return -1;
     }
