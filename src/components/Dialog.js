@@ -8,7 +8,7 @@ import {
 
 const Dialog = ({ title, open, setOpen, children }) => {
   return (
-    <MaterialDialog open={open} maxWidth="md">
+    <MaterialDialog open={open} onClose={setOpen} maxWidth="md">
       <DialogTitle>
         <div style={{ display: "flex" }}>
           <Typography variant="h6" component="div" style={{ flexGrow: 1 }}>

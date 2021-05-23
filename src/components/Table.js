@@ -30,7 +30,7 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const StyledTableRow = withStyles(theme=> ({
+const StyledTableRow = withStyles((theme) => ({
   root: {
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
@@ -38,9 +38,9 @@ const StyledTableRow = withStyles(theme=> ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles(theme=>({
-  root:{
-    margin:theme.spacing(1)
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1),
   },
   table: {
     minWidth: 700,
@@ -91,6 +91,9 @@ const AppTable = ({
   };
 
   function descendingComparator(a, b, orderBy) {
+    if (orderBy === "name") {
+      orderBy = "firstName";
+    }
     if (b[orderBy] < a[orderBy]) {
       return -1;
     }
@@ -169,6 +172,12 @@ const AppTable = ({
                   thousandSeparator={true}
                 />
               </StyledTableCell>
+            ) : column === "position" ? (
+              <StyledTableCell key={id}>{item[column].title}</StyledTableCell>
+            ) : column === "name" ? (
+              <StyledTableCell
+                key={id}
+              >{`${item["firstName"]} ${item["lastName"]}`}</StyledTableCell>
             ) : (
               <StyledTableCell key={id}>{item[column]}</StyledTableCell>
             )
@@ -181,8 +190,7 @@ const AppTable = ({
                   variant="contained"
                   color="primary"
                   startIcon={<Edit />}
-                  onClick={() => onEditRow(item.id)}
-                  classes={{root: classes.root}}
+                  onClick={() => onEditRow(item.id ? item.id : item._id)}
                 >
                   Edit
                 </Button>
@@ -191,7 +199,7 @@ const AppTable = ({
                   variant="contained"
                   color="secondary"
                   startIcon={<Delete />}
-                  onClick={() => onDeleteRow(item.id)}
+                  onClick={() => onDeleteRow(item.id ? item.id : item._id)}
                 >
                   Delete
                 </Button>
