@@ -3,8 +3,13 @@ import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
+<<<<<<< HEAD
 import TUPGif from '../asset/TUPGif.gif';
 import TUPLogo from '../asset/TUPLogo.png';
+=======
+import tupGif from '../asset/tupGif.gif';
+import tupLogo from '../asset/tupLogo.png';
+>>>>>>> 816d33e4550f9183f123045745cfb66db659da0d
 import {
   Button,
   Paper,
@@ -27,10 +32,14 @@ import * as actions from "../store/actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '85vh',
+    height: "85vh",
   },
   image: {
+<<<<<<< HEAD
     backgroundImage: "url("+ TUPGif +")",
+=======
+    backgroundImage: "url("+ tupGif +")",
+>>>>>>> 816d33e4550f9183f123045745cfb66db659da0d
     backgroundRepeat: 'no-repeat',
     backgroundColor:
       theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -42,9 +51,9 @@ const useStyles = makeStyles((theme) => ({
     // textAlign: "center",
     // width: 450,
     margin: theme.spacing(6, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   field: {
     marginTop: 30,
@@ -53,18 +62,17 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: 20,
-    backgroundColor: '#bf1d38',
-    '&:hover': {
-      backgroundColor: '#a6172f',
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
     },
-    
   },
   paper: {
-    marginTop: '40px',
+    marginTop: "40px",
     margin: theme.spacing(8),
   },
-  progressBar:{
-    color: '#bf1d38',
+  progressBar: {
+    color: "#bf1d38",
     marginTop: 10,
   },
 }));
@@ -94,7 +102,6 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
   return (
     <Paper className={classes.paper} elevation={20}>
       <Grid container component="main" className={classes.root}>
-        
         <Grid item xs={false} sm={true} md={7} className={classes.image} />
         <Grid item xs={12} sm={12} md={5} component={Paper} elevation={0}>
         <Formik
@@ -106,7 +113,11 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
         >
           {({ touched, errors }) => (
             <Form className={classes.form}>
+<<<<<<< HEAD
                 <img src={TUPLogo} alt="logo" width='100'></img>
+=======
+                <img src={tupLogo} alt="logo" width='100'></img>
+>>>>>>> 816d33e4550f9183f123045745cfb66db659da0d
                 <h1>Welcome back!</h1>
                 <Field
                   as={TextField}
@@ -161,7 +172,7 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
                   {error ? error: null}
                 </Typography>
                 {loading ? (
-                  <CircularProgress className={classes.progressBar}/>
+                  <CircularProgress className={classes.progressBar} />
                 ) : (
                   <Button
                     type="submit"
@@ -173,9 +184,9 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
                     Sign in
                   </Button>
                 )}
-            </Form>
-          )}
-        </Formik>
+              </Form>
+            )}
+          </Formik>
         </Grid>
       </Grid>
     </Paper>

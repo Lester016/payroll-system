@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import clsx from "clsx";
 import {
   makeStyles,
@@ -17,7 +18,6 @@ import {
 import { Menu as MenuIcon } from "@material-ui/icons";
 
 import { drawerWidth } from "../../config/layout";
-import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

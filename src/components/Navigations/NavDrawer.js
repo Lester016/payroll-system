@@ -7,7 +7,11 @@ import IconButton from "@material-ui/core/IconButton";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 import { drawerWidth } from "../../config/layout";
+<<<<<<< HEAD
 import TUPLogo from '../../asset/TUPLogo.png';
+=======
+import tupLogo from '../../asset/tupLogo.png';
+>>>>>>> 816d33e4550f9183f123045745cfb66db659da0d
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -86,7 +90,11 @@ export default function Layout({ handleDrawerClose, isOpen, children }) {
       }}
     >
       <div className={classes.toolbar}>
+<<<<<<< HEAD
         <img src={TUPLogo} alt="logo" width='55' className={classes.image}></img>
+=======
+        <img src={tupLogo} alt="logo" width='55' className={classes.image}></img>
+>>>>>>> 816d33e4550f9183f123045745cfb66db659da0d
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "rtl" ? (
             <ChevronRightIcon />

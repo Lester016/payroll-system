@@ -3,13 +3,11 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { Card, Grid, Typography } from "@material-ui/core";
 
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import HelpIcon from "@material-ui/icons/Help";
+import { PeopleAlt, AttachMoney, Help } from "@material-ui/icons";
 
 import { Doughnut, Bar } from "react-chartjs-2";
 
-// GENDER SET UP FOR GENDER CHART
+// GENDER SET UP FOR GENDER CHARTS
 const gender = [
   { sex: "Male", count: 1560 },
   { sex: "Female", count: 1989 },
@@ -213,7 +211,7 @@ const collegeConfig = {
     },
     title: {
       display: true,
-      text: "EMPLOYEE DISTRIBUTION AMONG DEPARTMENTS",
+      text: "EMPLOYEE DISTRIBUTION AMONG COLLEGES",
       font: {
         size: 20,
       },
@@ -228,8 +226,8 @@ const useStyles = makeStyles((theme) => ({
 
   textCard: {
     display: "flex",
-    color: theme.palette.text.secondary,
-    height: 150,
+    marginBottom: 25,
+    height: "100%",
   },
 
   cardTitle: {
@@ -244,20 +242,23 @@ const useStyles = makeStyles((theme) => ({
   },
 
   chart: {
+    padding: theme.spacing(0),
+  },
+
+  barchart: {
     padding: theme.spacing(3),
-    color: theme.palette.text.secondary,
   },
 
   left: {
-    flex: 2,
+    flex: 3,
     margin: 10,
   },
 
   icon: {
     flex: 1,
-    fontSize: 100,
-    marginTop: 10,
-    marginRight: -10,
+    fontSize: 60,
+    marginTop: 20,
+    color: "white",
   },
 }));
 
@@ -269,94 +270,121 @@ export default function Home() {
 
   return (
     <div className={classes.root}>
-      <h1>Welcome, Admin!</h1>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={10} md={4}>
-          <Card
-            className={classes.textCard}
-            style={{ backgroundColor: "rgb(255, 99, 132)" }}
-          >
-            <div className={classes.left}>
-              <Typography className={classes.cardTitle}>
-                {totalEmployees}
-              </Typography>
-              <Typography className={classes.cardDescription}>
-                Total Employees
-              </Typography>
-            </div>
-            <PeopleAltIcon className={classes.icon} />
-          </Card>
+      <Grid>
+        {/*CHART GRID */}
+        <Grid container spacing={3}>
+          {/* GENDER CHART */}
+          <Grid item xs={12} sm={10} md={4}>
+            <Card className={classes.chart}>
+              <div className={classes.left}>
+                <Doughnut data={genderData} options={genderConfig} />
+              </div>
+            </Card>
+          </Grid>
+          {/* PAYROLL CHART */}
+          <Grid item xs={12} sm={10} md={4}>
+            <Card className={classes.chart}>
+              <div className={classes.left}>
+                <Doughnut data={budgetData} options={budgetConfig} />
+              </div>
+            </Card>
+          </Grid>
+          {/* POSITION CHART */}
+          <Grid item xs={12} sm={10} md={4}>
+            <Card className={classes.chart}>
+              <div className={classes.left}>
+                <Doughnut data={positionData} options={positionConfig} />
+              </div>
+            </Card>
+          </Grid>
         </Grid>
 
-        <Grid item xs={12} sm={10} md={4}>
-          <Card
-            className={classes.textCard}
-            style={{ backgroundColor: "rgb(54, 162, 235)" }}
+        {/* BOTTOM GRID CONTAINER */}
+        <Grid
+          container
+          spacing={4}
+          direction={"row"}
+          alignItems={"flex-start"}
+          justify={"space-between"}
+          style={{
+            marginTop: 20,
+          }}
+        >
+          {/* TEXT CARD GRID */}
+          <Grid
+            continer
+            direction="column"
+            alignItems="stretch"
+            justify="space-between"
+            style={{
+              flex: 1,
+              padding: 15,
+            }}
           >
-            <div className={classes.left}>
-              <Typography className={classes.cardTitle}>100</Typography>
-              <Typography className={classes.cardDescription}>
-                Total Dummies
-              </Typography>
-            </div>
-            <HelpIcon className={classes.icon} />
-          </Card>
-        </Grid>
-
-        <Grid item xs={12} sm={10} md={4}>
-          <Card
-            className={classes.textCard}
-            style={{ backgroundColor: "rgb(255, 205, 86)" }}
-          >
-            <div className={classes.left}>
-              <Typography className={classes.cardTitle}>
-                {totalPayrollGiven}
-              </Typography>
-
-              <Typography
-                className={classes.cardTitle}
-                style={{ fontSize: 20 }}
+            {/* EMPLOYEE TEXT CARD */}
+            <Grid item xs={12} sm={10} md={12}>
+              <Card
+                className={classes.textCard}
+                style={{ backgroundColor: "rgb(255, 99, 132)" }}
               >
-                out of {totalEmployees}
-              </Typography>
-              <Typography className={classes.cardDescription}>
-                Distributed Payroll
-              </Typography>
-            </div>
-            <AttachMoneyIcon className={classes.icon} />
-          </Card>
-        </Grid>
-        {/* BAR CHART */}
-        <Grid item xs={12} sm={10} md={12}>
-          <Card className={classes.chart}>
-            <div className={classes.left} style={{ position: "relative" }}>
-              <Bar data={collegeData} options={collegeConfig} />
-            </div>
-          </Card>
-        </Grid>
-        {/* GENDER CHART */}
-        <Grid item xs={12} sm={10} md={4}>
-          <Card className={classes.chart}>
-            <div className={classes.left} style={{ position: "relative" }}>
-              <Doughnut data={genderData} options={genderConfig} />
-            </div>
-          </Card>
-        </Grid>
-        {/* PAYROLL CHART */}
-        <Grid item xs={12} sm={10} md={4}>
-          <Card className={classes.chart}>
-            <div className={classes.left} style={{ position: "relative" }}>
-              <Doughnut data={budgetData} options={budgetConfig} />
-            </div>
-          </Card>
-        </Grid>
-        {/* POSITION CHART */}
-        <Grid item xs={12} sm={10} md={4}>
-          <Card className={classes.chart}>
-            <div className={classes.left} style={{ position: "relative" }}>
-              <Doughnut data={positionData} options={positionConfig} />
-            </div>
-          </Card>
+                <div className={classes.left}>
+                  <Typography className={classes.cardTitle}>
+                    {totalEmployees}
+                  </Typography>
+                  <Typography className={classes.cardDescription}>
+                    Total Employees
+                  </Typography>
+                </div>
+                <PeopleAlt className={classes.icon} />
+              </Card>
+            </Grid>
+
+            {/* DUMMY TEXT CARD */}
+            <Grid item xs={12} sm={10} md={12}>
+              <Card
+                className={classes.textCard}
+                style={{ backgroundColor: "rgb(54, 162, 235)" }}
+              >
+                <div className={classes.left}>
+                  <Typography className={classes.cardTitle}>100</Typography>
+                  <Typography className={classes.cardDescription}>
+                    Total Dummies
+                  </Typography>
+                </div>
+                <Help className={classes.icon} />
+              </Card>
+            </Grid>
+
+            {/* PAYROLL TEXT CARD */}
+            <Grid item xs={12} sm={10} md={12}>
+              <Card
+                className={classes.textCard}
+                style={{ backgroundColor: "rgb(255, 205, 86)" }}
+              >
+                <div className={classes.left}>
+                  <Typography className={classes.cardTitle}>
+                    {totalPayrollGiven}
+                  </Typography>
+                  <Typography className={classes.cardDescription}>
+                    Distributed Payroll
+                  </Typography>
+                </div>
+                <AttachMoney className={classes.icon} />
+              </Card>
+            </Grid>
+          </Grid>
+
+          {/* BAR CHART GRID */}
+          <Grid style={{ flex: 2, padding: 15 }}>
+            {/* BAR CHART */}
+            <Grid item xs={12} sm={10} md={12}>
+              <Card className={classes.barchart}>
+                <div className={classes.left}>
+                  <Bar data={collegeData} options={collegeConfig} />
+                </div>
+              </Card>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </div>
