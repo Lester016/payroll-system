@@ -3,7 +3,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { Card, Grid, Typography } from "@material-ui/core";
 
-import { PeopleAlt, AttachMoney, Help } from "@material-ui/icons";
+import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
+import HelpIcon from "@material-ui/icons/Help";
 
 import { Doughnut, Bar } from "react-chartjs-2";
 
@@ -227,7 +229,7 @@ const useStyles = makeStyles((theme) => ({
   textCard: {
     display: "flex",
     marginBottom: 25,
-    height: "100%",
+    height: 137,
   },
 
   cardTitle: {
@@ -312,13 +314,14 @@ export default function Home() {
         >
           {/* TEXT CARD GRID */}
           <Grid
-            continer
+            container
             direction="column"
             alignItems="stretch"
             justify="space-between"
             style={{
               flex: 1,
               padding: 15,
+              height: "100%",
             }}
           >
             {/* EMPLOYEE TEXT CARD */}
@@ -335,7 +338,7 @@ export default function Home() {
                     Total Employees
                   </Typography>
                 </div>
-                <PeopleAlt className={classes.icon} />
+                <PeopleAltIcon className={classes.icon} />
               </Card>
             </Grid>
 
@@ -346,12 +349,12 @@ export default function Home() {
                 style={{ backgroundColor: "rgb(54, 162, 235)" }}
               >
                 <div className={classes.left}>
-                  <Typography className={classes.cardTitle}>100</Typography>
+                  <Typography className={classes.cardTitle}>200</Typography>
                   <Typography className={classes.cardDescription}>
                     Total Dummies
                   </Typography>
                 </div>
-                <Help className={classes.icon} />
+                <HelpIcon className={classes.icon} />
               </Card>
             </Grid>
 
@@ -369,7 +372,7 @@ export default function Home() {
                     Distributed Payroll
                   </Typography>
                 </div>
-                <AttachMoney className={classes.icon} />
+                <AttachMoneyIcon className={classes.icon} />
               </Card>
             </Grid>
           </Grid>
