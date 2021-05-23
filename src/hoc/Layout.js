@@ -1,21 +1,19 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+// MaterialUI
+import { makeStyles, List, Divider, CssBaseline } from "@material-ui/core";
+import {
+  Dashboard as DashboardIcon,
+  Group as GroupIcon,
+  PersonAdd as PersonAddIcon,
+  MoneyOff as MoneyOffIcon,
+  Schedule as ScheduleIcon,
+  AttachMoney as AttachMoneyIcon,
+} from "@material-ui/icons";
 
 import NavItem from "../components/Navigations/NavItem";
 import Navbar from "../components/Navigations/Navbar";
 import NavDrawer from "../components/Navigations/NavDrawer";
-
-// MaterialUI
-import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import GroupIcon from "@material-ui/icons/Group";
-import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import MoneyOffIcon from "@material-ui/icons/MoneyOff";
-import ScheduleIcon from "@material-ui/icons/Schedule";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 
 const titleBar = {
   "/": "Dashboard",
@@ -25,6 +23,8 @@ const titleBar = {
   "/payroll": "Payroll",
   "/employees": "Employees",
   "/attendance": "Attendance",
+  "/help": "Help",
+  "/about": "About",
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -92,11 +92,6 @@ export default function Layout({ children }) {
             title={"Deductions"}
             IconComponent={MoneyOffIcon}
           />
-          <NavItem
-            route={"/schedules"}
-            title={"Schedules"}
-            IconComponent={ScheduleIcon}
-          />
           <Divider />
           <NavItem
             route={"/payroll"}
@@ -105,6 +100,17 @@ export default function Layout({ children }) {
           />
 
           <Divider />
+
+          <NavItem
+            route={"/help"}
+            title={"Help"}
+            IconComponent={ScheduleIcon}
+          />
+          <NavItem
+            route={"/about"}
+            title={"About"}
+            IconComponent={ScheduleIcon}
+          />
         </List>
       </NavDrawer>
 
