@@ -110,6 +110,7 @@ const EmployeeForm = ({ handleFormClose }) => {
         })
       )
       .catch((error) => {
+        console.log(error);
         setIsFetching(false);
       });
   }, []);

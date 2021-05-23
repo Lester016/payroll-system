@@ -170,7 +170,7 @@ const Employees = () => {
         open={employeeFormOpen}
         setOpen={() => setEmployeeFormOpen(false)}
       >
-        <EmployeeForm handleFormClose={handleClose}/>
+        <EmployeeForm handleFormClose={handleClose} />
         {/*employees={employees}
           setEmployees={setEmployees}
           tup={tup}
