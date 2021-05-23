@@ -3,9 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { Card, Grid, Typography } from "@material-ui/core";
 
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import HelpIcon from "@material-ui/icons/Help";
+import { PeopleAlt, AttachMoney, Help } from "@material-ui/icons";
 
 import { Doughnut, Bar } from "react-chartjs-2";
 
@@ -229,7 +227,7 @@ const useStyles = makeStyles((theme) => ({
   textCard: {
     display: "flex",
     marginBottom: 25,
-    height: 137,
+    height: "100%",
   },
 
   cardTitle: {
@@ -314,14 +312,13 @@ export default function Home() {
         >
           {/* TEXT CARD GRID */}
           <Grid
-            container
+            continer
             direction="column"
             alignItems="stretch"
             justify="space-between"
             style={{
               flex: 1,
               padding: 15,
-              height: "100%",
             }}
           >
             {/* EMPLOYEE TEXT CARD */}
@@ -338,7 +335,7 @@ export default function Home() {
                     Total Employees
                   </Typography>
                 </div>
-                <PeopleAltIcon className={classes.icon} />
+                <PeopleAlt className={classes.icon} />
               </Card>
             </Grid>
 
@@ -354,7 +351,7 @@ export default function Home() {
                     Total Dummies
                   </Typography>
                 </div>
-                <HelpIcon className={classes.icon} />
+                <Help className={classes.icon} />
               </Card>
             </Grid>
 
@@ -372,7 +369,7 @@ export default function Home() {
                     Distributed Payroll
                   </Typography>
                 </div>
-                <AttachMoneyIcon className={classes.icon} />
+                <AttachMoney className={classes.icon} />
               </Card>
             </Grid>
           </Grid>
