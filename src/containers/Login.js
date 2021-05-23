@@ -3,8 +3,8 @@ import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
-import TUPgif from '../asset/TUPgif.gif';
-import TUP_LOGO from '../asset/TUP_LOGO.png';
+import TUPgif from "../asset/TUPgif.gif";
+import TUP_LOGO from "../asset/TUP_LOGO.png";
 import {
   Button,
   Paper,
@@ -27,23 +27,26 @@ import * as actions from "../store/actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '85vh',
+    height: "85vh",
   },
   image: {
-    backgroundImage: "url("+ TUPgif +")",
-    backgroundRepeat: 'no-repeat',
+    backgroundImage: "url(" + TUPgif + ")",
+    backgroundRepeat: "no-repeat",
     backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    borderRadius: "3px",
   },
   form: {
     // textAlign: "center",
     // width: 450,
     margin: theme.spacing(6, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   field: {
     marginTop: 30,
@@ -52,18 +55,17 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: 20,
-    backgroundColor: '#bf1d38',
-    '&:hover': {
-      backgroundColor: '#a6172f',
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
     },
-    
   },
   paper: {
-    marginTop: '40px',
+    marginTop: "40px",
     margin: theme.spacing(8),
   },
-  progressBar:{
-    color: '#bf1d38',
+  progressBar: {
+    color: "#bf1d38",
     marginTop: 10,
   },
 }));
@@ -93,19 +95,18 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
   return (
     <Paper className={classes.paper} elevation={20}>
       <Grid container component="main" className={classes.root}>
-        
         <Grid item xs={false} sm={true} md={7} className={classes.image} />
         <Grid item xs={12} sm={12} md={5} component={Paper} elevation={0}>
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={LoginSchema}
-          onSubmit={(values) => {
-            login(values.email, values.password);
-          }}
-        >
-          {({ touched, errors }) => (
-            <Form className={classes.form}>
-                <img src={TUP_LOGO} alt="logo" width='100'></img>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            validationSchema={LoginSchema}
+            onSubmit={(values) => {
+              login(values.email, values.password);
+            }}
+          >
+            {({ touched, errors }) => (
+              <Form className={classes.form}>
+                <img src={TUP_LOGO} alt="logo" width="100"></img>
                 <h1>Welcome back!</h1>
                 <Field
                   as={TextField}
@@ -153,8 +154,14 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
                   error={touched.password && errors.password !== undefined}
                   helperText={touched.password && errors.password}
                 />
+                <Typography
+                  variant="subtitle1"
+                  style={{ marginTop: 15, color: "red" }}
+                >
+                  {error ? error : null}
+                </Typography>
                 {loading ? (
-                  <CircularProgress className={classes.progressBar}/>
+                  <CircularProgress className={classes.progressBar} />
                 ) : (
                   <Button
                     type="submit"
@@ -166,9 +173,9 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
                     Sign in
                   </Button>
                 )}
-            </Form>
-          )}
-        </Formik>
+              </Form>
+            )}
+          </Formik>
         </Grid>
       </Grid>
     </Paper>
