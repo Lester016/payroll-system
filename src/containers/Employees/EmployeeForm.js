@@ -165,7 +165,12 @@ const EmployeeForm = ({ handleFormClose }) => {
   };
 
   const handleType = (event) => {
-    setValues({ ...values, type: event.target.value });
+    setValues({
+      ...values,
+      type: event.target.value,
+      positionTitle: "",
+      positionRate: 0,
+    });
   };
 
   const handlePosition = (event) => {
@@ -455,7 +460,9 @@ const EmployeeForm = ({ handleFormClose }) => {
 
           {/*Fifth Row - Position & Salary*/}
           <Grid item xs={12} sm={12} md={4}>
-            {isFetching || Object.keys(positions).length === 0 ? (
+            {isFetching ||
+            Object.keys(positions).length === 0 ||
+            values.type === "part-timer" ? (
               <Select
                 name="position"
                 label="Position"
