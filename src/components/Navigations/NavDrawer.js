@@ -1,13 +1,17 @@
+import { Link } from "react-router-dom";
 // MaterialUI
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
+import {
+  makeStyles,
+  useTheme,
+  Drawer,
+  Divider,
+  IconButton,
+} from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 import { drawerWidth } from "../../config/layout";
-import tupLogo from '../../asset/tupLogo.png';
+import tupLogo from "../../asset/tupLogo.png";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -62,9 +66,6 @@ const useStyles = makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
-  image: {
-    marginRight: 35,
-  },
 }));
 
 export default function Layout({ handleDrawerClose, isOpen, children }) {
@@ -86,7 +87,11 @@ export default function Layout({ handleDrawerClose, isOpen, children }) {
       }}
     >
       <div className={classes.toolbar}>
-        <img src={tupLogo} alt="logo" width='55' className={classes.image}></img>
+        <div style={{ marginRight: 35 }}>
+          <Link to="/">
+            <img src={tupLogo} alt="logo" width="55" />
+          </Link>
+        </div>
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "rtl" ? (
             <ChevronRightIcon />
