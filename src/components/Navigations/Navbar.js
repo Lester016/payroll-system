@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    backgroundColor: '#bf1d38',
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -104,14 +105,14 @@ const Navbar = ({ isOpen, title, handleDrawerOpen }) => {
         </Typography>
 
         <IconButton
-          className={classes.avatar}
+          // className={classes.avatar}
           size="small"
           ref={anchorRef}
           aria-controls={open ? "menu-list-grow" : undefined}
           aria-haspopup="true"
           onClick={handleAvatarToggle}
         >
-          <Avatar alt="Andrei" src=""></Avatar>
+          <Avatar src="" alt="Jonas Andrei" />
         </IconButton>
         <Popper
           open={open}

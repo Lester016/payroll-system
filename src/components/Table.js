@@ -38,7 +38,10 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1),
+  },
   table: {
     minWidth: 700,
   },
@@ -53,7 +56,7 @@ const useStyles = makeStyles({
     top: 20,
     width: 1,
   },
-});
+}));
 
 const AppTable = ({
   lists,
@@ -88,7 +91,9 @@ const AppTable = ({
   };
 
   function descendingComparator(a, b, orderBy) {
-    if (orderBy === "name") {orderBy = "firstName";}
+    if (orderBy === "name") {
+      orderBy = "firstName";
+    }
     if (b[orderBy] < a[orderBy]) {
       return -1;
     }
@@ -170,7 +175,9 @@ const AppTable = ({
             ) : column === "position" ? (
               <StyledTableCell key={id}>{item[column].title}</StyledTableCell>
             ) : column === "name" ? (
-              <StyledTableCell key={id}>{`${item["firstName"]} ${item["lastName"]}`}</StyledTableCell>
+              <StyledTableCell
+                key={id}
+              >{`${item["firstName"]} ${item["lastName"]}`}</StyledTableCell>
             ) : (
               <StyledTableCell key={id}>{item[column]}</StyledTableCell>
             )

@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 
 import { drawerWidth } from "../../config/layout";
+import tupLogo from '../../asset/tupLogo.png';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -61,6 +62,9 @@ const useStyles = makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
+  image: {
+    marginRight: 35,
+  },
 }));
 
 export default function Layout({ handleDrawerClose, isOpen, children }) {
@@ -82,6 +86,7 @@ export default function Layout({ handleDrawerClose, isOpen, children }) {
       }}
     >
       <div className={classes.toolbar}>
+        <img src={tupLogo} alt="logo" width='55' className={classes.image}></img>
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "rtl" ? (
             <ChevronRightIcon />
