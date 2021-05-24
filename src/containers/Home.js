@@ -248,14 +248,13 @@ const useStyles = makeStyles((theme) => ({
   },
 
   barchart: {
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
+    margin: theme.spacing(2),
   },
-
   left: {
     flex: 3,
     margin: 10,
   },
-
   icon: {
     flex: 1,
     fontSize: 60,
@@ -272,60 +271,27 @@ export default function Home() {
 
   return (
     <div className={classes.root}>
-      <Grid>
-        {/*CHART GRID */}
-        <Grid container spacing={3}>
-          {/* GENDER CHART */}
-          <Grid item xs={12} sm={10} md={4}>
-            <Card className={classes.chart}>
-              <div className={classes.left}>
-                <Doughnut data={genderData} options={genderConfig} />
-              </div>
-            </Card>
-          </Grid>
-          {/* PAYROLL CHART */}
-          <Grid item xs={12} sm={10} md={4}>
-            <Card className={classes.chart}>
-              <div className={classes.left}>
+      <Grid container xs={12} spacing={2}>
+        <Grid xs={3} item>
+          {/* Pie Chart */}
+          <Grid xs={12}>
+            <Card className={classes.chart} style={{ marginBottom: "18%" }}>
+              <div>
                 <Doughnut data={budgetData} options={budgetConfig} />
               </div>
             </Card>
-          </Grid>
-          {/* POSITION CHART */}
-          <Grid item xs={12} sm={10} md={4}>
             <Card className={classes.chart}>
-              <div className={classes.left}>
+              <div>
                 <Doughnut data={positionData} options={positionConfig} />
               </div>
             </Card>
           </Grid>
         </Grid>
 
-        {/* BOTTOM GRID CONTAINER */}
-        <Grid
-          container
-          spacing={4}
-          direction={"row"}
-          alignItems={"flex-start"}
-          justify={"space-between"}
-          style={{
-            marginTop: 20,
-          }}
-        >
-          {/* TEXT CARD GRID */}
-          <Grid
-            container
-            direction="column"
-            alignItems="stretch"
-            justify="space-between"
-            style={{
-              flex: 1,
-              padding: 15,
-              height: "100%",
-            }}
-          >
-            {/* EMPLOYEE TEXT CARD */}
-            <Grid item xs={12} sm={10} md={12}>
+        <Grid item xs={9} container justify="center">
+          {/* EMPLOYEE TEXT CARD */}
+          <Grid xs={12} container spacing={3}>
+            <Grid item xs={4}>
               <Card
                 className={classes.textCard}
                 style={{ backgroundColor: "rgb(255, 99, 132)" }}
@@ -341,9 +307,8 @@ export default function Home() {
                 <PeopleAltIcon className={classes.icon} />
               </Card>
             </Grid>
-
             {/* DUMMY TEXT CARD */}
-            <Grid item xs={12} sm={10} md={12}>
+            <Grid item xs={4}>
               <Card
                 className={classes.textCard}
                 style={{ backgroundColor: "rgb(54, 162, 235)" }}
@@ -357,9 +322,8 @@ export default function Home() {
                 <HelpIcon className={classes.icon} />
               </Card>
             </Grid>
-
             {/* PAYROLL TEXT CARD */}
-            <Grid item xs={12} sm={10} md={12}>
+            <Grid item xs={4}>
               <Card
                 className={classes.textCard}
                 style={{ backgroundColor: "rgb(255, 205, 86)" }}
@@ -376,17 +340,13 @@ export default function Home() {
               </Card>
             </Grid>
           </Grid>
-
-          {/* BAR CHART GRID */}
-          <Grid style={{ flex: 2, padding: 15 }}>
-            {/* BAR CHART */}
-            <Grid item xs={12} sm={10} md={12}>
-              <Card className={classes.barchart}>
-                <div className={classes.left}>
-                  <Bar data={collegeData} options={collegeConfig} />
-                </div>
-              </Card>
-            </Grid>
+          {/* BAR CHART */}
+          <Grid item xs={12}>
+            <Card className={classes.barchart}>
+              <div className={classes.left}>
+                <Bar data={collegeData} options={collegeConfig} />
+              </div>
+            </Card>
           </Grid>
         </Grid>
       </Grid>
