@@ -271,10 +271,10 @@ export default function Home() {
 
   return (
     <div className={classes.root}>
-      <Grid container xs={12} spacing={2}>
-        <Grid xs={3} item>
+      <Grid container item xs={12} spacing={2}>
+        <Grid item xs={12} md={4} lg={3}>
           {/* Pie Chart */}
-          <Grid xs={12}>
+          <Grid item xs={12}>
             <Card className={classes.chart} style={{ marginBottom: "18%" }}>
               <div>
                 <Doughnut data={budgetData} options={budgetConfig} />
@@ -288,7 +288,7 @@ export default function Home() {
           </Grid>
         </Grid>
 
-        <Grid item xs={9} container justify="center">
+        <Grid item md={12} xs={12} lg={9} container justify="center">
           {/* EMPLOYEE TEXT CARD */}
           <Grid xs={12} container spacing={3}>
             <Grid item xs={4}>
