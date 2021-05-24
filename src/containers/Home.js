@@ -9,43 +9,6 @@ import HelpIcon from "@material-ui/icons/Help";
 
 import { Doughnut, Bar } from "react-chartjs-2";
 
-// GENDER SET UP FOR GENDER CHARTS
-const gender = [
-  { sex: "Male", count: 1560 },
-  { sex: "Female", count: 1989 },
-];
-
-const genderData = {
-  responsive: true,
-  labels: [gender[0].sex, gender[1].sex],
-  datasets: [
-    {
-      data: [gender[0].count, gender[1].count],
-      backgroundColor: ["rgb(54, 162, 235)", "rgb(255, 99, 132)"],
-      hoverOffset: 4,
-    },
-  ],
-};
-
-const genderConfig = {
-  plugins: {
-    title: {
-      display: true,
-      text: "GENDER DISTRIBUTION",
-      font: {
-        size: 20,
-      },
-    },
-    legend: {
-      labels: {
-        boxHeight: 20,
-        boxWidth: 25,
-      },
-      position: "bottom",
-    },
-  },
-};
-
 // POSITION SET UP FOR POSITION CHART
 const position = [
   { jobRole: "Dean", employeeCount: 80 },
