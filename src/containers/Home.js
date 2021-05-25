@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { Card, Grid, Typography } from "@material-ui/core";
@@ -226,11 +227,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const handlePayrollBudget = () => {};
+
 export default function Home() {
   const classes = useStyles();
+  const [employees, setEmployees] = useState({});
+  const [payrollBudget, setPayrollBudget] = useState({});
+  const [totalEmployees, setTotalEmployees] = useState();
+  // const [totalPayrollGiven, setTotalPayrollGiven] = useState();
 
-  const totalEmployees = 1050;
   const totalPayrollGiven = 500;
+
+  // Get employees in the database
+  useEffect(() => {
+    axios
+      .get("https://tup-payroll.herokuapp.com/api/employees")
+      .then((response) => {
+        setEmployees(response.data);
+        setTotalEmployees(Object.keys(response.data).length);
+
+        console.log(response.data); //show what response data returns in the browser
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
 
   return (
     <div className={classes.root}>
