@@ -9,7 +9,7 @@ import {
   CircularProgress,
   makeStyles,
 } from "@material-ui/core";
-import { Add as AddIcon, Search as SearchIcon , Delete , Cancel} from "@material-ui/icons";
+import { Add as AddIcon, Search as SearchIcon , Delete , Cancel , Check} from "@material-ui/icons";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -37,8 +37,15 @@ const Position = () => {
 
   const useStyles= makeStyles(theme=>({
     root:{
-      margin:theme.spacing(1)
-    }
+      margin:theme.spacing(.5)
+    },
+    createbutton:{
+      backgroundColor:"secondary",
+      "&:hover":{
+        backgroundColor:"#bf0644"
+      },
+      borderRadius:'100px',
+    },
   }));
 
   const classes = useStyles();
@@ -250,31 +257,31 @@ const Position = () => {
 
   return (
     <div>
-      <Paper>
-        <Toolbar>
-          <TextField
-            label="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
+      <Toolbar>
+        <TextField
+          label="Search..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
             }}
-            onChange={handleSearch}
-          />
-
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleOpen}
-          >
-            Create New
-          </Button>
-        </Toolbar>
-
+          onChange={handleSearch}
+        />
+        <Button
+          size="small"
+          variant="contained"
+          onClick={handleOpen}
+          color="primary"
+          className={classes.createbutton}
+          startIcon={<AddIcon />}
+        >
+          Create
+        </Button>   
+      </Toolbar>
+      
+      <Paper>
         <div>
           <Table
             lists={positions}
@@ -294,8 +301,9 @@ const Position = () => {
       >
         {!isLoading ? (
           <>
-          <center>
-            <h4> Are you sure you want to delete that?</h4>
+          <h2>DELETE?</h2>
+          <center>  
+            <p> Deleting this results to discarding information included in it.</p>
             <div>
               <Button
                 variant="contained"
@@ -328,48 +336,62 @@ const Position = () => {
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (
           <>
-            <TextField
-              value={jobTitle}
-              label="Job Title"
-              onChange={(e) => setJobTitle(e.target.value)}
-              {...(errors.jobTitle && {
-                error: true,
-                helperText: errors.jobTitle,
-              })}
-            />
-            <TextField
-              value={ratePerHour}
-              label="Rate Per Hour"
-              onChange={(e) => setRatePerHour(e.target.value)}
-              InputProps={{
-                inputComponent: NumberInputComponent,
-              }}
-              {...(errors.ratePerHour && {
-                error: true,
-                helperText: errors.ratePerHour,
-              })}
-            />
-
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={handleSubmit}
-            >
-              {isUpdating ? "Update" : "Submit"}
-            </Button>
-            <Button
-              variant="contained"
-              size="small"
-              color="secondary"
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
+          <h2>Position</h2>
+          <center>
+            <div>
+              <TextField
+                value={jobTitle}
+                label="Job Title"
+                onChange={(e) => setJobTitle(e.target.value)}
+                classes={{root: classes.root}}
+                {...(errors.jobTitle && {
+                  error: true,
+                  helperText: errors.jobTitle,
+                })}
+              />
+              <TextField
+                value={ratePerHour}
+                label="Rate Per Hour"
+                onChange={(e) => setRatePerHour(e.target.value)}
+                classes={{root: classes.root}}
+                InputProps={{
+                  inputComponent: NumberInputComponent,
+                }}
+                {...(errors.ratePerHour && {
+                  error: true,
+                  helperText: errors.ratePerHour,
+                })}
+              />
+            </div>
+            
+            <div>
+              <Button
+                variant="contained"
+                size="small"
+                color="primary"
+                onClick={handleSubmit}
+                classes={{root: classes.root}}
+                startIcon={<Check/>}
+              >
+                {isUpdating ? "Update" : "Submit"}
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                color="secondary"
+                onClick={handleClose}
+                classes={{root: classes.root}}
+                startIcon={<Cancel/>}
+              >
+                Cancel
+              </Button>
+            </div>
+          </center>
           </>
         ) : (
           <CircularProgress />
         )}
+        
       </TransitionsModal>
 
       <Snack
