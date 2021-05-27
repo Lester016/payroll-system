@@ -18,7 +18,6 @@ import {
   Check,
 } from "@material-ui/icons/";
 
-
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
@@ -30,6 +29,7 @@ const Deductions = () => {
   const [snackMessage, setSnackMessage] = useState("");
   const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
+  const [amount, setAmount] = useState();
   const [errors, setErrors] = useState({});
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,10 +52,6 @@ const Deductions = () => {
         backgroundColor:"#bf0644"
       },
       borderRadius:'100px',
-
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      margin: theme.spacing(1),
     },
   }));
 
@@ -65,6 +61,10 @@ const Deductions = () => {
     {
       id: "title",
       label: "Description",
+    },
+    {
+      id: "amount",
+      label: "Amount",
     },
     {
       id: "options",
@@ -95,6 +95,7 @@ const Deductions = () => {
   const handleClose = () => {
     // Reset to default values
     setDeductionTitle("");
+    setAmount();
 
     setIsModalOpen(false);
     setIsUpdating(null);
@@ -124,6 +125,7 @@ const Deductions = () => {
   const validate = () => {
     let temp = {};
     temp.deductionTitle = deductionTitle ? "" : "This field is required.";
+    temp.amount = amount ? "" : "This field is required.";
 
     setErrors({
       ...temp,
@@ -144,6 +146,7 @@ const Deductions = () => {
             "https://tup-payroll-default-rtdb.firebaseio.com/deductions.json",
             {
               title: deductionTitle,
+              amount: parseFloat(amount),
             }
           )
           .then((response) => {
@@ -152,6 +155,7 @@ const Deductions = () => {
               ...deductions,
               [response.data.name]: {
                 title: deductionTitle,
+                amount: parseFloat(amount),
               },
             });
             setIsLoading(false);
@@ -179,6 +183,7 @@ const Deductions = () => {
             `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${isUpdating}.json`,
             {
               title: deductionTitle,
+              amount: parseFloat(amount),
             }
           )
           .then(() => {
@@ -187,6 +192,7 @@ const Deductions = () => {
               ...deductions,
               [isUpdating]: {
                 title: deductionTitle,
+                amount: amount,
               },
             });
             setIsLoading(false);
@@ -236,7 +242,9 @@ const Deductions = () => {
   // Edit handle
   const handleEdit = (key) => {
     const oldDeductionTitle = deductions[key].title;
+    const oldAmount = deductions[key].amount;
     setDeductionTitle(oldDeductionTitle);
+    setAmount(oldAmount);
     setIsUpdating(key);
     handleOpen();
   };
@@ -290,7 +298,7 @@ const Deductions = () => {
             onEditRow={handleEdit}
             filterFn={filterFn}
             columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 1).map((item) => item.id)}
+            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
             isLoading={isFetching}
           />
         </div>
@@ -326,29 +334,6 @@ const Deductions = () => {
               Cancel
             </Button>
           </center>
-            <center>
-              <h4> Are you sure you want to delete that?</h4>
-              <Button
-                variant="contained"
-                size="small"
-                color="secondary"
-                onClick={handleDelete}
-                text-align="center"
-                startIcon={<Delete />}
-                classes={{ root: classes.root }}
-              >
-                Delete
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                color="primary"
-                onClick={DeleteClose}
-                startIcon={<Cancel />}
-              >
-                Cancel
-              </Button>
-            </center>
           </>
         ) : (
           <CircularProgress />
@@ -370,7 +355,6 @@ const Deductions = () => {
                 helperText: errors.deductionTitle,
               })}
             />
-
             <TextField
               value={amount}
               label="Amount"
@@ -408,23 +392,6 @@ const Deductions = () => {
               </Button>
             </div>
           </center>
-
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={handleSubmit}
-            >
-              {isUpdating ? "Update" : "Submit"}
-            </Button>
-            <Button
-              variant="contained"
-              size="small"
-              color="secondary"
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
           </>
         ) : (
           <CircularProgress />
