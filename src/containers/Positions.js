@@ -9,7 +9,14 @@ import {
   CircularProgress,
   makeStyles,
 } from "@material-ui/core";
+
 import { Add as AddIcon, Search as SearchIcon , Delete , Cancel , Check} from "@material-ui/icons";
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  Delete,
+  Cancel,
+} from "@material-ui/icons";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -22,6 +29,8 @@ const Position = () => {
   const [snackMessage, setSnackMessage] = useState("");
   const [positions, setPositions] = useState({});
   const [jobTitle, setJobTitle] = useState("");
+  const [taxAmount, setTaxAmount] = useState();
+  const [basicSalary, setBasicSalary] = useState();
   const [ratePerHour, setRatePerHour] = useState();
   const [errors, setErrors] = useState({});
   const [isUpdating, setIsUpdating] = useState(null);
@@ -35,6 +44,7 @@ const Position = () => {
     },
   });
 
+
   const useStyles= makeStyles(theme=>({
     root:{
       margin:theme.spacing(.5)
@@ -45,6 +55,10 @@ const Position = () => {
         backgroundColor:"#bf0644"
       },
       borderRadius:'100px',
+      
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      margin: theme.spacing(1),
     },
   }));
 
@@ -58,6 +72,14 @@ const Position = () => {
     {
       id: "rate",
       label: "Rate Per Hour",
+    },
+    {
+      id: "tax",
+      label: "Tax",
+    },
+    {
+      id: "basicSalary",
+      label: "Basic Salary",
     },
     {
       id: "options",
@@ -89,6 +111,8 @@ const Position = () => {
     // Reset to default values
     setJobTitle("");
     setRatePerHour();
+    setTaxAmount();
+    setBasicSalary();
 
     setIsModalOpen(false);
     setIsUpdating(null);
@@ -119,6 +143,8 @@ const Position = () => {
     let temp = {};
     temp.jobTitle = jobTitle ? "" : "This field is required.";
     temp.ratePerHour = ratePerHour ? "" : "This field is required.";
+    temp.basicSalary = basicSalary ? "" : "This field is required.";
+    temp.taxAmount = taxAmount ? "" : "This field is required.";
 
     setErrors({
       ...temp,
@@ -140,6 +166,8 @@ const Position = () => {
             {
               title: jobTitle,
               rate: parseFloat(ratePerHour),
+              basicSalary: parseFloat(basicSalary),
+              tax: parseFloat(taxAmount),
             }
           )
           .then((response) => {
@@ -147,8 +175,10 @@ const Position = () => {
             setPositions({
               ...positions,
               [response.data.name]: {
-                rate: parseFloat(ratePerHour),
                 title: jobTitle,
+                rate: parseFloat(ratePerHour),
+                basicSalary: parseFloat(basicSalary),
+                tax: parseFloat(taxAmount),
               },
             });
             setIsLoading(false);
@@ -177,6 +207,8 @@ const Position = () => {
             {
               title: jobTitle,
               rate: parseFloat(ratePerHour),
+              basicSalary: parseFloat(basicSalary),
+              tax: parseFloat(taxAmount),
             }
           )
           .then(() => {
@@ -186,6 +218,8 @@ const Position = () => {
               [isUpdating]: {
                 rate: ratePerHour,
                 title: jobTitle,
+                basicSalary: basicSalary,
+                tax: taxAmount,
               },
             });
             setIsLoading(false);
@@ -235,8 +269,14 @@ const Position = () => {
   const handleEdit = (key) => {
     const oldJobTitle = positions[key].title;
     const oldRatePerHour = positions[key].rate;
+    const oldTaxAmount = positions[key].tax;
+    const oldBasicSalary = positions[key].basicSalary;
+
     setJobTitle(oldJobTitle);
     setRatePerHour(oldRatePerHour);
+    setTaxAmount(oldTaxAmount);
+    setBasicSalary(oldBasicSalary);
+
     setIsUpdating(key);
     handleOpen();
   };
@@ -289,7 +329,7 @@ const Position = () => {
             onEditRow={handleEdit}
             filterFn={filterFn}
             columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
+            propertiesOrder={columnHeads.slice(0, 4).map((item) => item.id)}
             isLoading={isFetching}
           />
         </div>
@@ -325,8 +365,32 @@ const Position = () => {
               >
                 Cancel
               </Button>
+
+            <center>
+              <h4> Are you sure you want to delete that?</h4>
+              <div>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  onClick={handleDelete}
+                  text-align="center"
+                  startIcon={<Delete />}
+                  classes={{ root: classes.root }}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={DeleteClose}
+                  startIcon={<Cancel />}
+                >
+                  Cancel
+                </Button>
               </div>
-          </center>
+            </center>
           </>
         ) : (
           <CircularProgress />
@@ -387,6 +451,71 @@ const Position = () => {
               </Button>
             </div>
           </center>
+
+            <TextField
+              value={jobTitle}
+              label="Job Title"
+              onChange={(e) => setJobTitle(e.target.value)}
+              {...(errors.jobTitle && {
+                error: true,
+                helperText: errors.jobTitle,
+              })}
+            />
+            <TextField
+              value={ratePerHour}
+              label="Rate Per Hour"
+              onChange={(e) => setRatePerHour(e.target.value)}
+              InputProps={{
+                inputComponent: NumberInputComponent,
+              }}
+              {...(errors.ratePerHour && {
+                error: true,
+                helperText: errors.ratePerHour,
+              })}
+            />
+
+            <TextField
+              value={taxAmount}
+              label="Tax Amount"
+              onChange={(e) => setTaxAmount(e.target.value)}
+              InputProps={{
+                inputComponent: NumberInputComponent,
+              }}
+              {...(errors.taxAmount && {
+                error: true,
+                helperText: errors.taxAmount,
+              })}
+            />
+
+            <TextField
+              value={basicSalary}
+              label="Basic Salary"
+              onChange={(e) => setBasicSalary(e.target.value)}
+              InputProps={{
+                inputComponent: NumberInputComponent,
+              }}
+              {...(errors.basicSalary && {
+                error: true,
+                helperText: errors.basicSalary,
+              })}
+            />
+
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={handleSubmit}
+            >
+              {isUpdating ? "Update" : "Submit"}
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
           </>
         ) : (
           <CircularProgress />
