@@ -129,7 +129,7 @@ const Employees = () => {
     });
   };
 
-  let csvData = employees.map(employee => ({
+  let csvData = employees.map((employee) => ({
     employeeId: '=""' + employee.employeeId + '""',
     firstName: employee.firstName,
     lastName: employee.lastName,
@@ -179,7 +179,7 @@ const Employees = () => {
               className="btn btn-primary"
               target="_blank"
             >
-              Download me
+              Export Employee CSV
             </CSVLink>
           </Button>
         </Toolbar>

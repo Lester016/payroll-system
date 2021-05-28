@@ -256,7 +256,7 @@ const EmployeeForm = ({ handleFormClose }) => {
           },
           salary: values.salary,
         };
-        // Submit new position
+        // Submit new employee
         axios
           .post("https://tup-payroll.herokuapp.com/api/employees", postItem)
           .then((response) => {
@@ -465,7 +465,13 @@ const EmployeeForm = ({ handleFormClose }) => {
           </Grid>
 
           {/*Fifth Row - Position, Rate, & Salary*/}
-          <Grid item xs={12} sm={12} md={4} className={values.type === "part-timer" && classes.hidden}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            className={values.type === "part-timer" ? classes.hidden : ""}
+          >
             <Select
               name="position"
               label="Position"
@@ -473,10 +479,18 @@ const EmployeeForm = ({ handleFormClose }) => {
               onChange={handlePosition}
               options={Object.values(positions).map((item) => item.title)}
               error={errors.positionTitle}
-              isDisabled={isFetching || Object.keys(positions).length === 0 ? true : false}
+              isDisabled={
+                isFetching || Object.keys(positions).length === 0 ? true : false
+              }
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={2} className={values.type === "part-timer" && classes.hidden}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={2}
+            className={values.type === "part-timer" ? classes.hidden : ""}
+          >
             <Typography>
               {`Rate: ${!values.positionRate ? "None" : ""}`}
               <NumberFormat
@@ -487,7 +501,13 @@ const EmployeeForm = ({ handleFormClose }) => {
               />
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={12} md={6} className={values.type === "part-timer" && classes.hidden}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            className={values.type === "part-timer" ? classes.hidden : ""}
+          >
             <TextField
               variant="outlined"
               label="Salary"
@@ -496,9 +516,7 @@ const EmployeeForm = ({ handleFormClose }) => {
               InputProps={{
                 inputComponent: NumberInputComponent,
               }}
-              onBlur={(e) =>
-                setValues({ ...values, firstName: e.target.value })
-              }
+              onBlur={(e) => setValues({ ...values, salary: e.target.value })}
               error={errors.salary}
             />
           </Grid>
