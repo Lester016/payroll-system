@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import NumberFormat from "react-number-format";
-import AddIcon from "@material-ui/icons/Add";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import {
   makeStyles,
@@ -10,6 +9,7 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
+import { Add as AddIcon, Cancel as CancelIcon } from "@material-ui/icons";
 
 import TextField from "../../components/TextField";
 import RadioGroup from "../../components/RadioGroup";
@@ -518,7 +518,7 @@ const EmployeeForm = ({ handleFormClose }) => {
               size="small"
               variant="contained"
               color="secondary"
-              startIcon={<AddIcon />}
+              startIcon={<CancelIcon />}
               onClick={handleFormClose}
               className={classes.button}
             >
