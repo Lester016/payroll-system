@@ -38,6 +38,9 @@ const useStyle = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(0, 1),
   },
+  hidden: {
+    visibility: "hidden",
+  },
 }));
 
 const initialValues = {
@@ -169,7 +172,8 @@ const EmployeeForm = ({ handleFormClose }) => {
       ...values,
       type: event.target.value,
       positionTitle: "",
-      positionRate: 0,
+      positionRate: "",
+      salary: "",
     });
   };
 
@@ -458,7 +462,7 @@ const EmployeeForm = ({ handleFormClose }) => {
             />
           </Grid>
 
-          {/*Fifth Row - Position & Salary*/}
+          {/*Fifth Row - Position, Rate, & Salary*/}
           <Grid item xs={12} sm={12} md={4}>
             {isFetching ||
             Object.keys(positions).length === 0 ||
@@ -480,8 +484,9 @@ const EmployeeForm = ({ handleFormClose }) => {
               />
             )}
           </Grid>
-          <Grid item xs={12} sm={12} md={4}>
+          <Grid item xs={12} sm={12} md={2}>
             <Typography>
+              {`Rate: ${!values.positionRate ? "None" : ""}`}
               <NumberFormat
                 value={values.positionRate}
                 displayType={"text"}
@@ -489,6 +494,29 @@ const EmployeeForm = ({ handleFormClose }) => {
                 prefix="₱"
               />
             </Typography>
+          </Grid>
+
+          <Grid item xs={12} sm={12} md={6}>
+            {values.type === "part-timer" ? (
+              <TextField
+                variant="outlined"
+                label="Salary"
+                name="Salary"
+                values={""}
+                disabled
+              />
+            ) : (
+              <TextField
+                variant="outlined"
+                label="Salary"
+                name="Salary"
+                values={values.firstName}
+                onBlur={(e) =>
+                  setValues({ ...values, firstName: e.target.value })
+                }
+                error={errors.firstName}
+              />
+            )}
           </Grid>
 
           <Grid item xs={12} sm={12} md={4}>
