@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import NumberFormat from "react-number-format";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import {
@@ -81,7 +82,7 @@ const typeItems = [
   { id: "part-timer", title: "Part-Timer" },
 ];
 
-const EmployeeForm = ({ handleFormClose }) => {
+const EmployeeForm = ({ userToken, handleFormClose }) => {
   const classes = useStyle();
 
   const [isFetching, setIsFetching] = useState(false);
@@ -235,6 +236,15 @@ const EmployeeForm = ({ handleFormClose }) => {
 
   // EMPLOYEE FORM HANDLES
   const handleSubmit = (e) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
+    // axios request.
+    axios.post(`api-url`, `your data here`, config).then().catch();
+
     if (validate()) {
       setIsLoading(true);
       if (isUpdating === null) {
@@ -465,7 +475,13 @@ const EmployeeForm = ({ handleFormClose }) => {
           </Grid>
 
           {/*Fifth Row - Position, Rate, & Salary*/}
-          <Grid item xs={12} sm={12} md={4} className={values.type === "part-timer" && classes.hidden}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            className={values.type === "part-timer" && classes.hidden}
+          >
             <Select
               name="position"
               label="Position"
@@ -473,10 +489,18 @@ const EmployeeForm = ({ handleFormClose }) => {
               onChange={handlePosition}
               options={Object.values(positions).map((item) => item.title)}
               error={errors.positionTitle}
-              isDisabled={isFetching || Object.keys(positions).length === 0 ? true : false}
+              isDisabled={
+                isFetching || Object.keys(positions).length === 0 ? true : false
+              }
             />
           </Grid>
-          <Grid item xs={12} sm={12} md={2} className={values.type === "part-timer" && classes.hidden}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={2}
+            className={values.type === "part-timer" && classes.hidden}
+          >
             <Typography>
               {`Rate: ${!values.positionRate ? "None" : ""}`}
               <NumberFormat
@@ -487,7 +511,13 @@ const EmployeeForm = ({ handleFormClose }) => {
               />
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={12} md={6} className={values.type === "part-timer" && classes.hidden}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            className={values.type === "part-timer" && classes.hidden}
+          >
             <TextField
               variant="outlined"
               label="Salary"
@@ -537,4 +567,10 @@ const EmployeeForm = ({ handleFormClose }) => {
   );
 };
 
-export default EmployeeForm;
+const mapStateToProps = (state) => {
+  return {
+    userToken: state.auth.token,
+  };
+};
+
+export default connect(mapStateToProps)(EmployeeForm);
