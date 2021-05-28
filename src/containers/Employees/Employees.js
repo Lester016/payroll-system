@@ -1,4 +1,5 @@
 import axios from "axios";
+import { CSVLink } from "react-csv";
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -55,7 +56,7 @@ const Employees = () => {
   //const [isLoading, setIsLoading] = useState(false);
   //const [isUpdating, setIsUpdating] = useState(null);
 
-  const [employees, setEmployees] = useState({});
+  const [employees, setEmployees] = useState([]);
   const [employeeFormOpen, setEmployeeFormOpen] = useState(false);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -128,6 +129,24 @@ const Employees = () => {
     });
   };
 
+  let csvData = employees.map(employee => ({
+    employeeId: '=""' + employee.employeeId + '""',
+    firstName: employee.firstName,
+    lastName: employee.lastName,
+    positionTitle: employee.position.title,
+    positionRate: employee.position.rate,
+    isPartTime: employee.isPartTime ? "1" : "0",
+    salary: employee.salary,
+    campus: employee.campus,
+    college: employee.college,
+    department: employee.department,
+    gender: employee.gender,
+    email: employee.email,
+    contactInfo: '=""' + employee.contactInfo + '""',
+    address: employee.address,
+    birthDate: employee.birthDate.substr(0, 10),
+  }));
+
   return (
     <>
       <Container component={Paper}>
@@ -152,6 +171,16 @@ const Employees = () => {
             onClick={handleOpen}
           >
             Create New
+          </Button>
+          <Button>
+            <CSVLink
+              data={csvData}
+              filename={"my-file.csv"}
+              className="btn btn-primary"
+              target="_blank"
+            >
+              Download me
+            </CSVLink>
           </Button>
         </Toolbar>
         <Table

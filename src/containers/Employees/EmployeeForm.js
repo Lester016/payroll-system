@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import NumberFormat from "react-number-format";
-import AddIcon from "@material-ui/icons/Add";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import {
   makeStyles,
@@ -10,11 +9,13 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
+import { Add as AddIcon, Cancel as CancelIcon } from "@material-ui/icons";
 
 import TextField from "../../components/TextField";
 import RadioGroup from "../../components/RadioGroup";
 import Select from "../../components/Select";
 import Snack from "../../components/Snack";
+import NumberInputComponent from "../../components/NumberInputComponent";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -37,6 +38,9 @@ const useStyle = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(0, 1),
+  },
+  hidden: {
+    visibility: "hidden",
   },
 }));
 
@@ -62,8 +66,8 @@ const initialValues = {
   address: "",
   birthDate: new Date(),
   positionTitle: "",
-  positionRate: 0,
-  deductions: [],
+  positionRate: "",
+  salary: "",
 };
 
 const genderItems = [
@@ -169,7 +173,8 @@ const EmployeeForm = ({ handleFormClose }) => {
       ...values,
       type: event.target.value,
       positionTitle: "",
-      positionRate: 0,
+      positionRate: "",
+      salary: "",
     });
   };
 
@@ -218,6 +223,7 @@ const EmployeeForm = ({ handleFormClose }) => {
     temp.positionTitle = fieldValues.positionTitle
       ? ""
       : "This field is required.";
+    temp.salary = fieldValues.salary ? "" : "This field is required.";
 
     setErrors({
       ...temp,
@@ -248,7 +254,7 @@ const EmployeeForm = ({ handleFormClose }) => {
             title: values.positionTitle,
             rate: values.positionRate,
           },
-          deductions: [],
+          salary: values.salary,
         };
         // Submit new position
         axios
@@ -257,7 +263,7 @@ const EmployeeForm = ({ handleFormClose }) => {
             // Submit the position to the existings positions list.
             setEmployees({
               ...employees,
-              postItem,
+              values,
             });
             setIsLoading(false);
 
@@ -458,30 +464,21 @@ const EmployeeForm = ({ handleFormClose }) => {
             />
           </Grid>
 
-          {/*Fifth Row - Position & Salary*/}
-          <Grid item xs={12} sm={12} md={4}>
-            {isFetching ||
-            Object.keys(positions).length === 0 ||
-            values.type === "part-timer" ? (
-              <Select
-                name="position"
-                label="Position"
-                value=""
-                isDisabled={true}
-              />
-            ) : (
-              <Select
-                name="position"
-                label="Position"
-                value={values.positionTitle}
-                onChange={handlePosition}
-                options={Object.values(positions).map((item) => item.title)}
-                error={errors.positionTitle}
-              />
-            )}
+          {/*Fifth Row - Position, Rate, & Salary*/}
+          <Grid item xs={12} sm={12} md={4} className={values.type === "part-timer" && classes.hidden}>
+            <Select
+              name="position"
+              label="Position"
+              value={values.positionTitle}
+              onChange={handlePosition}
+              options={Object.values(positions).map((item) => item.title)}
+              error={errors.positionTitle}
+              isDisabled={isFetching || Object.keys(positions).length === 0 ? true : false}
+            />
           </Grid>
-          <Grid item xs={12} sm={12} md={4}>
+          <Grid item xs={12} sm={12} md={2} className={values.type === "part-timer" && classes.hidden}>
             <Typography>
+              {`Rate: ${!values.positionRate ? "None" : ""}`}
               <NumberFormat
                 value={values.positionRate}
                 displayType={"text"}
@@ -489,6 +486,21 @@ const EmployeeForm = ({ handleFormClose }) => {
                 prefix="₱"
               />
             </Typography>
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} className={values.type === "part-timer" && classes.hidden}>
+            <TextField
+              variant="outlined"
+              label="Salary"
+              name="Salary"
+              values={values.salary}
+              InputProps={{
+                inputComponent: NumberInputComponent,
+              }}
+              onBlur={(e) =>
+                setValues({ ...values, firstName: e.target.value })
+              }
+              error={errors.salary}
+            />
           </Grid>
 
           <Grid item xs={12} sm={12} md={4}>
@@ -506,7 +518,7 @@ const EmployeeForm = ({ handleFormClose }) => {
               size="small"
               variant="contained"
               color="secondary"
-              startIcon={<AddIcon />}
+              startIcon={<CancelIcon />}
               onClick={handleFormClose}
               className={classes.button}
             >
