@@ -136,6 +136,7 @@ const Employees = () => {
     positionTitle: employee.position.title,
     positionRate: employee.position.rate,
     isPartTime: employee.isPartTime ? "1" : "0",
+    salary: employee.salary,
     campus: employee.campus,
     college: employee.college,
     department: employee.department,
