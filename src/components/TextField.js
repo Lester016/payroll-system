@@ -1,7 +1,15 @@
-import React from 'react';
+import React from "react";
 import { TextField as MaterialTextField } from "@material-ui/core";
 
-const TextField = ({ variant, label, name, value, onChange, error = null, ...other }) => {
+const TextField = ({
+  variant,
+  label,
+  name,
+  value,
+  onChange,
+  error = null,
+  ...other
+}) => {
   return (
     <MaterialTextField
       variant={variant}

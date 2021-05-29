@@ -201,13 +201,15 @@ const Employees = ({ userToken }) => {
       },
       college: {
         name: item.college,
-        idx: tup.colleges[tup.campuses.indexOf(item.campus)].indexOf(item.college),
+        idx: tup.colleges[tup.campuses.indexOf(item.campus)].indexOf(
+          item.college
+        ),
       },
       department: {
         name: item.department,
-        idx: tup.departments[tup.campuses.indexOf(item.campus)][tup.colleges[tup.campuses.indexOf(item.campus)].indexOf(item.college)].indexOf(
-          item.department
-        ),
+        idx: tup.departments[tup.campuses.indexOf(item.campus)][
+          tup.colleges[tup.campuses.indexOf(item.campus)].indexOf(item.college)
+        ].indexOf(item.department),
       },
       isPartTime: item.isPartTime,
       email: item.email,
