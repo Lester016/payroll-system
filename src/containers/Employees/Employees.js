@@ -144,7 +144,7 @@ const Employees = () => {
     email: employee.email,
     contactInfo: '=""' + employee.contactInfo + '""',
     address: employee.address,
-    birthDate: employee.birthDate.substr(0, 10),
+    birthDate: employee.birthDate,
   }));
 
   return (
@@ -199,7 +199,7 @@ const Employees = () => {
         open={employeeFormOpen}
         setOpen={() => setEmployeeFormOpen(false)}
       >
-        <EmployeeForm handleFormClose={handleClose} />
+        <EmployeeForm handleFormClose={handleClose} employees={employees} setEmployees={setEmployees}/>
         {/*employees={employees}
           setEmployees={setEmployees}
           tup={tup}

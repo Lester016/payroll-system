@@ -1,3 +1,4 @@
+import React from 'react';
 import { TextField as MaterialTextField } from "@material-ui/core";
 
 const TextField = ({ variant, label, name, value, onChange, error = null, ...other }) => {
@@ -6,8 +7,7 @@ const TextField = ({ variant, label, name, value, onChange, error = null, ...oth
       variant={variant}
       label={label}
       name={name}
-      value={value}
-      onChange={onChange}
+      onBlur={onChange}
       {...other}
       {...(error && { error: true, helperText: error })}
     />

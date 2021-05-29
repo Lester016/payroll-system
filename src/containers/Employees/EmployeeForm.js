@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import NumberFormat from "react-number-format";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import {
@@ -81,7 +82,12 @@ const typeItems = [
   { id: "part-timer", title: "Part-Timer" },
 ];
 
-const EmployeeForm = ({ handleFormClose }) => {
+const EmployeeForm = ({
+  userToken,
+  handleFormClose,
+  employees,
+  setEmployees,
+}) => {
   const classes = useStyle();
 
   const [isFetching, setIsFetching] = useState(false);
@@ -91,7 +97,6 @@ const EmployeeForm = ({ handleFormClose }) => {
   const [snackMessage, setSnackMessage] = useState("");
   const [tup, setTUP] = useState({});
   const [positions, setPositions] = useState({});
-  const [employees, setEmployees] = useState({});
   const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
 
@@ -100,16 +105,11 @@ const EmployeeForm = ({ handleFormClose }) => {
     setIsFetching(true);
     let url = "https://tup-payroll-default-rtdb.firebaseio.com";
     axios
-      .all([
-        axios.get(`${url}/tup.json`),
-        axios.get(`${url}/positions.json`),
-        axios.get("https://tup-payroll.herokuapp.com/api/employees"),
-      ])
+      .all([axios.get(`${url}/tup.json`), axios.get(`${url}/positions.json`)])
       .then(
         axios.spread((...response) => {
           setTUP(response[0].data);
           setPositions(response[1].data);
-          setEmployees(response[2].data);
           setIsFetching(false);
         })
       )
@@ -220,10 +220,12 @@ const EmployeeForm = ({ handleFormClose }) => {
       fieldValues.contactInfo.length === 11
         ? ""
         : "Contact Number must be 11 digits.";
-    temp.positionTitle = fieldValues.positionTitle
+    if (fieldValues.type === "regular") {
+      temp.positionTitle = fieldValues.positionTitle
       ? ""
       : "This field is required.";
-    temp.salary = fieldValues.salary ? "" : "This field is required.";
+      temp.salary = fieldValues.salary ? "" : "This field is required.";
+    }
 
     setErrors({
       ...temp,
@@ -233,38 +235,70 @@ const EmployeeForm = ({ handleFormClose }) => {
       return Object.values(temp).every((x) => x === "");
   };
 
+  const zeroPad = (num, places) => String(num).padStart(places, "0");
+
   // EMPLOYEE FORM HANDLES
   const handleSubmit = (e) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
+
     if (validate()) {
+      let employeeId = `${values.campus.idx}${values.college.idx}${zeroPad(
+        values.dept.idx,
+        2
+      )}`;
       setIsLoading(true);
       if (isUpdating === null) {
-        let postItem = {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          gender: values.gender === "male" ? "m" : "f",
-          campus: values.campus.name,
-          college: values.college.name,
-          dept: values.dept.name,
-          isPartTime: values.isPartTime === "part-timer" ? true : false,
-          email: values.email,
-          contactInfo: values.contactInfo,
-          address: values.address,
-          birthDate: values.birthDate,
-          position: {
-            title: values.positionTitle,
-            rate: values.positionRate,
-          },
-          salary: values.salary,
-        };
+        let postItem =
+          values.type === "part-timer"
+            ? {
+                employeeId: employeeId,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                gender: values.gender === "male" ? "M" : "F",
+                campus: values.campus.name,
+                college: values.college.name,
+                department: values.dept.name,
+                isPartTime: values.type === "part-timer" ? true : false,
+                email: values.email,
+                contactInfo: values.contactInfo,
+                address: values.address,
+                birthDate: values.birthDate,
+              }
+            : {
+                employeeId: employeeId,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                gender: values.gender === "male" ? "M" : "F",
+                campus: values.campus.name,
+                college: values.college.name,
+                department: values.dept.name,
+                isPartTime: values.type === "part-timer" ? true : false,
+                email: values.email,
+                contactInfo: values.contactInfo,
+                address: values.address,
+                birthDate: values.birthDate,
+                position: {
+                  title: values.positionTitle,
+                  rate: parseFloat(values.positionRate),
+                },
+                salary: parseFloat(values.salary),
+              };
+        console.log(postItem);
         // Submit new employee
         axios
-          .post("https://tup-payroll.herokuapp.com/api/employees", postItem)
+          .post(
+            "https://tup-payroll.herokuapp.com/api/employees",
+            postItem,
+            config
+          )
           .then((response) => {
-            // Submit the position to the existings positions list.
-            setEmployees({
-              ...employees,
-              values,
-            });
+            // Submit the employee to the existings employees list.
+            setEmployees([...employees, response.data]);
             setIsLoading(false);
 
             // Close modal
@@ -306,6 +340,8 @@ const EmployeeForm = ({ handleFormClose }) => {
     </>
   );
 
+  console.log(values);
+
   return (
     <>
       <Container className={classes.root}>
@@ -316,10 +352,7 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="First Name"
               name="firstName"
-              values={values.firstName}
-              onBlur={(e) =>
-                setValues({ ...values, firstName: e.target.value })
-              }
+              onChange={(e) => setValues({ ...values, firstName: e.target.value })}
               error={errors.firstName}
             />
           </Grid>
@@ -328,8 +361,7 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="Last Name"
               name="lastName"
-              values={values.lastName}
-              onBlur={(e) => setValues({ ...values, lastName: e.target.value })}
+              onChange={(e) => setValues({ ...values, lastName: e.target.value })}
               error={errors.lastName}
             />
           </Grid>
@@ -425,7 +457,7 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="Email"
               name="email"
-              onBlur={(e) => setValues({ ...values, email: e.target.value })}
+              onChange={(e) => setValues({ ...values, email: e.target.value })}
               error={errors.email}
             />
           </Grid>
@@ -434,7 +466,7 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="Contact Number"
               name="contactInfo"
-              onBlur={(e) =>
+              onChange={(e) =>
                 setValues({ ...values, contactInfo: e.target.value })
               }
               error={errors.contactInfo}
@@ -459,7 +491,9 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="Address"
               name="address"
-              onBlur={(e) => setValues({ ...values, address: e.target.value })}
+              onChange={(e) =>
+                setValues({ ...values, address: e.target.value })
+              }
               error={errors.address}
             />
           </Grid>
@@ -513,10 +547,10 @@ const EmployeeForm = ({ handleFormClose }) => {
               label="Salary"
               name="Salary"
               values={values.salary}
+              onChange={(e) => setValues({ ...values, salary: e.target.value })}
               InputProps={{
                 inputComponent: NumberInputComponent,
               }}
-              onBlur={(e) => setValues({ ...values, salary: e.target.value })}
               error={errors.salary}
             />
           </Grid>
@@ -555,4 +589,10 @@ const EmployeeForm = ({ handleFormClose }) => {
   );
 };
 
-export default EmployeeForm;
+const mapStateToProps = (state) => {
+  return {
+    userToken: state.auth.token,
+  };
+};
+
+export default connect(mapStateToProps)(EmployeeForm);
