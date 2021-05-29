@@ -10,7 +10,12 @@ import {
   CircularProgress,
   InputAdornment,
 } from "@material-ui/core";
-import { Add as AddIcon, Search as SearchIcon, Delete as DeleteIcon, Cancel as CancelIcon } from "@material-ui/icons";
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  Delete as DeleteIcon,
+  Cancel as CancelIcon,
+} from "@material-ui/icons";
 
 import EmployeeForm from "./EmployeeForm";
 import Table from "../../components/Table";
@@ -18,6 +23,32 @@ import TextField from "../../components/TextField";
 import Dialog from "../../components/Dialog";
 import TransitionsModal from "../../components/Modal";
 import Snack from "../../components/Snack";
+
+const initialValues = {
+  firstName: "",
+  lastName: "",
+  gender: "male",
+  campus: {
+    name: "",
+    idx: -1,
+  },
+  college: {
+    name: "",
+    idx: -1,
+  },
+  department: {
+    name: "",
+    idx: -1,
+  },
+  isPartTime: false,
+  email: "",
+  contactInfo: "",
+  address: "",
+  birthDate: new Date(),
+  positionTitle: "",
+  positionRate: "",
+  salary: "",
+};
 
 const columnHeads = [
   {
@@ -55,14 +86,17 @@ const columnHeads = [
   },
 ];
 
-const Employees = ({userToken}) => {
+const Employees = ({ userToken }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
+  const [tup, setTUP] = useState({});
+  const [positions, setPositions] = useState({});
   const [employees, setEmployees] = useState([]);
   const [employeeFormOpen, setEmployeeFormOpen] = useState(false);
+  const [values, setValues] = useState(initialValues);
   const [deleteKey, setDeleteKey] = useState(null);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -70,15 +104,23 @@ const Employees = ({userToken}) => {
     },
   });
 
-  // Get employees in the database
   useEffect(() => {
     setIsFetching(true);
+    let url = "https://tup-payroll-default-rtdb.firebaseio.com";
     axios
-      .get("https://tup-payroll.herokuapp.com/api/employees")
-      .then((response) => {
-        setEmployees(response.data);
-        setIsFetching(false);
-      })
+      .all([
+        axios.get("https://tup-payroll.herokuapp.com/api/employees"),
+        axios.get(`${url}/tup.json`),
+        axios.get(`${url}/positions.json`),
+      ])
+      .then(
+        axios.spread((...response) => {
+          setEmployees(response[0].data);
+          setTUP(response[1].data);
+          setPositions(response[2].data);
+          setIsFetching(false);
+        })
+      )
       .catch((error) => {
         console.log(error);
         setIsFetching(false);
@@ -90,6 +132,8 @@ const Employees = ({userToken}) => {
     setEmployeeFormOpen(true);
   };
   const handleClose = () => {
+    setIsUpdating(null);
+    setValues(initialValues);
     setEmployeeFormOpen(false);
   };
 
@@ -120,15 +164,17 @@ const Employees = ({userToken}) => {
         Authorization: `Bearer ${userToken}`,
       },
     };
-
     setIsLoading(true);
     axios
       .delete(
-        `https://tup-payroll.herokuapp.com/api/employees/${deleteKey}`, config
+        `https://tup-payroll.herokuapp.com/api/employees/${deleteKey}`,
+        config
       )
       .then(() => {
         let filteredEmployees = employees;
-        filteredEmployees = filteredEmployees.filter(function(item) {return item._id !== deleteKey})
+        filteredEmployees = filteredEmployees.filter(function (item) {
+          return item._id !== deleteKey;
+        });
         setEmployees(filteredEmployees);
         setIsLoading(false);
 
@@ -140,7 +186,41 @@ const Employees = ({userToken}) => {
         setIsLoading(false);
       });
   };
-  const handleEdit = () => {};
+  const handleEdit = (key) => {
+    let item = employees.filter(function (employee) {
+      return employee._id === key;
+    })[0];
+    console.log(item);
+    setValues({
+      firstName: item.firstName,
+      lastName: item.lastName,
+      gender: item.gender,
+      campus: {
+        name: item.campus,
+        idx: tup.campuses.indexOf(item.campus),
+      },
+      college: {
+        name: item.college,
+        idx: tup.colleges[tup.campuses.indexOf(item.campus)].indexOf(item.college),
+      },
+      department: {
+        name: item.department,
+        idx: tup.departments[tup.campuses.indexOf(item.campus)][tup.colleges[tup.campuses.indexOf(item.campus)].indexOf(item.college)].indexOf(
+          item.department
+        ),
+      },
+      isPartTime: item.isPartTime,
+      email: item.email,
+      contactInfo: item.contactInfo,
+      address: item.address,
+      birthDate: item.birthDate,
+      positionTitle: item.position.title ? item.position.title : "",
+      positionRate: item.position.rate ? item.position.rate : "",
+      salary: parseFloat(item.salary),
+    });
+    setIsUpdating(key);
+    handleOpen();
+  };
 
   const handleSearch = (e) => {
     let target = e.target;
@@ -228,7 +308,16 @@ const Employees = ({userToken}) => {
         open={employeeFormOpen}
         setOpen={() => setEmployeeFormOpen(false)}
       >
-        <EmployeeForm handleFormClose={handleClose} employees={employees} setEmployees={setEmployees}/>
+        <EmployeeForm
+          handleFormClose={handleClose}
+          employees={employees}
+          setEmployees={setEmployees}
+          values={values}
+          setValues={setValues}
+          tup={tup}
+          positions={positions}
+          isUpdating={isUpdating}
+        />
       </Dialog>
 
       <TransitionsModal
@@ -237,30 +326,30 @@ const Employees = ({userToken}) => {
       >
         {!isLoading ? (
           <>
-          <center>
-            <h4> Are you sure you want to delete that?</h4>
-            <div>
-              <Button
-                variant="contained"
-                size="small"
-                color="secondary"
-                onClick={handleDelete}
-                text-align="center"
-                startIcon={<DeleteIcon/>}
-              >
-                Delete
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                color="primary"
-                onClick={DeleteClose}
-                startIcon={<CancelIcon/>}
-              >
-                Cancel
-              </Button>
+            <center>
+              <h4> Are you sure you want to delete that?</h4>
+              <div>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  onClick={handleDelete}
+                  text-align="center"
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={DeleteClose}
+                  startIcon={<CancelIcon />}
+                >
+                  Cancel
+                </Button>
               </div>
-          </center>
+            </center>
           </>
         ) : (
           <CircularProgress />

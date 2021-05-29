@@ -7,7 +7,8 @@ const TextField = ({ variant, label, name, value, onChange, error = null, ...oth
       variant={variant}
       label={label}
       name={name}
-      onBlur={onChange}
+      value={value}
+      onChange={onChange}
       {...other}
       {...(error && { error: true, helperText: error })}
     />

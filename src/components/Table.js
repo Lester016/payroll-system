@@ -190,7 +190,7 @@ const AppTable = ({
                   variant="contained"
                   color="primary"
                   startIcon={<Edit />}
-                  onClick={() => onEditRow(item._id ? item.item._id : item.id)}
+                  onClick={() => onEditRow(item._id ? item._id : item.id)}
                 >
                   Edit
                 </Button>

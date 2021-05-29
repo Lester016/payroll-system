@@ -45,41 +45,15 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-const initialValues = {
-  firstName: "",
-  lastName: "",
-  gender: "male",
-  campus: {
-    name: "",
-    idx: -1,
-  },
-  college: {
-    name: "",
-    idx: -1,
-  },
-  dept: {
-    name: "",
-    idx: -1,
-  },
-  type: "regular",
-  email: "",
-  contactInfo: "",
-  address: "",
-  birthDate: new Date(),
-  positionTitle: "",
-  positionRate: "",
-  salary: "",
-};
-
 const genderItems = [
-  { id: "male", title: "Male" },
-  { id: "female", title: "Female" },
-  { id: "other", title: "Other" },
+  { id: "male", title: "Male", value: "M" },
+  { id: "female", title: "Female", value: "F" },
+  { id: "other", title: "Other", value: "O" },
 ];
 
 const typeItems = [
-  { id: "regular", title: "Regular" },
-  { id: "part-timer", title: "Part-Timer" },
+  { id: "regular", title: "Regular", value: false },
+  { id: "part-timer", title: "Part-Timer", value: true },
 ];
 
 const EmployeeForm = ({
@@ -87,37 +61,19 @@ const EmployeeForm = ({
   handleFormClose,
   employees,
   setEmployees,
+  values,
+  setValues,
+  tup,
+  positions,
+  isUpdating,
 }) => {
   const classes = useStyle();
 
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(null);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
-  const [tup, setTUP] = useState({});
-  const [positions, setPositions] = useState({});
-  const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
-
-  // Get TUP & Positions in the database
-  useEffect(() => {
-    setIsFetching(true);
-    let url = "https://tup-payroll-default-rtdb.firebaseio.com";
-    axios
-      .all([axios.get(`${url}/tup.json`), axios.get(`${url}/positions.json`)])
-      .then(
-        axios.spread((...response) => {
-          setTUP(response[0].data);
-          setPositions(response[1].data);
-          setIsFetching(false);
-        })
-      )
-      .catch((error) => {
-        console.log(error);
-        setIsFetching(false);
-      });
-  }, []);
 
   // EMPLOYEE FORM INPUT FIELDS HANDLES
   const handleGender = (event) => {
@@ -135,7 +91,7 @@ const EmployeeForm = ({
         name: "",
         idx: -1,
       },
-      dept: {
+      department: {
         name: "",
         idx: -1,
       },
@@ -149,7 +105,7 @@ const EmployeeForm = ({
         name: event.target.value,
         idx: tup.colleges[values.campus.idx].indexOf(event.target.value),
       },
-      dept: {
+      department: {
         name: "",
         idx: -1,
       },
@@ -159,7 +115,7 @@ const EmployeeForm = ({
   const handleDept = (event) => {
     setValues({
       ...values,
-      dept: {
+      department: {
         name: event.target.value,
         idx: tup.departments[values.campus.idx][values.college.idx].indexOf(
           event.target.value
@@ -211,19 +167,21 @@ const EmployeeForm = ({
       : "This field is required.";
     temp.campus = fieldValues.campus.name ? "" : "This field is required.";
     temp.college = fieldValues.college.name ? "" : "This field is required.";
-    temp.dept = fieldValues.dept.name ? "" : "This field is required.";
+    temp.department = fieldValues.department.name
+      ? ""
+      : "This field is required.";
     temp.email = /\S+@\S+\.\S+/.test(fieldValues.email.trim())
       ? ""
       : "Email adress is invalid.";
     temp.address = fieldValues.address.trim() ? "" : "This field is required.";
     temp.contactInfo =
-      fieldValues.contactInfo.length === 11
+      fieldValues.contactInfo.toString().length === 11
         ? ""
         : "Contact Number must be 11 digits.";
-    if (fieldValues.type === "regular") {
+    if (fieldValues.isPartTime === false) {
       temp.positionTitle = fieldValues.positionTitle
-      ? ""
-      : "This field is required.";
+        ? ""
+        : "This field is required.";
       temp.salary = fieldValues.salary ? "" : "This field is required.";
     }
 
@@ -246,15 +204,15 @@ const EmployeeForm = ({
       },
     };
 
+    let employeeId = `${values.campus.idx}${values.college.idx}${zeroPad(
+      values.department.idx,
+      2
+    )}`;
     if (validate()) {
-      let employeeId = `${values.campus.idx}${values.college.idx}${zeroPad(
-        values.dept.idx,
-        2
-      )}`;
       setIsLoading(true);
       if (isUpdating === null) {
         let postItem =
-          values.type === "part-timer"
+          values.isPartTime === true
             ? {
                 employeeId: employeeId,
                 firstName: values.firstName,
@@ -262,8 +220,8 @@ const EmployeeForm = ({
                 gender: values.gender === "male" ? "M" : "F",
                 campus: values.campus.name,
                 college: values.college.name,
-                department: values.dept.name,
-                isPartTime: values.type === "part-timer" ? true : false,
+                department: values.department.name,
+                isPartTime: values.isPartTime ? true : false,
                 email: values.email,
                 contactInfo: values.contactInfo,
                 address: values.address,
@@ -276,8 +234,8 @@ const EmployeeForm = ({
                 gender: values.gender === "male" ? "M" : "F",
                 campus: values.campus.name,
                 college: values.college.name,
-                department: values.dept.name,
-                isPartTime: values.type === "part-timer" ? true : false,
+                department: values.department.name,
+                isPartTime: values.isPartTime ? true : false,
                 email: values.email,
                 contactInfo: values.contactInfo,
                 address: values.address,
@@ -288,7 +246,6 @@ const EmployeeForm = ({
                 },
                 salary: parseFloat(values.salary),
               };
-        console.log(postItem);
         // Submit new employee
         axios
           .post(
@@ -311,6 +268,77 @@ const EmployeeForm = ({
           .catch((error) => {
             // Log the error if found || catched.
             console.log(error);
+            setIsLoading(false);
+
+            // Close modal
+            handleFormClose();
+          });
+        e.preventDefault();
+      } else {
+        let postItem =
+          values.isPartTime === true
+            ? {
+                image: "/images/default.jpg",
+                employeeId: employeeId,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                gender: values.gender === "male" ? "M" : "F",
+                campus: values.campus.name,
+                college: values.college.name,
+                department: values.department.name,
+                isPartTime: values.isPartTime ? true : false,
+                email: values.email,
+                contactInfo: values.contactInfo,
+                address: values.address,
+                birthDate: values.birthDate,
+              }
+            : {
+                image: "/images/default.jpg",
+                employeeId: employeeId,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                gender: values.gender === "male" ? "M" : "F",
+                campus: values.campus.name,
+                college: values.college.name,
+                department: values.department.name,
+                isPartTime: values.isPartTime ? true : false,
+                email: values.email,
+                contactInfo: values.contactInfo,
+                address: values.address,
+                birthDate: values.birthDate,
+                position: {
+                  title: values.positionTitle,
+                  rate: parseFloat(values.positionRate),
+                },
+                salary: parseFloat(values.salary),
+              };
+        // Submit new employee
+        axios
+          .put(
+            `https://tup-payroll.herokuapp.com/api/employees/${isUpdating}`,
+            postItem,
+            config
+          )
+          .then((response) => {
+            // Submit the employee to the existings employees list.
+            let elementIdx = employees.findIndex(
+              (employee) => employee._id === isUpdating
+            );
+            let updatedEmployees = Array.from(employees);
+            updatedEmployees[elementIdx] = response.data;
+            setEmployees(updatedEmployees);
+            setIsLoading(false);
+
+            // Close modal
+            handleFormClose();
+
+            // Open snackbar
+            setSnackMessage("Success submit!");
+            handleSnackOpen();
+          })
+          .catch((error) => {
+            // Log the error if found || catched.
+            console.log(error.response.data);
             setIsLoading(false);
 
             // Close modal
@@ -340,8 +368,6 @@ const EmployeeForm = ({
     </>
   );
 
-  console.log(values);
-
   return (
     <>
       <Container className={classes.root}>
@@ -352,7 +378,10 @@ const EmployeeForm = ({
               variant="outlined"
               label="First Name"
               name="firstName"
-              onChange={(e) => setValues({ ...values, firstName: e.target.value })}
+              value={values.firstName}
+              onChange={(e) =>
+                setValues({ ...values, firstName: e.target.value })
+              }
               error={errors.firstName}
             />
           </Grid>
@@ -361,7 +390,10 @@ const EmployeeForm = ({
               variant="outlined"
               label="Last Name"
               name="lastName"
-              onChange={(e) => setValues({ ...values, lastName: e.target.value })}
+              value={values.lastName}
+              onChange={(e) =>
+                setValues({ ...values, lastName: e.target.value })
+              }
               error={errors.lastName}
             />
           </Grid>
@@ -424,18 +456,18 @@ const EmployeeForm = ({
                     value=""
                     onChange={handleDept}
                     isDisabled={true}
-                    error={errors.dept}
+                    error={errors.department}
                   />
                 ) : (
                   <Select
                     name="department"
                     label="Department"
-                    value={values.dept.name}
+                    value={values.department.name}
                     onChange={handleDept}
                     options={
                       tup.departments[values.campus.idx][values.college.idx]
                     }
-                    error={errors.dept}
+                    error={errors.department}
                   />
                 )}
               </Grid>
@@ -445,7 +477,7 @@ const EmployeeForm = ({
             <RadioGroup
               name="type"
               label="Type"
-              value={values.type}
+              value={values.isPartTime}
               onChange={handleType}
               items={typeItems}
             />
@@ -457,6 +489,7 @@ const EmployeeForm = ({
               variant="outlined"
               label="Email"
               name="email"
+              value={values.email}
               onChange={(e) => setValues({ ...values, email: e.target.value })}
               error={errors.email}
             />
@@ -466,6 +499,7 @@ const EmployeeForm = ({
               variant="outlined"
               label="Contact Number"
               name="contactInfo"
+              value={values.contactInfo}
               onChange={(e) =>
                 setValues({ ...values, contactInfo: e.target.value })
               }
@@ -491,6 +525,7 @@ const EmployeeForm = ({
               variant="outlined"
               label="Address"
               name="address"
+              value={values.address}
               onChange={(e) =>
                 setValues({ ...values, address: e.target.value })
               }
@@ -504,7 +539,7 @@ const EmployeeForm = ({
             xs={12}
             sm={12}
             md={4}
-            className={values.type === "part-timer" ? classes.hidden : ""}
+            className={values.isPartTime ? classes.hidden : ""}
           >
             <Select
               name="position"
@@ -523,7 +558,7 @@ const EmployeeForm = ({
             xs={12}
             sm={12}
             md={2}
-            className={values.type === "part-timer" ? classes.hidden : ""}
+            className={values.isPartTime ? classes.hidden : ""}
           >
             <Typography>
               {`Rate: ${!values.positionRate ? "None" : ""}`}
@@ -540,13 +575,13 @@ const EmployeeForm = ({
             xs={12}
             sm={12}
             md={6}
-            className={values.type === "part-timer" ? classes.hidden : ""}
+            className={values.isPartTime ? classes.hidden : ""}
           >
             <TextField
               variant="outlined"
               label="Salary"
               name="Salary"
-              values={values.salary}
+              value={values.salary}
               onChange={(e) => setValues({ ...values, salary: e.target.value })}
               InputProps={{
                 inputComponent: NumberInputComponent,
