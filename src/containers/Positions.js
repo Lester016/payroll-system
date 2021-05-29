@@ -9,7 +9,7 @@ import {
   CircularProgress,
   makeStyles,
 } from "@material-ui/core";
-import { Add as AddIcon, Search as SearchIcon , Delete , Cancel} from "@material-ui/icons";
+import { Add as AddIcon, Search as SearchIcon , Delete as DeleteIcon , Cancel as CancelIcon} from "@material-ui/icons";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -303,7 +303,7 @@ const Position = () => {
                 color="secondary"
                 onClick={handleDelete}
                 text-align="center"
-                startIcon={<Delete/>}
+                startIcon={<DeleteIcon/>}
                 classes={{root: classes.root}}
               >
                 Delete
@@ -313,7 +313,7 @@ const Position = () => {
                 size="small"
                 color="primary"
                 onClick={DeleteClose}
-                startIcon={<Cancel/>}
+                startIcon={<CancelIcon/>}
               >
                 Cancel
               </Button>
