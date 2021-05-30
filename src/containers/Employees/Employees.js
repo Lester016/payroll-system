@@ -306,7 +306,7 @@ const Employees = ({ userToken }) => {
       <Dialog
         title="Add Employee"
         open={employeeFormOpen}
-        setOpen={() => setEmployeeFormOpen(false)}
+        setOpen={handleClose}
       >
         <EmployeeForm
           handleFormClose={handleClose}
