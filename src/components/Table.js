@@ -173,10 +173,7 @@ const AppTable = ({
       output = listsAfterPagingAndSorting(output).map((item) => (
         <StyledTableRow key={item.id}>
           {propertiesOrder.map((column, id) =>
-            column === "amount" ||
-            column === "rate" ||
-            column === "tax" ||
-            column === "basicSalary" ? (
+            column === "amount" || column === "rate" ? (
               <StyledTableCell key={id}>
                 <NumberFormat
                   value={item[column]}

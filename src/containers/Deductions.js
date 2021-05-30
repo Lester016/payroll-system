@@ -42,16 +42,16 @@ const Deductions = () => {
     },
   });
 
-  const useStyles= makeStyles(theme=>({
-    root:{
-      margin:theme.spacing(1)
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      margin: theme.spacing(1),
     },
-    createbutton:{
-      backgroundColor:"secondary",
-      "&:hover":{
-        backgroundColor:"#bf0644"
+    createbutton: {
+      backgroundColor: "secondary",
+      "&:hover": {
+        backgroundColor: "#bf0644",
       },
-      borderRadius:'100px',
+      borderRadius: "100px",
     },
   }));
 
@@ -61,10 +61,6 @@ const Deductions = () => {
     {
       id: "title",
       label: "Description",
-    },
-    {
-      id: "amount",
-      label: "Amount",
     },
     {
       id: "options",
@@ -267,15 +263,15 @@ const Deductions = () => {
     <div>
       <Toolbar>
         <TextField
-            label="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
+          label="Search..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          onChange={handleSearch}
         />
 
         <Button
@@ -287,10 +283,10 @@ const Deductions = () => {
           startIcon={<AddIcon />}
         >
           Create
-        </Button>  
-      </Toolbar>  
-        
-      <Paper>      
+        </Button>
+      </Toolbar>
+
+      <Paper>
         <div>
           <Table
             lists={deductions}
@@ -298,7 +294,7 @@ const Deductions = () => {
             onEditRow={handleEdit}
             filterFn={filterFn}
             columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
+            propertiesOrder={columnHeads.slice(0, 1).map((item) => item.id)}
             isLoading={isFetching}
           />
         </div>
@@ -310,30 +306,33 @@ const Deductions = () => {
       >
         {!isLoading ? (
           <>
-          <h2>DELETE?</h2>
-          <center>  
-            <p> Deleting this results to discarding information included in it.</p>
-            <Button
-              variant="contained"
-              size="small"
-              color="secondary"
-              onClick={handleDelete}
-              text-align="center"
-              startIcon={<Delete/>}
-              classes={{root: classes.root}}
-            >
-              Delete
-            </Button>
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={DeleteClose}
-              startIcon={<Cancel/>}
-            >
-              Cancel
-            </Button>
-          </center>
+            <h2>DELETE?</h2>
+            <center>
+              <p>
+                {" "}
+                Deleting this results to discarding information included in it.
+              </p>
+              <Button
+                variant="contained"
+                size="small"
+                color="secondary"
+                onClick={handleDelete}
+                text-align="center"
+                startIcon={<Delete />}
+                classes={{ root: classes.root }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                color="primary"
+                onClick={DeleteClose}
+                startIcon={<Cancel />}
+              >
+                Cancel
+              </Button>
+            </center>
           </>
         ) : (
           <CircularProgress />
@@ -343,55 +342,55 @@ const Deductions = () => {
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (
           <>
-          <h2>Deduction</h2>
-          <center>
-            <div>
-            <TextField
-              value={deductionTitle}
-              label="Deduction"
-              onChange={(e) => setDeductionTitle(e.target.value)}
-              {...(errors.deductionTitle && {
-                error: true,
-                helperText: errors.deductionTitle,
-              })}
-            />
-            <TextField
-              value={amount}
-              label="Amount"
-              onChange={(e) => setAmount(e.target.value)}
-              InputProps={{
-                inputComponent: NumberInputComponent,
-              }}
-              {...(errors.amount && {
-                error: true,
-                helperText: errors.amount,
-              })}
-            />
-            </div>
+            <h2>Deduction</h2>
+            <center>
+              <div>
+                <TextField
+                  value={deductionTitle}
+                  label="Deduction"
+                  onChange={(e) => setDeductionTitle(e.target.value)}
+                  {...(errors.deductionTitle && {
+                    error: true,
+                    helperText: errors.deductionTitle,
+                  })}
+                />
+                <TextField
+                  value={amount}
+                  label="Amount"
+                  onChange={(e) => setAmount(e.target.value)}
+                  InputProps={{
+                    inputComponent: NumberInputComponent,
+                  }}
+                  {...(errors.amount && {
+                    error: true,
+                    helperText: errors.amount,
+                  })}
+                />
+              </div>
 
-            <div>
-              <Button
-                variant="contained"
-                size="small"
-                color="primary"
-                onClick={handleSubmit}
-                classes={{root: classes.root}}
-                startIcon={<Check/>}
-              >
-                {isUpdating ? "Update" : "Submit"}
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                color="secondary"
-                onClick={handleClose}
-                classes={{root: classes.root}}
-                startIcon={<Cancel/>}
-              >
-                Cancel
-              </Button>
-            </div>
-          </center>
+              <div>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={handleSubmit}
+                  classes={{ root: classes.root }}
+                  startIcon={<Check />}
+                >
+                  {isUpdating ? "Update" : "Submit"}
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  onClick={handleClose}
+                  classes={{ root: classes.root }}
+                  startIcon={<Cancel />}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </center>
           </>
         ) : (
           <CircularProgress />
