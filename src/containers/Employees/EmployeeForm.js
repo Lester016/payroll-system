@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import NumberFormat from "react-number-format";
-import AddIcon from "@material-ui/icons/Add";
 import { KeyboardDatePicker } from "@material-ui/pickers";
 import {
   makeStyles,
@@ -10,11 +10,13 @@ import {
   Typography,
   Button,
 } from "@material-ui/core";
+import { Add as AddIcon, Cancel as CancelIcon } from "@material-ui/icons";
 
 import TextField from "../../components/TextField";
 import RadioGroup from "../../components/RadioGroup";
 import Select from "../../components/Select";
 import Snack from "../../components/Snack";
+import NumberInputComponent from "../../components/NumberInputComponent";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -38,82 +40,40 @@ const useStyle = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(0, 1),
   },
+  hidden: {
+    visibility: "hidden",
+  },
 }));
 
-const initialValues = {
-  firstName: "",
-  lastName: "",
-  gender: "male",
-  campus: {
-    name: "",
-    idx: -1,
-  },
-  college: {
-    name: "",
-    idx: -1,
-  },
-  dept: {
-    name: "",
-    idx: -1,
-  },
-  type: "regular",
-  email: "",
-  contactInfo: "",
-  address: "",
-  birthDate: new Date(),
-  positionTitle: "",
-  positionRate: 0,
-  deductions: [],
-};
-
 const genderItems = [
-  { id: "male", title: "Male" },
-  { id: "female", title: "Female" },
-  { id: "other", title: "Other" },
+  { id: "male", title: "Male", value: "M" },
+  { id: "female", title: "Female", value: "F" },
+  { id: "other", title: "Other", value: "O" },
 ];
 
 const typeItems = [
-  { id: "regular", title: "Regular" },
-  { id: "part-timer", title: "Part-Timer" },
+  { id: "regular", title: "Regular", value: false },
+  { id: "part-timer", title: "Part-Timer", value: true },
 ];
 
-const EmployeeForm = ({ handleFormClose }) => {
+const EmployeeForm = ({
+  userToken,
+  handleFormClose,
+  employees,
+  setEmployees,
+  values,
+  setValues,
+  tup,
+  positions,
+  isUpdating,
+}) => {
   const classes = useStyle();
 
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(null);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
-  const [tup, setTUP] = useState({});
-  const [positions, setPositions] = useState({});
-  const [employees, setEmployees] = useState({});
-  const [values, setValues] = useState(initialValues);
   const [errors, setErrors] = useState({});
-
-  // Get TUP & Positions in the database
-  useEffect(() => {
-    setIsFetching(true);
-    let url = "https://tup-payroll-default-rtdb.firebaseio.com";
-    axios
-      .all([
-        axios.get(`${url}/tup.json`),
-        axios.get(`${url}/positions.json`),
-        axios.get("https://tup-payroll.herokuapp.com/api/employees"),
-      ])
-      .then(
-        axios.spread((...response) => {
-          setTUP(response[0].data);
-          setPositions(response[1].data);
-          setEmployees(response[2].data);
-          setIsFetching(false);
-        })
-      )
-      .catch((error) => {
-        console.log(error);
-        setIsFetching(false);
-      });
-  }, []);
 
   // EMPLOYEE FORM INPUT FIELDS HANDLES
   const handleGender = (event) => {
@@ -131,7 +91,7 @@ const EmployeeForm = ({ handleFormClose }) => {
         name: "",
         idx: -1,
       },
-      dept: {
+      department: {
         name: "",
         idx: -1,
       },
@@ -145,7 +105,7 @@ const EmployeeForm = ({ handleFormClose }) => {
         name: event.target.value,
         idx: tup.colleges[values.campus.idx].indexOf(event.target.value),
       },
-      dept: {
+      department: {
         name: "",
         idx: -1,
       },
@@ -155,7 +115,7 @@ const EmployeeForm = ({ handleFormClose }) => {
   const handleDept = (event) => {
     setValues({
       ...values,
-      dept: {
+      department: {
         name: event.target.value,
         idx: tup.departments[values.campus.idx][values.college.idx].indexOf(
           event.target.value
@@ -167,9 +127,7 @@ const EmployeeForm = ({ handleFormClose }) => {
   const handleType = (event) => {
     setValues({
       ...values,
-      type: event.target.value,
-      positionTitle: "",
-      positionRate: 0,
+      isPartTime: event.target.value === "true",
     });
   };
 
@@ -206,18 +164,23 @@ const EmployeeForm = ({ handleFormClose }) => {
       : "This field is required.";
     temp.campus = fieldValues.campus.name ? "" : "This field is required.";
     temp.college = fieldValues.college.name ? "" : "This field is required.";
-    temp.dept = fieldValues.dept.name ? "" : "This field is required.";
+    temp.department = fieldValues.department.name
+      ? ""
+      : "This field is required.";
     temp.email = /\S+@\S+\.\S+/.test(fieldValues.email.trim())
       ? ""
       : "Email adress is invalid.";
     temp.address = fieldValues.address.trim() ? "" : "This field is required.";
     temp.contactInfo =
-      fieldValues.contactInfo.length === 11
+      fieldValues.contactInfo.toString().length === 11
         ? ""
         : "Contact Number must be 11 digits.";
-    temp.positionTitle = fieldValues.positionTitle
-      ? ""
-      : "This field is required.";
+    if (fieldValues.isPartTime === false) {
+      temp.positionTitle = fieldValues.positionTitle
+        ? ""
+        : "This field is required.";
+      temp.salary = fieldValues.salary ? "" : "This field is required.";
+    }
 
     setErrors({
       ...temp,
@@ -227,38 +190,105 @@ const EmployeeForm = ({ handleFormClose }) => {
       return Object.values(temp).every((x) => x === "");
   };
 
+  const zeroPad = (num, places) => String(num).padStart(places, "0");
+
   // EMPLOYEE FORM HANDLES
   const handleSubmit = (e) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
+
+    let employeeId = `${values.campus.idx}${values.college.idx}${zeroPad(
+      values.department.idx,
+      2
+    )}`;
     if (validate()) {
       setIsLoading(true);
+      let postItem =
+        values.isPartTime === true
+          ? {
+              image: "/images/default.jpg",
+              employeeId: employeeId,
+              firstName: values.firstName,
+              lastName: values.lastName,
+              gender: values.gender,
+              campus: values.campus.name,
+              college: values.college.name,
+              department: values.department.name,
+              isPartTime: values.isPartTime ? true : false,
+              email: values.email,
+              contactInfo: values.contactInfo,
+              address: values.address,
+              birthDate: values.birthDate,
+            }
+          : {
+              image: "/images/default.jpg",
+              employeeId: employeeId,
+              firstName: values.firstName,
+              lastName: values.lastName,
+              gender: values.gender,
+              campus: values.campus.name,
+              college: values.college.name,
+              department: values.department.name,
+              isPartTime: values.isPartTime ? true : false,
+              email: values.email,
+              contactInfo: values.contactInfo,
+              address: values.address,
+              birthDate: values.birthDate,
+              position: {
+                title: values.positionTitle,
+                rate: parseFloat(values.positionRate),
+              },
+              salary: parseFloat(values.salary),
+            };
       if (isUpdating === null) {
-        let postItem = {
-          firstName: values.firstName,
-          lastName: values.lastName,
-          gender: values.gender === "male" ? "m" : "f",
-          campus: values.campus.name,
-          college: values.college.name,
-          dept: values.dept.name,
-          isPartTime: values.isPartTime === "part-timer" ? true : false,
-          email: values.email,
-          contactInfo: values.contactInfo,
-          address: values.address,
-          birthDate: values.birthDate,
-          position: {
-            title: values.positionTitle,
-            rate: values.positionRate,
-          },
-          deductions: [],
-        };
-        // Submit new position
+        // Submit new employee
         axios
-          .post("https://tup-payroll.herokuapp.com/api/employees", postItem)
+          .post(
+            "https://tup-payroll.herokuapp.com/api/employees",
+            postItem,
+            config
+          )
           .then((response) => {
-            // Submit the position to the existings positions list.
-            setEmployees({
-              ...employees,
-              postItem,
-            });
+            // Submit the employee to the existings employees list.
+            setEmployees([...employees, response.data]);
+            setIsLoading(false);
+
+            // Close modal
+            handleFormClose();
+
+            // Open snackbar
+            setSnackMessage("Success submit!");
+            handleSnackOpen();
+          })
+          .catch((error) => {
+            // Log the error if found || catched.
+            console.log(error);
+            setIsLoading(false);
+
+            // Close modal
+            handleFormClose();
+          });
+        e.preventDefault();
+      } else {
+        // Submit new employee
+        axios
+          .put(
+            `https://tup-payroll.herokuapp.com/api/employees/${isUpdating}`,
+            postItem,
+            config
+          )
+          .then((response) => {
+            // Submit the employee to the existings employees list.
+            let elementIdx = employees.findIndex(
+              (employee) => employee._id === isUpdating
+            );
+            let updatedEmployees = Array.from(employees);
+            updatedEmployees[elementIdx] = response.data;
+            setEmployees(updatedEmployees);
             setIsLoading(false);
 
             // Close modal
@@ -310,8 +340,8 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="First Name"
               name="firstName"
-              values={values.firstName}
-              onBlur={(e) =>
+              value={values.firstName}
+              onChange={(e) =>
                 setValues({ ...values, firstName: e.target.value })
               }
               error={errors.firstName}
@@ -322,8 +352,10 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="Last Name"
               name="lastName"
-              values={values.lastName}
-              onBlur={(e) => setValues({ ...values, lastName: e.target.value })}
+              value={values.lastName}
+              onChange={(e) =>
+                setValues({ ...values, lastName: e.target.value })
+              }
               error={errors.lastName}
             />
           </Grid>
@@ -386,18 +418,18 @@ const EmployeeForm = ({ handleFormClose }) => {
                     value=""
                     onChange={handleDept}
                     isDisabled={true}
-                    error={errors.dept}
+                    error={errors.department}
                   />
                 ) : (
                   <Select
                     name="department"
                     label="Department"
-                    value={values.dept.name}
+                    value={values.department.name}
                     onChange={handleDept}
                     options={
                       tup.departments[values.campus.idx][values.college.idx]
                     }
-                    error={errors.dept}
+                    error={errors.department}
                   />
                 )}
               </Grid>
@@ -407,7 +439,7 @@ const EmployeeForm = ({ handleFormClose }) => {
             <RadioGroup
               name="type"
               label="Type"
-              value={values.type}
+              value={values.isPartTime}
               onChange={handleType}
               items={typeItems}
             />
@@ -419,7 +451,8 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="Email"
               name="email"
-              onBlur={(e) => setValues({ ...values, email: e.target.value })}
+              value={values.email}
+              onChange={(e) => setValues({ ...values, email: e.target.value })}
               error={errors.email}
             />
           </Grid>
@@ -428,7 +461,8 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="Contact Number"
               name="contactInfo"
-              onBlur={(e) =>
+              value={values.contactInfo}
+              onChange={(e) =>
                 setValues({ ...values, contactInfo: e.target.value })
               }
               error={errors.contactInfo}
@@ -453,35 +487,43 @@ const EmployeeForm = ({ handleFormClose }) => {
               variant="outlined"
               label="Address"
               name="address"
-              onBlur={(e) => setValues({ ...values, address: e.target.value })}
+              value={values.address}
+              onChange={(e) =>
+                setValues({ ...values, address: e.target.value })
+              }
               error={errors.address}
             />
           </Grid>
 
-          {/*Fifth Row - Position & Salary*/}
-          <Grid item xs={12} sm={12} md={4}>
-            {isFetching ||
-            Object.keys(positions).length === 0 ||
-            values.type === "part-timer" ? (
-              <Select
-                name="position"
-                label="Position"
-                value=""
-                isDisabled={true}
-              />
-            ) : (
-              <Select
-                name="position"
-                label="Position"
-                value={values.positionTitle}
-                onChange={handlePosition}
-                options={Object.values(positions).map((item) => item.title)}
-                error={errors.positionTitle}
-              />
-            )}
+          {/*Fifth Row - Position, Rate, & Salary*/}
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            className={values.isPartTime ? classes.hidden : ""}
+          >
+            <Select
+              name="position"
+              label="Position"
+              value={values.positionTitle}
+              onChange={handlePosition}
+              options={Object.values(positions).map((item) => item.title)}
+              error={errors.positionTitle}
+              isDisabled={
+                isFetching || Object.keys(positions).length === 0 ? true : false
+              }
+            />
           </Grid>
-          <Grid item xs={12} sm={12} md={4}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={2}
+            className={values.isPartTime ? classes.hidden : ""}
+          >
             <Typography>
+              {`Rate: ${!values.positionRate ? "None" : ""}`}
               <NumberFormat
                 value={values.positionRate}
                 displayType={"text"}
@@ -489,6 +531,25 @@ const EmployeeForm = ({ handleFormClose }) => {
                 prefix="₱"
               />
             </Typography>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            className={values.isPartTime ? classes.hidden : ""}
+          >
+            <TextField
+              variant="outlined"
+              label="Salary"
+              name="Salary"
+              value={values.salary}
+              onChange={(e) => setValues({ ...values, salary: e.target.value })}
+              InputProps={{
+                inputComponent: NumberInputComponent,
+              }}
+              error={errors.salary}
+            />
           </Grid>
 
           <Grid item xs={12} sm={12} md={4}>
@@ -506,7 +567,7 @@ const EmployeeForm = ({ handleFormClose }) => {
               size="small"
               variant="contained"
               color="secondary"
-              startIcon={<AddIcon />}
+              startIcon={<CancelIcon />}
               onClick={handleFormClose}
               className={classes.button}
             >
@@ -525,4 +586,10 @@ const EmployeeForm = ({ handleFormClose }) => {
   );
 };
 
-export default EmployeeForm;
+const mapStateToProps = (state) => {
+  return {
+    userToken: state.auth.token,
+  };
+};
+
+export default connect(mapStateToProps)(EmployeeForm);

@@ -40,15 +40,15 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles((theme) => ({
   editButton: {
-    margin: theme.spacing(.3),
-    backgroundColor:"primary",
-    borderRadius:'100px',
-    size:'50px',
+    margin: theme.spacing(0.3),
+    backgroundColor: "primary",
+    borderRadius: "100px",
+    size: "50px",
   },
 
   deleteButton: {
-    backgroundColor:"red",
-    borderRadius:'100px',
+    backgroundColor: "red",
+    borderRadius: "100px",
   },
 
   table: {
@@ -202,8 +202,7 @@ const AppTable = ({
                   variant="contained"
                   color="primary"
                   startIcon={<Edit />}
-                  onClick={() => onEditRow(item.id ? item.id : item._id)}
-                  className={classes.editButton}
+                  onClick={() => onEditRow(item._id ? item._id : item.id)}
                 >
                   Edit
                 </Button>
@@ -212,8 +211,7 @@ const AppTable = ({
                   variant="contained"
                   color="secondary"
                   startIcon={<Delete />}
-                  onClick={() => onDeleteRow(item.id ? item.id : item._id)}
-                  className={classes.deleteButton}
+                  onClick={() => onDeleteRow(item._id ? item._id : item.id)}
                 >
                   Delete
                 </Button>
