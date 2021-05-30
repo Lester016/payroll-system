@@ -190,7 +190,7 @@ const AppTable = ({
                   variant="contained"
                   color="primary"
                   startIcon={<Edit />}
-                  onClick={() => onEditRow(item.id ? item.id : item._id)}
+                  onClick={() => onEditRow(item._id ? item._id : item.id)}
                 >
                   Edit
                 </Button>
@@ -199,7 +199,7 @@ const AppTable = ({
                   variant="contained"
                   color="secondary"
                   startIcon={<Delete />}
-                  onClick={() => onDeleteRow(item.id ? item.id : item._id)}
+                  onClick={() => onDeleteRow(item._id ? item._id : item.id)}
                 >
                   Delete
                 </Button>

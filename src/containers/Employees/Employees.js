@@ -1,19 +1,54 @@
 import axios from "axios";
-import { CSVLink } from "react-csv";
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { CSVLink } from "react-csv";
 import {
   Container,
   Paper,
   Toolbar,
   Button,
+  CircularProgress,
   InputAdornment,
 } from "@material-ui/core";
-import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons";
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  Delete as DeleteIcon,
+  Cancel as CancelIcon,
+} from "@material-ui/icons";
 
 import EmployeeForm from "./EmployeeForm";
 import Table from "../../components/Table";
 import TextField from "../../components/TextField";
 import Dialog from "../../components/Dialog";
+import TransitionsModal from "../../components/Modal";
+import Snack from "../../components/Snack";
+
+const initialValues = {
+  firstName: "",
+  lastName: "",
+  gender: "M",
+  campus: {
+    name: "",
+    idx: -1,
+  },
+  college: {
+    name: "",
+    idx: -1,
+  },
+  department: {
+    name: "",
+    idx: -1,
+  },
+  isPartTime: false,
+  email: "",
+  contactInfo: "",
+  address: "",
+  birthDate: new Date(),
+  positionTitle: "",
+  positionRate: "",
+  salary: "",
+};
 
 const columnHeads = [
   {
@@ -51,55 +86,95 @@ const columnHeads = [
   },
 ];
 
-const Employees = () => {
+const Employees = ({ userToken }) => {
   const [isFetching, setIsFetching] = useState(false);
-  //const [isLoading, setIsLoading] = useState(false);
-  //const [isUpdating, setIsUpdating] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(null);
+  const [isSnackOpen, setIsSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
+  const [tup, setTUP] = useState({});
+  const [positions, setPositions] = useState({});
   const [employees, setEmployees] = useState([]);
   const [employeeFormOpen, setEmployeeFormOpen] = useState(false);
+  const [values, setValues] = useState(initialValues);
+  const [deleteKey, setDeleteKey] = useState(null);
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
 
-  // Get employees in the database
   useEffect(() => {
     setIsFetching(true);
+    let url = "https://tup-payroll-default-rtdb.firebaseio.com";
     axios
-      .get("https://tup-payroll.herokuapp.com/api/employees")
-      .then((response) => {
-        setEmployees(response.data);
-        setIsFetching(false);
-      })
+      .all([
+        axios.get("https://tup-payroll.herokuapp.com/api/employees"),
+        axios.get(`${url}/tup.json`),
+        axios.get(`${url}/positions.json`),
+      ])
+      .then(
+        axios.spread((...response) => {
+          setEmployees(response[0].data);
+          setTUP(response[1].data);
+          setPositions(response[2].data);
+          setIsFetching(false);
+        })
+      )
       .catch((error) => {
         console.log(error);
         setIsFetching(false);
       });
   }, []);
 
-  const DeleteOpen = () => {};
-
   // Modal toggler.
   const handleOpen = () => {
     setEmployeeFormOpen(true);
   };
   const handleClose = () => {
+    setIsUpdating(null);
+    setValues(initialValues);
     setEmployeeFormOpen(false);
+  };
+  const DeleteOpen = (key) => {
+    setDeleteKey(key);
+  };
+  const DeleteClose = () => {
+    // Reset to default values.
+    setDeleteKey(null);
+    setIsUpdating(null);
+  };
+
+  // Snackbar toggler
+  const handleSnackOpen = () => {
+    setIsSnackOpen(true);
+  };
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsSnackOpen(false);
   };
 
   const handleDelete = () => {
-    /*
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
     setIsLoading(true);
     axios
       .delete(
-        `https://tup-payroll-default-rtdb.firebaseio.com/positions/${deleteKey}.json`
+        `https://tup-payroll.herokuapp.com/api/employees/${deleteKey}`,
+        config
       )
       .then(() => {
-        let filteredPositions = { ...positions };
-        delete filteredPositions[deleteKey];
-        setPositions(filteredPositions);
+        let filteredEmployees = employees;
+        filteredEmployees = filteredEmployees.filter(function (item) {
+          return item._id !== deleteKey;
+        });
+        setEmployees(filteredEmployees);
         setIsLoading(false);
 
         setSnackMessage("Success delete!");
@@ -109,9 +184,43 @@ const Employees = () => {
       .catch((error) => {
         setIsLoading(false);
       });
-      */
   };
-  const handleEdit = () => {};
+  const handleEdit = (key) => {
+    let item = employees.filter(function (employee) {
+      return employee._id === key;
+    })[0];
+    setValues({
+      firstName: item.firstName,
+      lastName: item.lastName,
+      gender: item.gender,
+      campus: {
+        name: item.campus,
+        idx: tup.campuses.indexOf(item.campus),
+      },
+      college: {
+        name: item.college,
+        idx: tup.colleges[tup.campuses.indexOf(item.campus)].indexOf(
+          item.college
+        ),
+      },
+      department: {
+        name: item.department,
+        idx: tup.departments[tup.campuses.indexOf(item.campus)][
+          tup.colleges[tup.campuses.indexOf(item.campus)].indexOf(item.college)
+        ].indexOf(item.department),
+      },
+      isPartTime: item.isPartTime,
+      email: item.email,
+      contactInfo: item.contactInfo,
+      address: item.address,
+      birthDate: item.birthDate,
+      positionTitle: item.position.title ? item.position.title : "",
+      positionRate: item.position.rate ? item.position.rate : "",
+      salary: parseFloat(item.salary),
+    });
+    setIsUpdating(key);
+    handleOpen();
+  };
 
   const handleSearch = (e) => {
     let target = e.target;
@@ -129,7 +238,7 @@ const Employees = () => {
     });
   };
 
-  let csvData = employees.map(employee => ({
+  let csvData = employees.map((employee) => ({
     employeeId: '=""' + employee.employeeId + '""',
     firstName: employee.firstName,
     lastName: employee.lastName,
@@ -144,7 +253,7 @@ const Employees = () => {
     email: employee.email,
     contactInfo: '=""' + employee.contactInfo + '""',
     address: employee.address,
-    birthDate: employee.birthDate.substr(0, 10),
+    birthDate: employee.birthDate,
   }));
 
   return (
@@ -179,7 +288,7 @@ const Employees = () => {
               className="btn btn-primary"
               target="_blank"
             >
-              Download me
+              Export Employee CSV
             </CSVLink>
           </Button>
         </Toolbar>
@@ -197,25 +306,69 @@ const Employees = () => {
       <Dialog
         title="Add Employee"
         open={employeeFormOpen}
-        setOpen={() => setEmployeeFormOpen(false)}
+        setOpen={handleClose}
       >
-        <EmployeeForm handleFormClose={handleClose} />
-        {/*employees={employees}
+        <EmployeeForm
+          handleFormClose={handleClose}
+          employees={employees}
           setEmployees={setEmployees}
-          tup={tup}
-          positions={positions}
           values={values}
           setValues={setValues}
-          errors={errors}
-          setErrors={setErrors}
-          onSubmit={handleSubmit}
-          onEdit={handleEdit}
-          onReset={handleReset}
-          isFetching={isFetching}
-        */}
+          tup={tup}
+          positions={positions}
+          isUpdating={isUpdating}
+        />
       </Dialog>
+
+      <TransitionsModal
+        handleClose={DeleteClose}
+        isModalOpen={deleteKey ? true : false}
+      >
+        {!isLoading ? (
+          <>
+            <center>
+              <h4> Are you sure you want to delete that?</h4>
+              <div>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  onClick={handleDelete}
+                  text-align="center"
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={DeleteClose}
+                  startIcon={<CancelIcon />}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </center>
+          </>
+        ) : (
+          <CircularProgress />
+        )}
+      </TransitionsModal>
+
+      <Snack
+        open={isSnackOpen}
+        message={snackMessage}
+        handleClose={handleSnackClose}
+      />
     </>
   );
 };
 
-export default Employees;
+const mapStateToProps = (state) => {
+  return {
+    userToken: state.auth.token,
+  };
+};
+
+export default connect(mapStateToProps)(Employees);

@@ -9,7 +9,12 @@ import {
   CircularProgress,
   makeStyles,
 } from "@material-ui/core";
-import { Add as AddIcon, Search as SearchIcon , Delete , Cancel} from "@material-ui/icons";
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  Delete as DeleteIcon,
+  Cancel as CancelIcon,
+} from "@material-ui/icons";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -35,10 +40,10 @@ const Position = () => {
     },
   });
 
-  const useStyles= makeStyles(theme=>({
-    root:{
-      margin:theme.spacing(1)
-    }
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      margin: theme.spacing(1),
+    },
   }));
 
   const classes = useStyles();
@@ -294,31 +299,31 @@ const Position = () => {
       >
         {!isLoading ? (
           <>
-          <center>
-            <h4> Are you sure you want to delete that?</h4>
-            <div>
-              <Button
-                variant="contained"
-                size="small"
-                color="secondary"
-                onClick={handleDelete}
-                text-align="center"
-                startIcon={<Delete/>}
-                classes={{root: classes.root}}
-              >
-                Delete
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                color="primary"
-                onClick={DeleteClose}
-                startIcon={<Cancel/>}
-              >
-                Cancel
-              </Button>
+            <center>
+              <h4> Are you sure you want to delete that?</h4>
+              <div>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  onClick={handleDelete}
+                  text-align="center"
+                  startIcon={<DeleteIcon />}
+                  classes={{ root: classes.root }}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={DeleteClose}
+                  startIcon={<CancelIcon />}
+                >
+                  Cancel
+                </Button>
               </div>
-          </center>
+            </center>
           </>
         ) : (
           <CircularProgress />
