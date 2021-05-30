@@ -27,7 +27,7 @@ import Snack from "../../components/Snack";
 const initialValues = {
   firstName: "",
   lastName: "",
-  gender: "male",
+  gender: "M",
   campus: {
     name: "",
     idx: -1,
@@ -136,7 +136,6 @@ const Employees = ({ userToken }) => {
     setValues(initialValues);
     setEmployeeFormOpen(false);
   };
-
   const DeleteOpen = (key) => {
     setDeleteKey(key);
   };
@@ -190,7 +189,6 @@ const Employees = ({ userToken }) => {
     let item = employees.filter(function (employee) {
       return employee._id === key;
     })[0];
-    console.log(item);
     setValues({
       firstName: item.firstName,
       lastName: item.lastName,

@@ -127,10 +127,7 @@ const EmployeeForm = ({
   const handleType = (event) => {
     setValues({
       ...values,
-      type: event.target.value,
-      positionTitle: "",
-      positionRate: "",
-      salary: "",
+      isPartTime: event.target.value === "true",
     });
   };
 
@@ -210,42 +207,44 @@ const EmployeeForm = ({
     )}`;
     if (validate()) {
       setIsLoading(true);
+      let postItem =
+        values.isPartTime === true
+          ? {
+              image: "/images/default.jpg",
+              employeeId: employeeId,
+              firstName: values.firstName,
+              lastName: values.lastName,
+              gender: values.gender,
+              campus: values.campus.name,
+              college: values.college.name,
+              department: values.department.name,
+              isPartTime: values.isPartTime ? true : false,
+              email: values.email,
+              contactInfo: values.contactInfo,
+              address: values.address,
+              birthDate: values.birthDate,
+            }
+          : {
+              image: "/images/default.jpg",
+              employeeId: employeeId,
+              firstName: values.firstName,
+              lastName: values.lastName,
+              gender: values.gender,
+              campus: values.campus.name,
+              college: values.college.name,
+              department: values.department.name,
+              isPartTime: values.isPartTime ? true : false,
+              email: values.email,
+              contactInfo: values.contactInfo,
+              address: values.address,
+              birthDate: values.birthDate,
+              position: {
+                title: values.positionTitle,
+                rate: parseFloat(values.positionRate),
+              },
+              salary: parseFloat(values.salary),
+            };
       if (isUpdating === null) {
-        let postItem =
-          values.isPartTime === true
-            ? {
-                employeeId: employeeId,
-                firstName: values.firstName,
-                lastName: values.lastName,
-                gender: values.gender === "male" ? "M" : "F",
-                campus: values.campus.name,
-                college: values.college.name,
-                department: values.department.name,
-                isPartTime: values.isPartTime ? true : false,
-                email: values.email,
-                contactInfo: values.contactInfo,
-                address: values.address,
-                birthDate: values.birthDate,
-              }
-            : {
-                employeeId: employeeId,
-                firstName: values.firstName,
-                lastName: values.lastName,
-                gender: values.gender === "male" ? "M" : "F",
-                campus: values.campus.name,
-                college: values.college.name,
-                department: values.department.name,
-                isPartTime: values.isPartTime ? true : false,
-                email: values.email,
-                contactInfo: values.contactInfo,
-                address: values.address,
-                birthDate: values.birthDate,
-                position: {
-                  title: values.positionTitle,
-                  rate: parseFloat(values.positionRate),
-                },
-                salary: parseFloat(values.salary),
-              };
         // Submit new employee
         axios
           .post(
@@ -275,43 +274,6 @@ const EmployeeForm = ({
           });
         e.preventDefault();
       } else {
-        let postItem =
-          values.isPartTime === true
-            ? {
-                image: "/images/default.jpg",
-                employeeId: employeeId,
-                firstName: values.firstName,
-                lastName: values.lastName,
-                gender: values.gender === "male" ? "M" : "F",
-                campus: values.campus.name,
-                college: values.college.name,
-                department: values.department.name,
-                isPartTime: values.isPartTime ? true : false,
-                email: values.email,
-                contactInfo: values.contactInfo,
-                address: values.address,
-                birthDate: values.birthDate,
-              }
-            : {
-                image: "/images/default.jpg",
-                employeeId: employeeId,
-                firstName: values.firstName,
-                lastName: values.lastName,
-                gender: values.gender === "male" ? "M" : "F",
-                campus: values.campus.name,
-                college: values.college.name,
-                department: values.department.name,
-                isPartTime: values.isPartTime ? true : false,
-                email: values.email,
-                contactInfo: values.contactInfo,
-                address: values.address,
-                birthDate: values.birthDate,
-                position: {
-                  title: values.positionTitle,
-                  rate: parseFloat(values.positionRate),
-                },
-                salary: parseFloat(values.salary),
-              };
         // Submit new employee
         axios
           .put(
@@ -338,7 +300,7 @@ const EmployeeForm = ({
           })
           .catch((error) => {
             // Log the error if found || catched.
-            console.log(error.response.data);
+            console.log(error);
             setIsLoading(false);
 
             // Close modal
