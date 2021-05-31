@@ -4,9 +4,11 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { Card, Grid, Typography } from "@material-ui/core";
 
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import ScheduleIcon from "@material-ui/icons/Schedule";
+import {
+  PeopleAlt as PeopleAltIcon,
+  AttachMoney as AttachMoneyIcon,
+  Schedule as ScheduleIcon,
+} from "@material-ui/icons";
 
 import Skeleton from "@material-ui/lab/Skeleton";
 
@@ -58,7 +60,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
   const classes = useStyles();
-  const [employees, setEmployees] = useState([]);
   const [totalEmployees, setTotalEmployees] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -72,7 +73,6 @@ export default function Home() {
       .get("https://tup-payroll.herokuapp.com/api/employees")
       .then((response) => {
         setIsFetching(false);
-        setEmployees(response.data);
         setTotalEmployees(Object.keys(response.data).length);
         for (let dataObj of response.data) {
           if (dataObj.isPartTime === true) {
