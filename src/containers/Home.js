@@ -66,8 +66,7 @@ export default function Home() {
 
   const totalPayrollGiven = 500;
 
-  // Get employees in the database
-  useEffect(() => {
+  const home = () => {
     setIsFetching(true);
     axios
       .get("https://tup-payroll.herokuapp.com/api/employees")
@@ -85,6 +84,10 @@ export default function Home() {
         setIsFetching(false);
         console.log("Error: ", e);
       });
+  };
+  // Get employees in the database
+  useEffect(() => {
+    home();
   }, []);
 
   return (
