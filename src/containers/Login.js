@@ -106,7 +106,6 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
         elevation={0}
         style={{ borderRadius: "5px" }}
       >
-        <img src={tupLogo} alt="logo" width="100"></img>
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={LoginSchema}
