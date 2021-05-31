@@ -27,7 +27,7 @@ import * as actions from "../store/actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "85vh",
+    height: "100vh",
   },
   image: {
     backgroundImage: "url(" + tupGif + ")",
@@ -42,12 +42,11 @@ const useStyles = makeStyles((theme) => ({
     borderBottomLeftRadius: "5px",
   },
   form: {
-    // textAlign: "center",
-    // width: 450,
     margin: theme.spacing(6, 4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginTop: 100,
   },
   field: {
     marginTop: 30,
@@ -95,7 +94,7 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
   };
 
   return (
-    <Paper className={classes.paper} elevation={20}>
+    // <Paper className={classes.paper} elevation={20}>
       <Grid container component="main" className={classes.root}>
         <Grid item xs={false} sm={true} md={7} className={classes.image} />
         <Grid
@@ -119,12 +118,12 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
                 <img src={tupLogo} alt="logo" width="100"></img>
                 <h1>Welcome back!</h1>
                 <Field
+                  className={classes.field}
                   as={TextField}
                   type="email"
                   name="email"
                   variant="outlined"
                   label="Email"
-                  className={classes.field}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -188,7 +187,7 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
           </Formik>
         </Grid>
       </Grid>
-    </Paper>
+    // </Paper>
   );
 };
 

@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 2,
     padding: theme.spacing(3),
   },
+  button: {
+    backgroundColor: "#fff",
+  },
 }));
 
 export default function Layout({ children }) {
@@ -70,8 +73,8 @@ export default function Layout({ children }) {
 
       <NavDrawer handleDrawerClose={handleDrawerClose} isOpen={open}>
         {/* Navigation Links */}
-        <List>
-          <NavItem
+        <List className={classes.button}>
+          <NavItem 
             route={"/"}
             title={"Dashboard"}
             IconComponent={DashboardIcon}

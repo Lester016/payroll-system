@@ -4,6 +4,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  makeStyles,
 } from "@material-ui/core";
 
 const RadioGroup = ({ name, label, value, onChange, items }) => {
@@ -14,8 +15,8 @@ const RadioGroup = ({ name, label, value, onChange, items }) => {
         {items.map((item) => (
           <FormControlLabel
             key={item.id}
-            value={item.value}
-            control={<Radio />}
+            value={item.id}
+            control={<Radio color="primary"/>}
             label={item.title}
           />
         ))}

@@ -8,6 +8,7 @@ import {
   InputAdornment,
   CircularProgress,
   makeStyles,
+  Fab,
 } from "@material-ui/core";
 import {
   Add as AddIcon,
@@ -40,9 +41,15 @@ const Position = () => {
     },
   });
 
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      margin: theme.spacing(1),
+  const useStyles= makeStyles(theme=>({
+    root:{
+      margin:theme.spacing(.5)
+    },
+    createbutton:{
+      backgroundColor:"#bf1d38",
+      "&:hover":{
+        backgroundColor:"#a6172f"
+      },
     },
   }));
 
@@ -267,16 +274,14 @@ const Position = () => {
           }}
           onChange={handleSearch}
         />
-        <Button
-          size="small"
-          variant="contained"
+        <Fab
+          size="medium"
           onClick={handleOpen}
           color="primary"
           className={classes.createbutton}
-          startIcon={<AddIcon />}
         >
-          Create
-        </Button>
+        <AddIcon />
+        </Fab>   
       </Toolbar>
 
       <Paper>

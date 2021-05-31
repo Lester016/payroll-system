@@ -14,6 +14,7 @@ import {
   TableSortLabel,
   Table,
   Button,
+  IconButton,
 } from "@material-ui/core";
 
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -39,18 +40,6 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 const useStyles = makeStyles((theme) => ({
-  editButton: {
-    margin: theme.spacing(0.3),
-    backgroundColor: "primary",
-    borderRadius: "100px",
-    size: "50px",
-  },
-
-  deleteButton: {
-    backgroundColor: "red",
-    borderRadius: "100px",
-  },
-
   table: {
     minWidth: 700,
   },
@@ -65,6 +54,14 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  button: {
+    color: "#bf1d38",
+    "&:hover": {
+      color: "#a6172f",
+    },
+    borderRadius: 15,
+    marginRight: 5,
+  },   
 }));
 
 const AppTable = ({
@@ -195,22 +192,25 @@ const AppTable = ({
             {!isPayroll ? (
               <div>
                 <Button
+                  className={classes.button}
                   size="small"
-                  variant="contained"
-                  color="primary"
+                  arial-label="edit"
+                  variant="outlined"
+                  // color="primary"
                   startIcon={<Edit />}
                   onClick={() => onEditRow(item._id ? item._id : item.id)}
                 >
-                  Edit
+                EDIT
                 </Button>
                 <Button
+                className={classes.button}
                   size="small"
-                  variant="contained"
-                  color="secondary"
+                  variant="outlined"
+                  // color="secondary"
                   startIcon={<Delete />}
                   onClick={() => onDeleteRow(item._id ? item._id : item.id)}
                 >
-                  Delete
+                DELETE
                 </Button>
               </div>
             ) : (
