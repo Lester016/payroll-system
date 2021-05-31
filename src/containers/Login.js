@@ -3,13 +3,8 @@ import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { connect } from "react-redux";
 import { Redirect } from "react-router";
-<<<<<<< HEAD
-import TUPGif from '../asset/TUPGif.gif';
-import TUPLogo from '../asset/TUPLogo.png';
-=======
-import tupGif from '../asset/tupGif.gif';
-import tupLogo from '../asset/tupLogo.png';
->>>>>>> 816d33e4550f9183f123045745cfb66db659da0d
+import tupGif from "../asset/tupGif.gif";
+import tupLogo from "../asset/tupLogo.png";
 import {
   Button,
   Paper,
@@ -32,28 +27,26 @@ import * as actions from "../store/actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "85vh",
+    height: "100vh",
   },
   image: {
-<<<<<<< HEAD
-    backgroundImage: "url("+ TUPGif +")",
-=======
-    backgroundImage: "url("+ tupGif +")",
->>>>>>> 816d33e4550f9183f123045745cfb66db659da0d
-    backgroundRepeat: 'no-repeat',
+    backgroundImage: "url(" + tupGif + ")",
+    backgroundRepeat: "no-repeat",
     backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    borderRadius: '3px',
+      theme.palette.type === "light"
+        ? theme.palette.grey[50]
+        : theme.palette.grey[900],
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    borderTopLeftRadius: "5px",
+    borderBottomLeftRadius: "5px",
   },
   form: {
-    // textAlign: "center",
-    // width: 450,
     margin: theme.spacing(6, 4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    marginTop: 100,
   },
   field: {
     marginTop: 30,
@@ -70,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: "40px",
     margin: theme.spacing(8),
+    borderRadius: "5px",
   },
   progressBar: {
     color: "#bf1d38",
@@ -100,10 +94,19 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
   };
 
   return (
-    <Paper className={classes.paper} elevation={20}>
-      <Grid container component="main" className={classes.root}>
-        <Grid item xs={false} sm={true} md={7} className={classes.image} />
-        <Grid item xs={12} sm={12} md={5} component={Paper} elevation={0}>
+    // <Paper className={classes.paper} elevation={20}>
+    <Grid container component="main" className={classes.root}>
+      <Grid item xs={false} sm={true} md={7} className={classes.image} />
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={5}
+        component={Paper}
+        elevation={0}
+        style={{ borderRadius: "5px" }}
+      >
+        <img src={tupLogo} alt="logo" width="100"></img>
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={LoginSchema}
@@ -113,83 +116,79 @@ const Login = ({ login, isAuthenticated, loading, error }) => {
         >
           {({ touched, errors }) => (
             <Form className={classes.form}>
-<<<<<<< HEAD
-                <img src={TUPLogo} alt="logo" width='100'></img>
-=======
-                <img src={tupLogo} alt="logo" width='100'></img>
->>>>>>> 816d33e4550f9183f123045745cfb66db659da0d
-                <h1>Welcome back!</h1>
-                <Field
-                  as={TextField}
-                  type="email"
-                  name="email"
-                  variant="outlined"
-                  label="Email"
-                  className={classes.field}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <PersonOutlineIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={touched.email && errors.email !== undefined}
-                  helperText={touched.email && errors.email}
-                />
+              <img src={tupLogo} alt="logo" width="100"></img>
+              <h1>Welcome back!</h1>
+              <Field
+                className={classes.field}
+                as={TextField}
+                type="email"
+                name="email"
+                variant="outlined"
+                label="Email"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <PersonOutlineIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                error={touched.email && errors.email !== undefined}
+                helperText={touched.email && errors.email}
+              />
 
-                <Field
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  as={TextField}
-                  variant="outlined"
-                  label="Password"
-                  className={classes.field}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                        >
-                          {showPassword ? (
-                            <VisibilityIcon />
-                          ) : (
-                            <VisibilityOffIcon />
-                          )}
-                        </IconButton>
-                        <LockIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  error={touched.password && errors.password !== undefined}
-                  helperText={touched.password && errors.password}
-                />
-                <Typography
-                  variant="subtitle1"
-                  style={{ marginTop: 15, color:"red"}}
+              <Field
+                type={showPassword ? "text" : "password"}
+                name="password"
+                as={TextField}
+                variant="outlined"
+                label="Password"
+                className={classes.field}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {showPassword ? (
+                          <VisibilityIcon />
+                        ) : (
+                          <VisibilityOffIcon />
+                        )}
+                      </IconButton>
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                error={touched.password && errors.password !== undefined}
+                helperText={touched.password && errors.password}
+              />
+              <Typography
+                variant="subtitle1"
+                style={{ marginTop: 15, color: "red" }}
+              >
+                {error ? error : null}
+              </Typography>
+              {loading ? (
+                <CircularProgress className={classes.progressBar} />
+              ) : (
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  disableElevation
+                  className={classes.button}
                 >
-                  {error ? error: null}
-                </Typography>
-                {loading ? (
-                  <CircularProgress className={classes.progressBar} />
-                ) : (
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disableElevation
-                    className={classes.button}
-                  >
-                    Sign in
-                  </Button>
-                )}
-              </Form>
-            )}
-          </Formik>
-        </Grid>
+                  Sign in
+                </Button>
+              )}
+            </Form>
+          )}
+        </Formik>
       </Grid>
-    </Paper>
+    </Grid>
+    // </Paper>
   );
 };
 

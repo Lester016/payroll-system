@@ -8,8 +8,16 @@ import {
   InputAdornment,
   CircularProgress,
   makeStyles,
+  Fab,
 } from "@material-ui/core";
-import { Add as AddIcon, Search as SearchIcon , Delete , Cancel} from "@material-ui/icons/";
+
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  Delete,
+  Cancel,
+  Check,
+} from "@material-ui/icons/";
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
@@ -35,10 +43,16 @@ const Deductions = () => {
     },
   });
 
-  const useStyles= makeStyles(theme=>({
-    root:{
-      margin:theme.spacing(1)
-    }
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      margin: theme.spacing(1),
+    },
+    createbutton:{
+      backgroundColor: "#bf1d38",
+      "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+  },
   }));
 
   const classes = useStyles();
@@ -47,10 +61,6 @@ const Deductions = () => {
     {
       id: "title",
       label: "Description",
-    },
-    {
-      id: "amount",
-      label: "Amount",
     },
     {
       id: "options",
@@ -251,31 +261,30 @@ const Deductions = () => {
 
   return (
     <div>
-      <Paper>
-        <Toolbar>
-          <TextField
-            label="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
+      <Toolbar>
+        <TextField
+          label="Search..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          onChange={handleSearch}
+        />
 
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleOpen}
-          >
-            Create New
-          </Button>
-        </Toolbar>
-
+        <Fab
+          size="medium"
+          onClick={handleOpen}
+          color="primary"
+          className={classes.createbutton}
+        >
+        <AddIcon />
+        </Fab>  
+      </Toolbar>  
+        
+      <Paper>      
         <div>
           <Table
             lists={deductions}
@@ -283,7 +292,7 @@ const Deductions = () => {
             onEditRow={handleEdit}
             filterFn={filterFn}
             columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
+            propertiesOrder={columnHeads.slice(0, 1).map((item) => item.id)}
             isLoading={isFetching}
           />
         </div>
@@ -295,29 +304,33 @@ const Deductions = () => {
       >
         {!isLoading ? (
           <>
-          <center>
-            <h4> Are you sure you want to delete that?</h4>
-            <Button
-              variant="contained"
-              size="small"
-              color="secondary"
-              onClick={handleDelete}
-              text-align="center"
-              startIcon={<Delete/>}
-              classes={{root: classes.root}}
-            >
-              Delete
-            </Button>
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={DeleteClose}
-              startIcon={<Cancel/>}
-            >
-              Cancel
-            </Button>
-          </center>
+            <h2>DELETE?</h2>
+            <center>
+              <p>
+                {" "}
+                Deleting this results to discarding information included in it.
+              </p>
+              <Button
+                variant="contained"
+                size="small"
+                color="secondary"
+                onClick={handleDelete}
+                text-align="center"
+                startIcon={<Delete />}
+                classes={{ root: classes.root }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                color="primary"
+                onClick={DeleteClose}
+                startIcon={<Cancel />}
+              >
+                Cancel
+              </Button>
+            </center>
           </>
         ) : (
           <CircularProgress />
@@ -327,44 +340,55 @@ const Deductions = () => {
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (
           <>
-            <TextField
-              value={deductionTitle}
-              label="Deduction"
-              onChange={(e) => setDeductionTitle(e.target.value)}
-              {...(errors.deductionTitle && {
-                error: true,
-                helperText: errors.deductionTitle,
-              })}
-            />
-            <TextField
-              value={amount}
-              label="Amount"
-              onChange={(e) => setAmount(e.target.value)}
-              InputProps={{
-                inputComponent: NumberInputComponent,
-              }}
-              {...(errors.amount && {
-                error: true,
-                helperText: errors.amount,
-              })}
-            />
+            <h2>Deduction</h2>
+            <center>
+              <div>
+                <TextField
+                  value={deductionTitle}
+                  label="Deduction"
+                  onChange={(e) => setDeductionTitle(e.target.value)}
+                  {...(errors.deductionTitle && {
+                    error: true,
+                    helperText: errors.deductionTitle,
+                  })}
+                />
+                <TextField
+                  value={amount}
+                  label="Amount"
+                  onChange={(e) => setAmount(e.target.value)}
+                  InputProps={{
+                    inputComponent: NumberInputComponent,
+                  }}
+                  {...(errors.amount && {
+                    error: true,
+                    helperText: errors.amount,
+                  })}
+                />
+              </div>
 
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={handleSubmit}
-            >
-              {isUpdating ? "Update" : "Submit"}
-            </Button>
-            <Button
-              variant="contained"
-              size="small"
-              color="secondary"
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
+              <div>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={handleSubmit}
+                  classes={{ root: classes.root }}
+                  startIcon={<Check />}
+                >
+                  {isUpdating ? "Update" : "Submit"}
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  onClick={handleClose}
+                  classes={{ root: classes.root }}
+                  startIcon={<Cancel />}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </center>
           </>
         ) : (
           <CircularProgress />

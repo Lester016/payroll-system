@@ -14,6 +14,7 @@ import {
   TableSortLabel,
   Table,
   Button,
+  IconButton,
 } from "@material-ui/core";
 
 import Skeleton from "@material-ui/lab/Skeleton";
@@ -30,7 +31,7 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const StyledTableRow = withStyles(theme=> ({
+const StyledTableRow = withStyles((theme) => ({
   root: {
     "&:nth-of-type(odd)": {
       backgroundColor: theme.palette.action.hover,
@@ -38,10 +39,7 @@ const StyledTableRow = withStyles(theme=> ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles(theme=>({
-  root:{
-    margin:theme.spacing(1)
-  },
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 700,
   },
@@ -56,6 +54,14 @@ const useStyles = makeStyles(theme=>({
     top: 20,
     width: 1,
   },
+  button: {
+    color: "#bf1d38",
+    "&:hover": {
+      color: "#a6172f",
+    },
+    borderRadius: 15,
+    marginRight: 5,
+  },   
 }));
 
 const AppTable = ({
@@ -91,6 +97,9 @@ const AppTable = ({
   };
 
   function descendingComparator(a, b, orderBy) {
+    if (orderBy === "name") {
+      orderBy = "firstName";
+    }
     if (b[orderBy] < a[orderBy]) {
       return -1;
     }
@@ -169,6 +178,12 @@ const AppTable = ({
                   thousandSeparator={true}
                 />
               </StyledTableCell>
+            ) : column === "position" ? (
+              <StyledTableCell key={id}>{item[column].title}</StyledTableCell>
+            ) : column === "name" ? (
+              <StyledTableCell
+                key={id}
+              >{`${item["firstName"]} ${item["lastName"]}`}</StyledTableCell>
             ) : (
               <StyledTableCell key={id}>{item[column]}</StyledTableCell>
             )
@@ -177,23 +192,25 @@ const AppTable = ({
             {!isPayroll ? (
               <div>
                 <Button
+                  className={classes.button}
                   size="small"
-                  variant="contained"
-                  color="primary"
+                  arial-label="edit"
+                  variant="outlined"
+                  // color="primary"
                   startIcon={<Edit />}
-                  onClick={() => onEditRow(item.id)}
-                  classes={{root: classes.root}}
+                  onClick={() => onEditRow(item._id ? item._id : item.id)}
                 >
-                  Edit
+                EDIT
                 </Button>
                 <Button
+                className={classes.button}
                   size="small"
-                  variant="contained"
-                  color="secondary"
+                  variant="outlined"
+                  // color="secondary"
                   startIcon={<Delete />}
-                  onClick={() => onDeleteRow(item.id)}
+                  onClick={() => onDeleteRow(item._id ? item._id : item.id)}
                 >
-                  Delete
+                DELETE
                 </Button>
               </div>
             ) : (
