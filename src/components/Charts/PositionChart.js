@@ -9,7 +9,7 @@ const positionConfig = {
   plugins: {
     title: {
       display: true,
-      text: "POSITIONS",
+      text: "TOP 4 POSITIONS",
       font: {
         size: 20,
       },
@@ -55,10 +55,12 @@ const PositionChart = () => {
 
         // Only get the top 4 positions if there are more than 4 positions
         if (positions.length > 4) {
-          topPositions = positions.slice(3);
+          topPositions = positions.slice(0, 4);
+          console.log("IF: ", topPositions);
         } else {
           // if there are 4 or less positions, return all of them
           topPositions = positions;
+          console.log("ELSE: ", topPositions);
         }
 
         // sets up the pos(positions) array for labels and quantity array for corresponding qty of each position
