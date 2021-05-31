@@ -8,6 +8,7 @@ import {
   InputAdornment,
   CircularProgress,
   makeStyles,
+  Fab,
 } from "@material-ui/core";
 
 import {
@@ -46,13 +47,12 @@ const Deductions = () => {
     root: {
       margin: theme.spacing(1),
     },
-    createbutton: {
-      backgroundColor: "secondary",
+    createbutton:{
+      backgroundColor: "#bf1d38",
       "&:hover": {
-        backgroundColor: "#bf0644",
-      },
-      borderRadius: "100px",
+      backgroundColor: "#a6172f",
     },
+  },
   }));
 
   const classes = useStyles();
@@ -274,19 +274,17 @@ const Deductions = () => {
           onChange={handleSearch}
         />
 
-        <Button
-          size="small"
-          variant="contained"
+        <Fab
+          size="medium"
           onClick={handleOpen}
           color="primary"
           className={classes.createbutton}
-          startIcon={<AddIcon />}
         >
-          Create
-        </Button>
-      </Toolbar>
-
-      <Paper>
+        <AddIcon />
+        </Fab>  
+      </Toolbar>  
+        
+      <Paper>      
         <div>
           <Table
             lists={deductions}
