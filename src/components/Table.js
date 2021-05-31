@@ -39,9 +39,18 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: theme.spacing(1),
+  editButton: {
+    margin: theme.spacing(0.3),
+    backgroundColor: "primary",
+    borderRadius: "100px",
+    size: "50px",
   },
+
+  deleteButton: {
+    backgroundColor: "red",
+    borderRadius: "100px",
+  },
+
   table: {
     minWidth: 700,
   },
