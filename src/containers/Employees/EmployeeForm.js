@@ -43,7 +43,7 @@ const useStyle = makeStyles((theme) => ({
     marginRight: 5,
     backgroundColor: "#bf1d38",
     "&:hover": {
-    backgroundColor: "#a6172f",
+      backgroundColor: "#a6172f",
     },
   },
   cancelButton: {
@@ -52,7 +52,7 @@ const useStyle = makeStyles((theme) => ({
     marginRight: 5,
     backgroundColor: "#8388a5",
     "&:hover": {
-    backgroundColor: "#5f6484",
+      backgroundColor: "#5f6484",
     },
   },
   hidden: {
