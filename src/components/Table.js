@@ -54,7 +54,16 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
-  button: {
+  editButton: {
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+    color: "#fff",
+    borderRadius: 15,
+    marginRight: 5,
+  },
+  deleteButton: {
     color: "#bf1d38",
     "&:hover": {
       color: "#a6172f",
@@ -192,10 +201,10 @@ const AppTable = ({
             {!isPayroll ? (
               <div>
                 <Button
-                  className={classes.button}
+                  className={classes.editButton}
                   size="small"
                   arial-label="edit"
-                  variant="outlined"
+                  variant="contained"
                   // color="primary"
                   startIcon={<Edit />}
                   onClick={() => onEditRow(item._id ? item._id : item.id)}
@@ -203,7 +212,7 @@ const AppTable = ({
                 EDIT
                 </Button>
                 <Button
-                className={classes.button}
+                className={classes.deleteButton}
                   size="small"
                   variant="outlined"
                   // color="secondary"

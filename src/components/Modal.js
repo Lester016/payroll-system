@@ -6,7 +6,9 @@ import {
   Fade,
   Card,
   CardContent,
+  DialogTitle,
 } from "@material-ui/core";
+
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -24,9 +26,13 @@ const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: 275,
   },
+  dialog: {
+    backgroundColor: "#234",
+    color: "#fff",
+  }
 }));
 
-const TransitionsModal = ({ isModalOpen, handleClose, children }) => {
+const TransitionsModal = ({ isModalOpen, handleClose, children, title }) => {
   const classes = useStyles();
 
   return (
@@ -45,6 +51,7 @@ const TransitionsModal = ({ isModalOpen, handleClose, children }) => {
       >
         <Fade in={isModalOpen}>
           <Card className={classes.root}>
+          <DialogTitle className={classes.dialog}>Add {title}</DialogTitle>
             <CardContent>{children}</CardContent>
           </Card>
         </Fade>
