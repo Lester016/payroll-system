@@ -53,6 +53,29 @@ const Deductions = () => {
       backgroundColor: "#a6172f",
     },
   },
+    submitButton: {
+      marginTop: 10,
+      borderRadius: 15,
+      marginRight: 10,
+      backgroundColor: "#bf1d38",
+      "&:hover": {
+        backgroundColor: "#a6172f",
+      },
+    },
+    cancelButton: {
+      marginTop: 10,
+      borderRadius: 15,
+      backgroundColor: "#8388a5",
+    "&:hover": {
+      backgroundColor: "#5f6484",
+      },
+    },
+    textField: {
+      marginTop: 20,
+      marginBottom: 10,
+      marginRight: 5,
+      marginLeft: 5,
+    },
   }));
 
   const classes = useStyles();
@@ -340,12 +363,13 @@ const Deductions = () => {
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (
           <>
-            <h2>Deduction</h2>
             <center>
               <div>
                 <TextField
+                  className={classes.textField}
                   value={deductionTitle}
                   label="Deduction"
+                  variant="outlined"
                   onChange={(e) => setDeductionTitle(e.target.value)}
                   {...(errors.deductionTitle && {
                     error: true,
@@ -353,8 +377,10 @@ const Deductions = () => {
                   })}
                 />
                 <TextField
+                  className={classes.textField}
                   value={amount}
                   label="Amount"
+                  variant="outlined"
                   onChange={(e) => setAmount(e.target.value)}
                   InputProps={{
                     inputComponent: NumberInputComponent,
@@ -368,6 +394,7 @@ const Deductions = () => {
 
               <div>
                 <Button
+                  className={classes.submitButton}
                   variant="contained"
                   size="small"
                   color="primary"
@@ -378,6 +405,7 @@ const Deductions = () => {
                   {isUpdating ? "Update" : "Submit"}
                 </Button>
                 <Button
+                  className={classes.cancelButton}
                   variant="contained"
                   size="small"
                   color="secondary"

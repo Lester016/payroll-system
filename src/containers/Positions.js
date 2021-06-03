@@ -51,6 +51,27 @@ const Position = () => {
         backgroundColor:"#a6172f"
       },
     },
+    submitButton: {
+      marginTop: 10,
+      borderRadius: 15,
+      marginRight: 10,
+      backgroundColor: "#bf1d38",
+      "&:hover": {
+        backgroundColor: "#a6172f",
+      },
+    },
+    cancelButton: {
+      marginTop: 10,
+      borderRadius: 15,
+      backgroundColor: "#8388a5",
+    "&:hover": {
+      backgroundColor: "#5f6484",
+      },
+    },
+    textField: {
+      marginTop: 20,
+      marginBottom: 10,
+    },
   }));
 
   const classes = useStyles();
@@ -338,12 +359,13 @@ const Position = () => {
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (
           <>
-            <h2>Position</h2>
             <center>
               <div>
                 <TextField
+                  className={classes.textField}
                   value={jobTitle}
                   label="Job Title"
+                  variant="outlined"
                   onChange={(e) => setJobTitle(e.target.value)}
                   classes={{ root: classes.root }}
                   {...(errors.jobTitle && {
@@ -352,8 +374,10 @@ const Position = () => {
                   })}
                 />
                 <TextField
+                  className={classes.textField}
                   value={ratePerHour}
                   label="Rate Per Hour"
+                  variant="outlined"
                   onChange={(e) => setRatePerHour(e.target.value)}
                   classes={{ root: classes.root }}
                   InputProps={{
@@ -368,6 +392,7 @@ const Position = () => {
 
               <div>
                 <Button
+                  className={classes.submitButton}
                   variant="contained"
                   size="small"
                   color="primary"
@@ -376,6 +401,7 @@ const Position = () => {
                   {isUpdating ? "Update" : "Submit"}
                 </Button>
                 <Button
+                className={classes.cancelButton}
                   variant="contained"
                   size="small"
                   color="secondary"

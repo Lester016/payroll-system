@@ -8,7 +8,7 @@ import {
   Divider,
   IconButton,
 } from "@material-ui/core";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 
 import { drawerWidth } from "../../config/layout";
 import tupLogo from "../../asset/tupLogo.png";
@@ -94,9 +94,9 @@ export default function Layout({ handleDrawerClose, isOpen, children }) {
         </div>
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === "rtl" ? (
-            <ChevronRightIcon />
+            <ChevronLeftIcon />
           ) : (
-            <ChevronRightIcon />
+            <ChevronLeftIcon />
           )}
         </IconButton>
       </div>
