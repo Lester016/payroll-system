@@ -3,12 +3,14 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { CSVLink } from "react-csv";
 import {
+  makeStyles,
   Container,
   Paper,
   Toolbar,
   Button,
   CircularProgress,
   InputAdornment,
+  Fab,
 } from "@material-ui/core";
 import {
   Add as AddIcon,
@@ -50,6 +52,15 @@ const initialValues = {
   salary: "",
 };
 
+const useStyles = makeStyles((theme) => ({
+  createButton: {
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+  },
+  }));
+
 const columnHeads = [
   {
     id: "employeeId",
@@ -87,6 +98,8 @@ const columnHeads = [
 ];
 
 const Employees = ({ userToken }) => {
+  const classes = useStyles();
+
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(null);
@@ -272,15 +285,14 @@ const Employees = ({ userToken }) => {
             onChange={handleSearch}
           />
 
-          <Button
-            size="small"
-            variant="contained"
+          <Fab
+            className={classes.createButton}
+            size="medium"
             color="primary"
-            startIcon={<AddIcon />}
             onClick={handleOpen}
           >
-            Create New
-          </Button>
+            <AddIcon />
+          </Fab>
           <Button>
             <CSVLink
               data={csvData}

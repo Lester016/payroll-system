@@ -37,8 +37,23 @@ const useStyle = makeStyles((theme) => ({
       margin: theme.spacing(0.5),
     },
   },
-  button: {
+  createButton: {
     margin: theme.spacing(0, 1),
+    borderRadius: 15,
+    marginRight: 5,
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+  },
+  cancelButton: {
+    margin: theme.spacing(0, 1),
+    borderRadius: 15,
+    marginRight: 5,
+    backgroundColor: "#8388a5",
+    "&:hover": {
+      backgroundColor: "#5f6484",
+    },
   },
   hidden: {
     visibility: "hidden",
@@ -559,9 +574,9 @@ const EmployeeForm = ({
               color="primary"
               startIcon={<AddIcon />}
               onClick={handleSubmit}
-              className={classes.button}
+              className={classes.createButton}
             >
-              Create New
+              Create
             </Button>
             <Button
               size="small"
@@ -569,7 +584,7 @@ const EmployeeForm = ({
               color="secondary"
               startIcon={<CancelIcon />}
               onClick={handleFormClose}
-              className={classes.button}
+              className={classes.cancelButton}
             >
               Cancel
             </Button>

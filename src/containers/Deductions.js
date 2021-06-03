@@ -8,12 +8,15 @@ import {
   InputAdornment,
   CircularProgress,
   makeStyles,
+  Fab,
 } from "@material-ui/core";
+
 import {
   Add as AddIcon,
   Search as SearchIcon,
   Delete,
   Cancel,
+  Check,
 } from "@material-ui/icons/";
 
 import Table from "../components/Table";
@@ -27,6 +30,7 @@ const Deductions = () => {
   const [snackMessage, setSnackMessage] = useState("");
   const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
+  const [amount, setAmount] = useState();
   const [errors, setErrors] = useState({});
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +47,12 @@ const Deductions = () => {
     root: {
       margin: theme.spacing(1),
     },
+    createbutton:{
+      backgroundColor: "#bf1d38",
+      "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+  },
   }));
 
   const classes = useStyles();
@@ -81,6 +91,7 @@ const Deductions = () => {
   const handleClose = () => {
     // Reset to default values
     setDeductionTitle("");
+    setAmount();
 
     setIsModalOpen(false);
     setIsUpdating(null);
@@ -110,6 +121,7 @@ const Deductions = () => {
   const validate = () => {
     let temp = {};
     temp.deductionTitle = deductionTitle ? "" : "This field is required.";
+    temp.amount = amount ? "" : "This field is required.";
 
     setErrors({
       ...temp,
@@ -130,6 +142,7 @@ const Deductions = () => {
             "https://tup-payroll-default-rtdb.firebaseio.com/deductions.json",
             {
               title: deductionTitle,
+              amount: parseFloat(amount),
             }
           )
           .then((response) => {
@@ -138,6 +151,7 @@ const Deductions = () => {
               ...deductions,
               [response.data.name]: {
                 title: deductionTitle,
+                amount: parseFloat(amount),
               },
             });
             setIsLoading(false);
@@ -165,6 +179,7 @@ const Deductions = () => {
             `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${isUpdating}.json`,
             {
               title: deductionTitle,
+              amount: parseFloat(amount),
             }
           )
           .then(() => {
@@ -173,6 +188,7 @@ const Deductions = () => {
               ...deductions,
               [isUpdating]: {
                 title: deductionTitle,
+                amount: amount,
               },
             });
             setIsLoading(false);
@@ -222,7 +238,9 @@ const Deductions = () => {
   // Edit handle
   const handleEdit = (key) => {
     const oldDeductionTitle = deductions[key].title;
+    const oldAmount = deductions[key].amount;
     setDeductionTitle(oldDeductionTitle);
+    setAmount(oldAmount);
     setIsUpdating(key);
     handleOpen();
   };
@@ -243,31 +261,30 @@ const Deductions = () => {
 
   return (
     <div>
-      <Paper>
-        <Toolbar>
-          <TextField
-            label="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
+      <Toolbar>
+        <TextField
+          label="Search..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          onChange={handleSearch}
+        />
 
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleOpen}
-          >
-            Create New
-          </Button>
-        </Toolbar>
-
+        <Fab
+          size="medium"
+          onClick={handleOpen}
+          color="primary"
+          className={classes.createbutton}
+        >
+        <AddIcon />
+        </Fab>  
+      </Toolbar>  
+        
+      <Paper>      
         <div>
           <Table
             lists={deductions}
@@ -287,8 +304,12 @@ const Deductions = () => {
       >
         {!isLoading ? (
           <>
+            <h2>DELETE?</h2>
             <center>
-              <h4> Are you sure you want to delete that?</h4>
+              <p>
+                {" "}
+                Deleting this results to discarding information included in it.
+              </p>
               <Button
                 variant="contained"
                 size="small"
@@ -319,32 +340,55 @@ const Deductions = () => {
       <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
         {!isLoading ? (
           <>
-            <TextField
-              value={deductionTitle}
-              label="Deduction"
-              onChange={(e) => setDeductionTitle(e.target.value)}
-              {...(errors.deductionTitle && {
-                error: true,
-                helperText: errors.deductionTitle,
-              })}
-            />
+            <h2>Deduction</h2>
+            <center>
+              <div>
+                <TextField
+                  value={deductionTitle}
+                  label="Deduction"
+                  onChange={(e) => setDeductionTitle(e.target.value)}
+                  {...(errors.deductionTitle && {
+                    error: true,
+                    helperText: errors.deductionTitle,
+                  })}
+                />
+                <TextField
+                  value={amount}
+                  label="Amount"
+                  onChange={(e) => setAmount(e.target.value)}
+                  InputProps={{
+                    inputComponent: NumberInputComponent,
+                  }}
+                  {...(errors.amount && {
+                    error: true,
+                    helperText: errors.amount,
+                  })}
+                />
+              </div>
 
-            <Button
-              variant="contained"
-              size="small"
-              color="primary"
-              onClick={handleSubmit}
-            >
-              {isUpdating ? "Update" : "Submit"}
-            </Button>
-            <Button
-              variant="contained"
-              size="small"
-              color="secondary"
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
+              <div>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={handleSubmit}
+                  classes={{ root: classes.root }}
+                  startIcon={<Check />}
+                >
+                  {isUpdating ? "Update" : "Submit"}
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                  onClick={handleClose}
+                  classes={{ root: classes.root }}
+                  startIcon={<Cancel />}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </center>
           </>
         ) : (
           <CircularProgress />

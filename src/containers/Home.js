@@ -1,188 +1,18 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { Card, Grid, Typography } from "@material-ui/core";
 
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import HelpIcon from "@material-ui/icons/Help";
+import ScheduleIcon from "@material-ui/icons/Schedule";
 
-import { Doughnut, Bar } from "react-chartjs-2";
+import Skeleton from "@material-ui/lab/Skeleton";
 
-// POSITION SET UP FOR POSITION CHART
-const position = [
-  { jobRole: "Dean", employeeCount: 80 },
-  { jobRole: "Admin", employeeCount: 500 },
-  { jobRole: "Teacher", employeeCount: 1500 },
-  { jobRole: "Cleaner", employeeCount: 300 },
-];
-
-const positionData = {
-  responsive: true,
-  labels: [
-    position[0].jobRole,
-    position[1].jobRole,
-    position[2].jobRole,
-    position[3].jobRole,
-  ],
-  datasets: [
-    {
-      data: [
-        position[0].employeeCount,
-        position[1].employeeCount,
-        position[2].employeeCount,
-        position[3].employeeCount,
-      ],
-      backgroundColor: [
-        "rgb(255, 99, 132)",
-        "rgb(54, 162, 235)",
-        "rgb(255, 205, 86)",
-        "rgb(150, 26, 222)",
-      ],
-      hoverOffset: 4,
-    },
-  ],
-};
-
-const positionConfig = {
-  plugins: {
-    title: {
-      display: true,
-      text: "POSITIONS",
-      font: {
-        size: 20,
-      },
-    },
-    legend: {
-      labels: {
-        boxHeight: 20,
-        boxWidth: 25,
-      },
-      position: "bottom",
-    },
-  },
-};
-
-// PAYROLL BUDGET SET UP FOR BUDGET CHART
-const budget = [
-  { campus: "TUP-Manila", payroll: 3500200 },
-  { campus: "TUP-Taguig", payroll: 2600600 },
-  { campus: "TUP-Cavite", payroll: 2500600 },
-  { campus: "TUP-Visayas", payroll: 1700520 },
-];
-
-const budgetData = {
-  responsive: true,
-  labels: [
-    budget[0].campus,
-    budget[1].campus,
-    budget[2].campus,
-    budget[3].campus,
-  ],
-  datasets: [
-    {
-      data: [
-        budget[0].payroll,
-        budget[1].payroll,
-        budget[2].payroll,
-        budget[3].payroll,
-      ],
-      backgroundColor: [
-        "rgb(255, 99, 132)",
-        "rgb(54, 162, 235)",
-        "rgb(255, 205, 86)",
-        "rgb(150, 26, 222)",
-      ],
-      hoverOffset: 4,
-    },
-  ],
-};
-
-const budgetConfig = {
-  plugins: {
-    title: {
-      display: true,
-      text: "PAYROLL BUDGET",
-      font: {
-        size: 20,
-      },
-    },
-    legend: {
-      labels: {
-        boxHeight: 20,
-        boxWidth: 25,
-      },
-      position: "bottom",
-    },
-  },
-};
-
-// COLLEGE SET UP FOR COLLEGE CHART
-const college = [
-  { department: "COS", employees: 350 },
-  { department: "CAFA", employees: 100 },
-  { department: "CLA", employees: 120 },
-  { department: "CIT", employees: 100 },
-  { department: "COE", employees: 150 },
-  { department: "CIE", employees: 120 },
-];
-
-const collegeData = {
-  labels: [
-    college[0].department,
-    college[1].department,
-    college[2].department,
-    college[3].department,
-    college[4].department,
-    college[5].department,
-  ],
-  datasets: [
-    {
-      maxBarThickness: 50,
-      data: [
-        college[0].employees,
-        college[1].employees,
-        college[2].employees,
-        college[3].employees,
-        college[4].employees,
-        college[5].employees,
-      ],
-      backgroundColor: [
-        "#FF4C4C",
-        "#3DCC3D",
-        "#4C4CFF",
-        "#FFC04C",
-        "#FFFF4C",
-        "#CCCCCC",
-      ],
-
-      borderColor: [
-        "#FF0000",
-        "#008000",
-        "#0000FF",
-        "#FFA500",
-        "#FFFF00",
-        "#808080",
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
-
-const collegeConfig = {
-  plugins: {
-    legend: {
-      display: false,
-    },
-    title: {
-      display: true,
-      text: "EMPLOYEE DISTRIBUTION AMONG COLLEGES",
-      font: {
-        size: 20,
-      },
-    },
-  },
-};
+import PayrollChart from "../components/Charts/PayrollChart";
+import PositionChart from "../components/Charts/PositionChart";
+import CollegeChart from "../components/Charts/CollegeChart";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -228,9 +58,35 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
   const classes = useStyles();
+  const [totalEmployees, setTotalEmployees] = useState(0);
+  const [isFetching, setIsFetching] = useState(false);
 
-  const totalEmployees = 1050;
+  let [partTimer, setPartTimer] = useState(0);
+
   const totalPayrollGiven = 500;
+
+  const home = () => {
+    setIsFetching(true);
+    axios
+      .get("https://tup-payroll.herokuapp.com/api/employees")
+      .then((response) => {
+        setIsFetching(false);
+        setTotalEmployees(Object.keys(response.data).length);
+        for (let dataObj of response.data) {
+          if (dataObj.isPartTime === true) {
+            setPartTimer((partTimer += 1));
+          }
+        }
+      })
+      .catch((e) => {
+        setIsFetching(false);
+        console.log("Error: ", e);
+      });
+  };
+  // Get employees in the database
+  useEffect(() => {
+    home();
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -240,12 +96,13 @@ export default function Home() {
           <Grid item xs={12}>
             <Card className={classes.chart} style={{ marginBottom: "18%" }}>
               <div>
-                <Doughnut data={budgetData} options={budgetConfig} />
+                {/* <Doughnut data={budgetData} options={budgetConfig} /> */}
+                <PayrollChart />
               </div>
             </Card>
             <Card className={classes.chart}>
               <div>
-                <Doughnut data={positionData} options={positionConfig} />
+                <PositionChart />
               </div>
             </Card>
           </Grid>
@@ -255,59 +112,79 @@ export default function Home() {
           {/* EMPLOYEE TEXT CARD */}
           <Grid xs={12} container spacing={3}>
             <Grid item xs={4}>
-              <Card
-                className={classes.textCard}
-                style={{ backgroundColor: "rgb(255, 99, 132)" }}
-              >
-                <div className={classes.left}>
-                  <Typography className={classes.cardTitle}>
-                    {totalEmployees}
-                  </Typography>
-                  <Typography className={classes.cardDescription}>
-                    Total Employees
-                  </Typography>
-                </div>
-                <PeopleAltIcon className={classes.icon} />
-              </Card>
+              {isFetching ? (
+                <Skeleton />
+              ) : (
+                <Card
+                  className={classes.textCard}
+                  style={{ backgroundColor: "rgb(255, 99, 132)" }}
+                >
+                  <div className={classes.left}>
+                    <Typography className={classes.cardTitle}>
+                      {totalEmployees}
+                    </Typography>
+
+                    <Typography className={classes.cardDescription}>
+                      Total Regular Employees
+                    </Typography>
+                  </div>
+                  <PeopleAltIcon className={classes.icon} />
+                </Card>
+              )}
             </Grid>
-            {/* DUMMY TEXT CARD */}
+            {/* PART TIMERS TEXT CARD */}
             <Grid item xs={4}>
-              <Card
-                className={classes.textCard}
-                style={{ backgroundColor: "rgb(54, 162, 235)" }}
-              >
-                <div className={classes.left}>
-                  <Typography className={classes.cardTitle}>200</Typography>
-                  <Typography className={classes.cardDescription}>
-                    Total Dummies
-                  </Typography>
-                </div>
-                <HelpIcon className={classes.icon} />
-              </Card>
+              {isFetching ? (
+                <Skeleton />
+              ) : (
+                <Card
+                  className={classes.textCard}
+                  style={{ backgroundColor: "rgb(54, 162, 235)" }}
+                >
+                  <div className={classes.left}>
+                    {isFetching ? (
+                      <Skeleton />
+                    ) : (
+                      <Typography className={classes.cardTitle}>
+                        {partTimer}
+                      </Typography>
+                    )}
+
+                    <Typography className={classes.cardDescription}>
+                      Total Part-Timers
+                    </Typography>
+                  </div>
+                  <ScheduleIcon className={classes.icon} />
+                </Card>
+              )}
             </Grid>
             {/* PAYROLL TEXT CARD */}
             <Grid item xs={4}>
-              <Card
-                className={classes.textCard}
-                style={{ backgroundColor: "rgb(255, 205, 86)" }}
-              >
-                <div className={classes.left}>
-                  <Typography className={classes.cardTitle}>
-                    {totalPayrollGiven}
-                  </Typography>
-                  <Typography className={classes.cardDescription}>
-                    Distributed Payroll
-                  </Typography>
-                </div>
-                <AttachMoneyIcon className={classes.icon} />
-              </Card>
+              {isFetching ? (
+                <Skeleton />
+              ) : (
+                <Card
+                  className={classes.textCard}
+                  style={{ backgroundColor: "rgb(255, 205, 86)" }}
+                >
+                  <div className={classes.left}>
+                    <Typography className={classes.cardTitle}>
+                      {totalPayrollGiven}
+                    </Typography>
+                    <Typography className={classes.cardDescription}>
+                      Distributed Payroll
+                    </Typography>
+                  </div>
+                  <AttachMoneyIcon className={classes.icon} />
+                </Card>
+              )}
             </Grid>
           </Grid>
           {/* BAR CHART */}
           <Grid item xs={12}>
             <Card className={classes.barchart}>
               <div className={classes.left}>
-                <Bar data={collegeData} options={collegeConfig} />
+                <CollegeChart />
               </div>
             </Card>
           </Grid>
