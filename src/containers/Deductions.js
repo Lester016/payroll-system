@@ -19,7 +19,7 @@ import {
   Check,
 } from "@material-ui/icons/";
 
-import Table from "../components/Table";
+import CollapsibleTable from "../components/CollapsibleTable";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
 import NumberInputComponent from "../components/NumberInputComponent";
@@ -30,6 +30,7 @@ const Deductions = () => {
   const [snackMessage, setSnackMessage] = useState("");
   const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
+  const [employees, setEmployees] = useState([]);
   const [amount, setAmount] = useState();
   const [errors, setErrors] = useState({});
   const [isUpdating, setIsUpdating] = useState(null);
@@ -59,8 +60,32 @@ const Deductions = () => {
 
   const columnHeads = [
     {
-      id: "title",
-      label: "Description",
+      id: "employeeId",
+      label: "Employee ID",
+    },
+    {
+      id: "name",
+      label: "Name",
+    },
+    {
+      id: "deductionAmount",
+      label: "Deduction Amount"
+    },
+    {
+      id: "position",
+      label: "Position",
+    },
+    {
+      id: "campus",
+      label: "Campus",
+    },
+    {
+      id: "college",
+      label: "College",
+    },
+    {
+      id: "department",
+      label: "Department",
     },
     {
       id: "options",
@@ -73,9 +98,9 @@ const Deductions = () => {
   useEffect(() => {
     setIsFetching(true);
     axios
-      .get("https://tup-payroll-default-rtdb.firebaseio.com/deductions.json")
+      .get("https://tup-payroll.herokuapp.com/api/employees")
       .then((response) => {
-        setDeductions(response.data);
+        setEmployees(response.data);
         setIsFetching(false);
       })
       .catch((error) => {
@@ -253,7 +278,9 @@ const Deductions = () => {
         if (target.value === "") return items;
         else
           return items.filter((x) =>
-            x.title.toLowerCase().includes(target.value.toLowerCase())
+            (x.employeeId.toLowerCase().includes(target.value.toLowerCase())) ||
+            (x.firstName.toLowerCase().includes(target.value.toLowerCase())) ||
+            (x.lastName.toLowerCase().includes(target.value.toLowerCase()))
           );
       },
     });
@@ -286,13 +313,13 @@ const Deductions = () => {
         
       <Paper>      
         <div>
-          <Table
-            lists={deductions}
+          <CollapsibleTable
+            lists={employees}
             onDeleteRow={DeleteOpen}
             onEditRow={handleEdit}
             filterFn={filterFn}
             columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 1).map((item) => item.id)}
+            propertiesOrder={columnHeads.slice(0, 6).map((item) => item.id)}
             isLoading={isFetching}
           />
         </div>
