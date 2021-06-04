@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     },
     borderRadius: 15,
     marginRight: 5,
-  },   
+  },
 }));
 
 const AppTable = ({
@@ -148,6 +148,7 @@ const AppTable = ({
       result.push(Object.assign({ id: key }, lists[key]));
     }
 
+    console.log(result);
     return result.reverse();
   };
 
@@ -179,16 +180,43 @@ const AppTable = ({
       output = listsAfterPagingAndSorting(output).map((item) => (
         <StyledTableRow key={item.id}>
           {propertiesOrder.map((column, id) =>
-            column === "amount" || column === "rate" ? (
+            column === "amount" ||
+            column === "rate" ||
+            column === "grossAmount" ||
+            column === "withholdingTax" ||
+            column === "totalDeductions" ||
+            column === "regularNetAmount" ||
+            column === "withTax" ||
+            column === "overloadNetAmount" ? (
               <StyledTableCell key={id}>
                 <NumberFormat
-                  value={item[column]}
+                  value={item[column].toFixed(2)}
                   displayType={"text"}
                   thousandSeparator={true}
                 />
               </StyledTableCell>
             ) : column === "position" ? (
               <StyledTableCell key={id}>{item[column].title}</StyledTableCell>
+            ) : column === "rates" ? (
+              <StyledTableCell key={id}>
+                <NumberFormat
+                  value={`${item["employee"].position.rate}`}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                />
+              </StyledTableCell>
+            ) : column === "positions" ? (
+              <StyledTableCell
+                key={id}
+              >{`${item["employee"].position.title}`}</StyledTableCell>
+            ) : column === "id" ? (
+              <StyledTableCell key={id}>
+                {item.employee.employeeId}
+              </StyledTableCell>
+            ) : column === "employeeName" ? (
+              <StyledTableCell
+                key={id}
+              >{`${item.employee.firstName} ${item.employee.lastName}`}</StyledTableCell>
             ) : column === "name" ? (
               <StyledTableCell
                 key={id}
@@ -209,17 +237,17 @@ const AppTable = ({
                   startIcon={<Edit />}
                   onClick={() => onEditRow(item._id ? item._id : item.id)}
                 >
-                EDIT
+                  EDIT
                 </Button>
                 <Button
-                className={classes.deleteButton}
+                  className={classes.deleteButton}
                   size="small"
                   variant="outlined"
                   // color="secondary"
                   startIcon={<Delete />}
                   onClick={() => onDeleteRow(item._id ? item._id : item.id)}
                 >
-                DELETE
+                  DELETE
                 </Button>
               </div>
             ) : (

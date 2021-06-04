@@ -125,7 +125,7 @@ export default function Home() {
                     </Typography>
 
                     <Typography className={classes.cardDescription}>
-                      Total Regular Employees
+                      Total Employees
                     </Typography>
                   </div>
                   <PeopleAltIcon className={classes.icon} />

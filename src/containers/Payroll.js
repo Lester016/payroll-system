@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
 
 // COMPONENTS
 import Table from "../components/Table";
@@ -10,38 +11,81 @@ import { Paper } from "@material-ui/core/";
 import jsPDF from "jspdf";
 
 function Payroll() {
+  const [isFetching, setIsFetching] = useState(false);
+  const [data, setData] = useState([]);
   const [filterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
 
-  const columnHeads = [
+  const partTimers = [];
+  const regulars = [];
+
+  const payroll = () => {
+    setIsFetching(true);
+    axios
+      .get("https://tup-payroll.herokuapp.com/api/payroll")
+      .then((respond) => {
+        setData(respond.data);
+        setIsFetching(false);
+      })
+      .catch((error) => {
+        setIsFetching(false);
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    payroll();
+  }, []);
+
+  for (let x of data) {
+    if (x.employee !== null) {
+      if (x.employee.isPartTime) {
+        partTimers.push(x);
+      } else {
+        regulars.push(x);
+      }
+    }
+  }
+
+  const overloadColumnHeads = [
     {
-      id: "employeeID",
+      id: "id",
       label: "Employee ID",
       disableSorting: true,
     },
     {
       id: "employeeName",
       label: "Name",
+      disableSorting: true,
     },
     {
-      id: "position",
+      id: "positions",
       label: "Position",
       disableSorting: true,
     },
     {
-      id: "grossPay",
-      label: "Gross Pay",
+      id: "monthOverload",
+      label: "No. of Hours",
     },
     {
-      id: "netPay",
-      label: "Net Pay",
+      id: "rates",
+      label: "rate",
+      disableSorting: true,
     },
     {
-      id: "deduction",
-      label: "Deduction",
+      id: "amount",
+      label: "Amount",
+    },
+    {
+      id: "withTax",
+      label: "w/Tax",
+    },
+    {
+      id: "overloadNetAmount",
+      label: "Overload Net Amount",
     },
     {
       id: "printables",
@@ -50,62 +94,47 @@ function Payroll() {
     },
   ];
 
-  const dummy = {
-    employee1: {
-      employeeID: "123",
-      employeeName: "Nikko Cruz",
-      position: "Janitor",
-      grossPay: 15000,
-      netPay: 13050,
-      deduction: 500,
+  const regularColumnHeads = [
+    {
+      id: "id",
+      label: "Employee ID",
+      disableSorting: true,
     },
-    employee2: {
-      employeeID: "234",
-      employeeName: "Mark Dela Fuente",
-      position: "Professor",
-      grossPay: 10100,
-      netPay: 9120,
-      deduction: 650,
+    {
+      id: "employeeName",
+      label: "Name",
     },
-    employee3: {
-      employeeID: "345",
-      employeeName: "Juan Dela Cruz",
-      position: "Admin",
-      grossPay: 15200,
-      netPay: 13550,
-      deduction: 350,
+    {
+      id: "positions",
+      label: "Position",
     },
-    employee4: {
-      employeeID: "456",
-      employeeName: "Mary Anne Santos",
-      position: "Dean",
-      grossPay: 16300,
-      netPay: 15500,
-      deduction: 486,
+    {
+      id: "grossAmount",
+      label: "Gross Amount",
     },
-    employee5: {
-      employeeID: "567",
-      employeeName: "Jude Mamamia",
-      position: "Staff",
-      grossPay: 14000,
-      netPay: 13136,
-      deduction: 320,
+    {
+      id: "withholdingTax",
+      label: "With Holding Tax",
     },
-    employee6: {
-      employeeID: "678",
-      employeeName: "James Lebron",
-      position: "Profssor2",
-      grossPay: 13500,
-      netPay: 12100,
-      deduction: 600,
+    {
+      id: "totalDeductions",
+      label: "Total Deduction/s",
     },
-  };
+    {
+      id: "regularNetAmount",
+      label: "Net Amount",
+    },
+    {
+      id: "printables",
+      label: "Printables",
+      disableSorting: true,
+    },
+  ];
 
-  // HANDLES FOR PRINTABLES
-  const handlePayslip = () => {
+  function handlePayslip() {
     const pdf = new jsPDF("a6");
 
-    const data = dummy;
+    const data = partTimers;
 
     let date = "JANUARY 1-31, 2021";
 
@@ -178,17 +207,36 @@ function Payroll() {
 
     // END OF PDF FILE
     pdf.save("payroll"); //Prints the pdf
-  };
+  }
 
   return (
     <div>
+      <h1>OVERLOAD</h1>
       <Paper>
         <Table
-          lists={dummy}
+          lists={partTimers}
           filterFn={filterFn}
-          columns={columnHeads}
-          propertiesOrder={columnHeads.slice(0, 6).map((item) => item.id)}
+          columns={overloadColumnHeads}
+          propertiesOrder={overloadColumnHeads
+            .slice(0, 8)
+            .map((item) => item.id)}
           isPayroll={true}
+          isLoading={isFetching}
+          printPayslip={handlePayslip} //Generate PDF functions
+        />
+      </Paper>
+
+      <h1>REGULARS</h1>
+      <Paper>
+        <Table
+          lists={regulars}
+          filterFn={filterFn}
+          columns={regularColumnHeads}
+          propertiesOrder={regularColumnHeads
+            .slice(0, 7)
+            .map((item) => item.id)}
+          isPayroll={true}
+          isLoading={isFetching}
           printPayslip={handlePayslip} //Generate PDF functions
         />
       </Paper>
