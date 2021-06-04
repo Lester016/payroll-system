@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { CSVLink } from "react-csv";
 
 // COMPONENTS
 import Table from "../components/Table";
@@ -7,10 +8,24 @@ import Table from "../components/Table";
 // MATERIAL UI
 import { Paper } from "@material-ui/core/";
 
+import { Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 // jsPDF Package
 import jsPDF from "jspdf";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  input: {
+    display: "none",
+  },
+}));
+
 function Payroll() {
+  const classes = useStyles();
   const [isFetching, setIsFetching] = useState(false);
   const [data, setData] = useState([]);
   const [filterFn] = useState({
@@ -82,7 +97,7 @@ function Payroll() {
     },
     {
       id: "overloadNetAmount",
-      label: "Overload Net Amount",
+      label: "Net Amount",
     },
     {
       id: "printables",
@@ -210,8 +225,42 @@ function Payroll() {
     pdf.save("payroll"); //Prints the pdf
   }
 
+  let csvData = partTimers.map((obj) => ({
+    employeeId: '=""' + obj.employee.employeeId + '""',
+    firstName: obj.employee.firstName,
+    lastName: obj.employee.lastName,
+    position: obj.employee.position.title,
+    monthOverload: obj.monthOverload,
+    rate: obj.employee.position.title,
+    amount: obj.amount,
+    withTax: obj.withTax,
+    netAmount: obj.overloadNetAmount,
+  }));
+
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
+      <input
+        accept="application/pdf,application/vnd.ms-excel"
+        className={classes.input}
+        id="contained-button-file"
+        type="file"
+      />
+      <label htmlFor="contained-button-file">
+        <Button size="large" variant="outlined" component="span">
+          Generate Payroll
+        </Button>
+      </label>
+      <Button>
+        <CSVLink
+          data={csvData}
+          filename={"overload.csv"}
+          className="btn btn-primary"
+          target="_blank"
+        >
+          Export Overload CSV
+        </CSVLink>
+      </Button>
+
       <h1>OVERLOAD</h1>
       <Paper>
         <Table

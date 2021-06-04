@@ -259,7 +259,6 @@ const AppTable = ({
                   startIcon={<Print />}
                   onClick={() => printPayslip(item.id)}
                 >
-                  {console.log("ITO: ", item.id)}
                   Payslip
                 </Button>
               </div>
