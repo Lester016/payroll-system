@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import {
   TextField,
   Button,
@@ -8,23 +9,65 @@ import {
   InputAdornment,
   CircularProgress,
   makeStyles,
-  Fab,
 } from "@material-ui/core";
 
 import {
-  Add as AddIcon,
   Search as SearchIcon,
   Delete,
   Cancel,
   Check,
 } from "@material-ui/icons/";
 
-import CollapsibleTable from "../components/CollapsibleTable";
+import CollapsibleTable from "../components/CollapsibleTable/CollapsibleTable";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
 import NumberInputComponent from "../components/NumberInputComponent";
 
-const Deductions = () => {
+const columnHeads = [
+  {
+    id: "employeeId",
+    label: "Employee ID",
+  },
+  {
+    id: "name",
+    label: "Name",
+  },
+  {
+    id: "deductionAmount",
+    label: "Deduction Amount",
+  },
+  {
+    id: "position",
+    label: "Position",
+  },
+  {
+    id: "campus",
+    label: "Campus",
+  },
+  {
+    id: "college",
+    label: "College",
+  },
+  {
+    id: "department",
+    label: "Department",
+  },
+];
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1),
+  },
+  createbutton: {
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+  },
+}));
+
+const Deductions = ({ userToken }) => {
+  const classes = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
@@ -36,63 +79,13 @@ const Deductions = () => {
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [deleteKey, setDeleteKey] = useState(null);
+  const [deleteDeduction, setDeleteDeduction] = useState({employeeId: null, deductionId: null});
 
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      margin: theme.spacing(1),
-    },
-    createbutton:{
-      backgroundColor: "#bf1d38",
-      "&:hover": {
-      backgroundColor: "#a6172f",
-    },
-  },
-  }));
-
-  const classes = useStyles();
-
-  const columnHeads = [
-    {
-      id: "employeeId",
-      label: "Employee ID",
-    },
-    {
-      id: "name",
-      label: "Name",
-    },
-    {
-      id: "deductionAmount",
-      label: "Deduction Amount"
-    },
-    {
-      id: "position",
-      label: "Position",
-    },
-    {
-      id: "campus",
-      label: "Campus",
-    },
-    {
-      id: "college",
-      label: "College",
-    },
-    {
-      id: "department",
-      label: "Department",
-    },
-    {
-      id: "options",
-      label: "Options",
-      disableSorting: true,
-    },
-  ];
 
   // Get deductions in the database
   useEffect(() => {
@@ -122,12 +115,18 @@ const Deductions = () => {
     setIsUpdating(null);
   };
 
-  const DeleteOpen = (key) => {
-    setDeleteKey(key);
+  const DeleteOpen = (employeeId, deductionId) => {
+    setDeleteDeduction({
+      employeeId: employeeId,
+      deductionId: deductionId,
+    });
   };
   const DeleteClose = () => {
     // Reset to default values.
-    setDeleteKey(null);
+    setDeleteDeduction({
+      employeeId: null,
+      deductionId: null,
+    });
     setIsUpdating(null);
   };
 
@@ -239,20 +238,37 @@ const Deductions = () => {
 
   // Delete handle
   const handleDelete = () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
     setIsLoading(true);
+
+    let employeeIndex = employees.findIndex((employee) => {return employee._id === deleteDeduction.employeeId})
+    let employee = employees[employeeIndex];
+    let putItem = employee.deductions.filter((item) => {return item._id !== deleteDeduction.deductionId});
+    putItem = {"deductions": putItem}
+
     axios
-      .delete(
-        `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${deleteKey}.json`
+      .put(
+        `https://tup-payroll.herokuapp.com/api/employees/deductions/${deleteDeduction.employeeId}`,
+        putItem,
+        config,
       )
-      .then(() => {
-        let filteredPositions = { ...deductions };
-        delete filteredPositions[deleteKey];
-        setDeductions(filteredPositions);
+      .then((response) => {
+        let newEmployees = Array.from(employees);
+        newEmployees[employeeIndex] = response.data;
+        setEmployees(newEmployees);
         setIsLoading(false);
 
         setSnackMessage("Success delete!");
         handleSnackOpen();
-        setDeleteKey(null);
+        setDeleteDeduction({
+          employeeId: null,
+          deductionId: null,
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -277,10 +293,11 @@ const Deductions = () => {
       fn: (items) => {
         if (target.value === "") return items;
         else
-          return items.filter((x) =>
-            (x.employeeId.toLowerCase().includes(target.value.toLowerCase())) ||
-            (x.firstName.toLowerCase().includes(target.value.toLowerCase())) ||
-            (x.lastName.toLowerCase().includes(target.value.toLowerCase()))
+          return items.filter(
+            (x) =>
+              x.employeeId.toLowerCase().includes(target.value.toLowerCase()) ||
+              x.firstName.toLowerCase().includes(target.value.toLowerCase()) ||
+              x.lastName.toLowerCase().includes(target.value.toLowerCase())
           );
       },
     });
@@ -300,18 +317,9 @@ const Deductions = () => {
           }}
           onChange={handleSearch}
         />
+      </Toolbar>
 
-        <Fab
-          size="medium"
-          onClick={handleOpen}
-          color="primary"
-          className={classes.createbutton}
-        >
-        <AddIcon />
-        </Fab>  
-      </Toolbar>  
-        
-      <Paper>      
+      <Paper>
         <div>
           <CollapsibleTable
             lists={employees}
@@ -319,7 +327,7 @@ const Deductions = () => {
             onEditRow={handleEdit}
             filterFn={filterFn}
             columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 6).map((item) => item.id)}
+            propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
             isLoading={isFetching}
           />
         </div>
@@ -327,14 +335,13 @@ const Deductions = () => {
 
       <TransitionsModal
         handleClose={DeleteClose}
-        isModalOpen={deleteKey ? true : false}
+        isModalOpen={deleteDeduction.deductionId ? true : false}
       >
         {!isLoading ? (
           <>
             <h2>DELETE?</h2>
             <center>
               <p>
-                {" "}
                 Deleting this results to discarding information included in it.
               </p>
               <Button
@@ -431,4 +438,10 @@ const Deductions = () => {
   );
 };
 
-export default Deductions;
+const mapStateToProps = (state) => {
+  return {
+    userToken: state.auth.token,
+  };
+};
+
+export default connect(mapStateToProps)(Deductions);
