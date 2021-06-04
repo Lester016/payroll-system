@@ -59,12 +59,10 @@ function Payroll() {
     {
       id: "employeeName",
       label: "Name",
-      disableSorting: true,
     },
     {
       id: "positions",
       label: "Position",
-      disableSorting: true,
     },
     {
       id: "monthOverload",
@@ -73,7 +71,6 @@ function Payroll() {
     {
       id: "rates",
       label: "rate",
-      disableSorting: true,
     },
     {
       id: "amount",
@@ -131,7 +128,7 @@ function Payroll() {
     },
   ];
 
-  function handlePayslip() {
+  function handlePayslip(key) {
     const pdf = new jsPDF("a6");
 
     const data = partTimers;
@@ -154,19 +151,23 @@ function Payroll() {
     // RENDERS EMPLOYEE ID
     pdf.text("Employee No.", 10, 50);
     pdf.setFont("times", "bold");
-    pdf.text(data.employee1.employeeID, 40, 50);
+    pdf.text(data[key].employee.employeeId, 40, 50);
     pdf.setFont("times", "normal");
 
     // RENDERS POSITION
     pdf.text("Position: ", 100, 50);
     pdf.setFont("times", "bold");
-    pdf.text(data.employee1.position, 115, 50);
+    pdf.text(data[key].employee.position.title, 115, 50);
     pdf.setFont("times", "normal");
 
     // RENDERS EMPLOYEE NAME
     pdf.text("Employee Name:", 10, 55);
     pdf.setFont("times", "bold");
-    pdf.text(data.employee1.employeeName, 40, 55);
+    pdf.text(
+      `${data[key].employee.firstName} ${data[key].employee.lastName}`,
+      40,
+      55
+    );
     pdf.setFont("times", "normal");
 
     // RENDERS GROSS PAY
@@ -174,14 +175,14 @@ function Payroll() {
 
     pdf.line(175, 65, 200, 65);
     pdf.setFont("times", "bold");
-    pdf.text(`${data.employee1.grossPay}`, 185, 70); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].monthOverload}`, 185, 70); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
     pdf.line(175, 73, 200, 73);
 
     // RENDERS DEDUCTION
     pdf.text("Total Deduction ", 140, 83);
     pdf.setFont("times", "bold");
-    pdf.text(`${data.employee1.deduction}`, 185, 83); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
 
     pdf.line(140, 85, 200, 85);
@@ -189,7 +190,7 @@ function Payroll() {
     // RENDERS NET PAY
     pdf.text("Net Amount ", 140, 90);
     pdf.setFont("times", "bold");
-    pdf.text(`${data.employee1.netPay}`, 185, 90); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].amount}`, 185, 90); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
 
     // FOOTER

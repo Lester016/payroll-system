@@ -257,8 +257,9 @@ const AppTable = ({
                   variant="contained"
                   color="primary"
                   startIcon={<Print />}
-                  onClick={() => printPayslip()}
+                  onClick={() => printPayslip(item.id)}
                 >
+                  {console.log("ITO: ", item.id)}
                   Payslip
                 </Button>
               </div>
