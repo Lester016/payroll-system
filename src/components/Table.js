@@ -148,7 +148,6 @@ const AppTable = ({
       result.push(Object.assign({ id: key }, lists[key]));
     }
 
-    console.log(result);
     return result.reverse();
   };
 
