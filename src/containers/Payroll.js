@@ -1,17 +1,21 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import { CSVLink } from "react-csv";
 
 // COMPONENTS
 import Table from "../components/Table";
+import TransitionsModal from "../components/Modal";
 
 // MATERIAL UI
 import { Paper } from "@material-ui/core/";
 
 import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+
 // jsPDF Package
 import jsPDF from "jspdf";
+
+import { CSVReader } from "react-papaparse";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,10 +29,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Payroll() {
-  const classes = useStyles();
+  const [csvObj, setcsvObj] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [data, setData] = useState([]);
-  const [pslip, setPslip] = useState(true);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterFn] = useState({
     fn: (items) => {
       return items;
@@ -255,19 +260,76 @@ function Payroll() {
     netAmount: obj.overloadNetAmount,
   }));
 
+  const handleOpen = () => {
+    setIsModalOpen(true);
+  };
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const buttonRef = createRef();
+
+  const handleOpenDialog = (e) => {
+    // Note that the ref is set async, so it might be null at some point
+    if (buttonRef.current) {
+      buttonRef.current.open(e);
+    }
+  };
+
+  const handleOnFileLoad = (data) => {
+    console.log("Parsed Data: ", data);
+    setcsvObj(data); //set the csvObj to the parsed data(array of obj) when file is selected.
+  };
+  const handleOnError = (err, file, inputElem, reason) => {
+    console.log(err);
+  };
+
+  const handleOnRemoveFile = (data) => {
+    setcsvObj([]); //set the csvObj to empty array if the file is removed.
+  };
+
+  const handleRemoveFile = (e) => {
+    // Note that the ref is set async, so it might be null at some point
+    if (buttonRef.current) {
+      buttonRef.current.removeFile(e);
+    }
+  };
+
+  // Only allow print if there is selected file. Additional: This only prints the first employee object.
+  const printImport = () => {
+    // console.log(csvObj[1].data[1]);
+    if (csvObj.length === 0) {
+      console.log("Select file first.");
+    } else {
+      // INSERT THE PDF LAYOUT HERE
+      const pdf = new jsPDF("a6");
+      pdf.setFont("times", "bold");
+      pdf.setFontSize(12);
+
+      pdf.setFont("times", "normal");
+
+      console.log(csvObj[1].data[1]); //for test only
+      console.log(csvObj[1].data[2]); //for test only
+
+      pdf.text("Employee Name:", 10, 55);
+      pdf.setFont("times", "bold");
+      pdf.text(`${csvObj[1].data[1]} ${csvObj[1].data[2]}`, 40, 55);
+
+      pdf.save("payroll"); //Prints the pdf
+    }
+  };
+
   return (
     <div style={{ textAlign: "center" }}>
-      <input
-        accept="application/pdf,application/vnd.ms-excel,application/csv"
-        className={classes.input}
-        id="contained-button-file"
-        type="file"
-      />
-      <label htmlFor="contained-button-file">
-        <Button size="large" variant="outlined" component="span">
-          Generate Payroll
-        </Button>
-      </label>
+      <Button
+        size="large"
+        variant="outlined"
+        component="span"
+        onClick={handleOpen}
+      >
+        Generate Payroll
+      </Button>
+
       <Button>
         <CSVLink
           data={csvData}
@@ -308,6 +370,97 @@ function Payroll() {
           printPayslip={handlePayslip} //Generate PDF functions
         />
       </Paper>
+      <TransitionsModal
+        handleClose={handleClose}
+        isModalOpen={isModalOpen}
+        title="/ Select File"
+      >
+        <center>
+          <CSVReader
+            ref={buttonRef}
+            onFileLoad={handleOnFileLoad}
+            onError={handleOnError}
+            noClick
+            noDrag
+            onRemoveFile={handleOnRemoveFile}
+          >
+            {({ file }) => (
+              <>
+                <div
+                  style={{
+                    borderWidth: 1,
+                    borderStyle: "solid",
+                    borderColor: "#ccc",
+                    height: 45,
+                    lineHeight: 2.5,
+                    marginTop: 5,
+                    marginBottom: 5,
+                    paddingLeft: 13,
+                    paddingTop: 3,
+                    width: "60%",
+                  }}
+                >
+                  {file && file.name}
+                </div>
+                <div>
+                  <Button
+                    size="large"
+                    variant="outlined"
+                    component="span"
+                    type="button"
+                    onClick={handleOpenDialog}
+                    style={{
+                      borderRadius: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      width: "40%",
+                      paddingLeft: 0,
+                      paddingRight: 0,
+                    }}
+                  >
+                    Browse
+                  </Button>
+
+                  <Button
+                    size="large"
+                    variant="outlined"
+                    component="span"
+                    style={{
+                      borderRadius: 0,
+                      marginLeft: 0,
+                      marginRight: 0,
+                      paddingLeft: 20,
+                      paddingRight: 20,
+                    }}
+                    onClick={handleRemoveFile}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              </>
+            )}
+          </CSVReader>
+
+          <div>
+            <Button
+              variant="contained"
+              size="small"
+              color="primary"
+              onClick={printImport}
+            >
+              Print
+            </Button>
+            <Button
+              variant="contained"
+              size="small"
+              color="secondary"
+              onClick={handleClose}
+            >
+              Cancel
+            </Button>
+          </div>
+        </center>
+      </TransitionsModal>
     </div>
   );
 }

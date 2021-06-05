@@ -9,7 +9,6 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 
-
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
@@ -29,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   dialog: {
     backgroundColor: "#234",
     color: "#fff",
-  }
+  },
 }));
 
 const TransitionsModal = ({ isModalOpen, handleClose, children, title }) => {
@@ -51,7 +50,7 @@ const TransitionsModal = ({ isModalOpen, handleClose, children, title }) => {
       >
         <Fade in={isModalOpen}>
           <Card className={classes.root}>
-          <DialogTitle className={classes.dialog}>Add {title}</DialogTitle>
+            <DialogTitle className={classes.dialog}>Add {title}</DialogTitle>
             <CardContent>{children}</CardContent>
           </Card>
         </Fade>
