@@ -11,7 +11,6 @@ import { Paper } from "@material-ui/core/";
 
 import { Button } from "@material-ui/core";
 
-
 // jsPDF Package
 import jsPDF from "jspdf";
 
@@ -191,14 +190,15 @@ function Payroll() {
 
     pdf.line(175, 65, 200, 65);
     pdf.setFont("times", "bold");
-    pdf.text(`${data[key].monthOverload}`, 185, 70); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].grossAmount.toFixed(2)}`, 185, 70); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
     pdf.line(175, 73, 200, 73);
 
     // RENDERS DEDUCTION
-    pdf.text("Total Deduction ", 140, 83);
+    pdf.text("Total Deductions ", 140, 83);
     pdf.setFont("times", "bold");
-    pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
+    // pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 185, 83);
     pdf.setFont("times", "normal");
 
     pdf.line(140, 85, 200, 85);
@@ -206,7 +206,7 @@ function Payroll() {
     // RENDERS NET PAY
     pdf.text("Net Amount ", 140, 90);
     pdf.setFont("times", "bold");
-    pdf.text(`${data[key].amount}`, 185, 90); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 185, 90); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
 
     // FOOTER
@@ -316,7 +316,7 @@ function Payroll() {
         component="span"
         onClick={handleOpen}
       >
-        Generate Payroll
+        + Generate Payroll
       </Button>
 
       <Button>
