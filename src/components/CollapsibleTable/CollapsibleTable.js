@@ -34,6 +34,7 @@ const CollapsibleTable = ({
   lists,
   onDeleteRow,
   onEditRow,
+  onSubmit,
   filterFn,
   columns,
   propertiesOrder,
@@ -127,7 +128,12 @@ const CollapsibleTable = ({
         </TableHead>
         <TableBody>
           {listsAfterPagingAndSorting(lists).map((employee, idx) => (
-            <Row key={employee.id} row={employee} onDeleteRow={onDeleteRow} />
+            <Row
+              key={employee._id}
+              row={employee}
+              onDeleteRow={onDeleteRow}
+              onSubmit={onSubmit}
+            />
           ))}
         </TableBody>
       </Table>

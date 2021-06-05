@@ -9,13 +9,18 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Input,
   Typography,
-  KeyboardArrowDownIcon,
-  KeyboardArrowUpIcon,
   Fab,
   Toolbar,
 } from "@material-ui/core/";
-import { Add as AddIcon } from "@material-ui/icons";
+import {
+  Add as AddIcon,
+  KeyboardArrowDown as KeyboardArrowDownIcon,
+  KeyboardArrowUp as KeyboardArrowUpIcon,
+  Done as DoneIcon,
+  Cancel as CancelIcon,
+} from "@material-ui/icons";
 
 import CollapsibleRow from "./CollapsibleRow";
 
@@ -34,18 +39,34 @@ const useRowStyles = makeStyles({
   },
 });
 
-const Row = ({ row, onDeleteRow }) => {
+const Row = ({ row, onDeleteRow, onSubmit }) => {
   const classes = useRowStyles();
   const [open, setOpen] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [inputValues, setInputValues] = useState({
+    title: "",
+    amount: 0,
+  });
 
   // Get sum of deductions
   const getDeductionsAmount = (deductions) => {
     let sum = 0;
-    deductions.map((deduction) => (sum += deduction.amount));
+    deductions.map((deduction) => (sum += parseFloat(deduction.amount)));
     return sum;
   };
 
-  const handleDummy = () => {};
+  const handleSubmit = () => {
+    setIsAdding(false);
+    onSubmit(inputValues, row._id, null, false);
+  };
+
+  const handleCancel = () => {
+    setIsAdding(false);
+    setInputValues({
+      title: "",
+      amount: 0,
+    })
+  };
 
   return (
     <React.Fragment>
@@ -79,7 +100,7 @@ const Row = ({ row, onDeleteRow }) => {
                 </Typography>
                 <Fab
                   size="small"
-                  onClick={handleDummy}
+                  onClick={() => setIsAdding(!isAdding)}
                   color="primary"
                   className={classes.createbutton}
                   display="inline"
@@ -96,7 +117,46 @@ const Row = ({ row, onDeleteRow }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.deductions.length <= 0 ? (
+                  {isAdding && (
+                    <TableRow>
+                      <TableCell>
+                        <IconButton aria-label="done" onClick={handleSubmit}>
+                          <DoneIcon />
+                        </IconButton>
+                        <IconButton
+                          aria-label="cancel"
+                          onClick={handleCancel}
+                        >
+                          <CancelIcon />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <Input
+                          value={inputValues.title}
+                          name={"title"}
+                          onChange={(e) =>
+                            setInputValues({
+                              ...inputValues,
+                              title: e.target.value,
+                            })
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input
+                          value={inputValues.amount}
+                          name={"amount"}
+                          onChange={(e) =>
+                            setInputValues({
+                              ...inputValues,
+                              amount: e.target.value,
+                            })
+                          }
+                        />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                  {row.deductions.length <= 0 && !isAdding ? (
                     <Typography>Empty</Typography>
                   ) : (
                     row.deductions.map((deduction) => (
@@ -105,6 +165,7 @@ const Row = ({ row, onDeleteRow }) => {
                         row={deduction}
                         employee_Id={row._id}
                         onDeleteRow={onDeleteRow}
+                        onSubmit={onSubmit}
                       />
                     ))
                   )}

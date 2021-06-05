@@ -79,7 +79,10 @@ const Deductions = ({ userToken }) => {
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [deleteDeduction, setDeleteDeduction] = useState({employeeId: null, deductionId: null});
+  const [deleteDeduction, setDeleteDeduction] = useState({
+    employeeId: null,
+    deductionId: null,
+  });
 
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -156,7 +159,7 @@ const Deductions = ({ userToken }) => {
 
   /* ----- HANDLES ----- */
   // Submit handle
-  const handleSubmit = (e) => {
+  const handleSubmit1 = (e) => {
     if (validate()) {
       setIsLoading(true);
       if (isUpdating === null) {
@@ -236,6 +239,57 @@ const Deductions = ({ userToken }) => {
     }
   };
 
+  const handleSubmit = (inputValues, employee_Id, deduction_Id, isEdit) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
+    setIsLoading(true);
+
+    const employeeIndex = employees.findIndex((employee) => {
+      return employee._id === employee_Id;
+    });
+    const employee = employees[employeeIndex];
+    let putItem = employee.deductions;
+
+    if (isEdit) {
+      let deductionIndex = putItem.findIndex((deduction) => {
+        return deduction._id === deduction_Id;
+      });
+      putItem[deductionIndex] = {
+        _id: deduction_Id,
+        title: inputValues.title,
+        amount: inputValues.amount,
+      };
+      console.log("edit");
+    } else {
+      putItem.unshift(inputValues);
+    }
+    putItem = { deductions: putItem };
+
+    axios
+      .put(
+        `https://tup-payroll.herokuapp.com/api/employees/deductions/${employee_Id}`,
+        putItem,
+        config
+      )
+      .then((response) => {
+        let updatedEmployees = Array.from(employees);
+        updatedEmployees[employeeIndex] = response.data;
+        setEmployees(updatedEmployees);
+        setIsLoading(false);
+
+        setSnackMessage("Success submit!");
+        handleSnackOpen();
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
   // Delete handle
   const handleDelete = () => {
     const config = {
@@ -246,21 +300,25 @@ const Deductions = ({ userToken }) => {
     };
     setIsLoading(true);
 
-    let employeeIndex = employees.findIndex((employee) => {return employee._id === deleteDeduction.employeeId})
+    let employeeIndex = employees.findIndex((employee) => {
+      return employee._id === deleteDeduction.employeeId;
+    });
     let employee = employees[employeeIndex];
-    let putItem = employee.deductions.filter((item) => {return item._id !== deleteDeduction.deductionId});
-    putItem = {"deductions": putItem}
+    let putItem = employee.deductions.filter((item) => {
+      return item._id !== deleteDeduction.deductionId;
+    });
+    putItem = { deductions: putItem };
 
     axios
       .put(
         `https://tup-payroll.herokuapp.com/api/employees/deductions/${deleteDeduction.employeeId}`,
         putItem,
-        config,
+        config
       )
       .then((response) => {
-        let newEmployees = Array.from(employees);
-        newEmployees[employeeIndex] = response.data;
-        setEmployees(newEmployees);
+        let updatedEmployees = Array.from(employees);
+        updatedEmployees[employeeIndex] = response.data;
+        setEmployees(updatedEmployees);
         setIsLoading(false);
 
         setSnackMessage("Success delete!");
@@ -329,6 +387,7 @@ const Deductions = ({ userToken }) => {
             columns={columnHeads}
             propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
             isLoading={isFetching}
+            onSubmit={handleSubmit}
           />
         </div>
       </Paper>
@@ -364,64 +423,6 @@ const Deductions = ({ userToken }) => {
               >
                 Cancel
               </Button>
-            </center>
-          </>
-        ) : (
-          <CircularProgress />
-        )}
-      </TransitionsModal>
-
-      <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
-        {!isLoading ? (
-          <>
-            <h2>Deduction</h2>
-            <center>
-              <div>
-                <TextField
-                  value={deductionTitle}
-                  label="Deduction"
-                  onChange={(e) => setDeductionTitle(e.target.value)}
-                  {...(errors.deductionTitle && {
-                    error: true,
-                    helperText: errors.deductionTitle,
-                  })}
-                />
-                <TextField
-                  value={amount}
-                  label="Amount"
-                  onChange={(e) => setAmount(e.target.value)}
-                  InputProps={{
-                    inputComponent: NumberInputComponent,
-                  }}
-                  {...(errors.amount && {
-                    error: true,
-                    helperText: errors.amount,
-                  })}
-                />
-              </div>
-
-              <div>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                  onClick={handleSubmit}
-                  classes={{ root: classes.root }}
-                  startIcon={<Check />}
-                >
-                  {isUpdating ? "Update" : "Submit"}
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="secondary"
-                  onClick={handleClose}
-                  classes={{ root: classes.root }}
-                  startIcon={<Cancel />}
-                >
-                  Cancel
-                </Button>
-              </div>
             </center>
           </>
         ) : (

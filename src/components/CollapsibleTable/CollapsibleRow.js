@@ -8,8 +8,30 @@ import {
   Cancel as CancelIcon,
 } from "@material-ui/icons";
 
-const CollapsibleRow = ({ row, employee_Id, onDeleteRow }) => {
+const CollapsibleRow = ({ row, employee_Id, onDeleteRow, onSubmit }) => {
   const [isEditMode, setIsEditMode] = useState(false);
+  const [inputValues, setInputValues] = useState({
+    title: row.title,
+    amount: row.amount,
+  });
+
+  const handleIsEditing = () => {
+    setIsEditMode(!isEditMode);
+    setInputValues({
+      title: row.title,
+      amount: row.amount,
+    })
+  };
+
+  const handleChange = (e) => {
+    const {name, value} = e.target;
+    setInputValues({...inputValues, [name]: value});
+  }
+
+  const handleSubmit = () => {
+    setIsEditMode(false);
+    onSubmit(inputValues, employee_Id, row._id, true)
+  }
 
   const handleDummy = () => {};
 
@@ -19,19 +41,19 @@ const CollapsibleRow = ({ row, employee_Id, onDeleteRow }) => {
         <TableCell>
           {isEditMode ? (
             <>
-              <IconButton aria-label="done" onClick={handleDummy}>
+              <IconButton aria-label="done" onClick={handleSubmit}>
                 <DoneIcon />
               </IconButton>
               <IconButton
                 aria-label="cancel"
-                onClick={() => setIsEditMode(false)}
+                onClick={handleIsEditing}
               >
                 <CancelIcon />
               </IconButton>
             </>
           ) : (
             <>
-              <IconButton aria-label="edit" onClick={() => setIsEditMode(true)}>
+              <IconButton aria-label="edit" onClick={handleIsEditing}>
                 <EditIcon />
               </IconButton>
               <IconButton
@@ -46,9 +68,9 @@ const CollapsibleRow = ({ row, employee_Id, onDeleteRow }) => {
         <TableCell component="th" scope="row">
           {isEditMode ? (
             <Input
-              value={row.title}
-              name={row.title}
-              onChange={"(e) => onChange(e, row)"}
+              value={inputValues.title}
+              name={"title"}
+              onChange={handleChange}
             />
           ) : (
             row.title
@@ -57,9 +79,9 @@ const CollapsibleRow = ({ row, employee_Id, onDeleteRow }) => {
         <TableCell>
           {isEditMode ? (
             <Input
-              value={row.amount}
-              name={row.amount}
-              onChange={"(e) => onChange(e, row)"}
+              value={inputValues.amount}
+              name={"amount"}
+              onChange={handleChange}
             />
           ) : (
             row.amount
