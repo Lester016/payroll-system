@@ -83,7 +83,6 @@ const AppTable = ({
   isLoading,
   isPayroll = false,
   printPayslip,
-  printPayroll,
 }) => {
   const classes = useStyles();
 
@@ -256,7 +255,9 @@ const AppTable = ({
                   variant="contained"
                   color="primary"
                   startIcon={<Print />}
-                  onClick={() => printPayslip(item.id)}
+                  onClick={() =>
+                    printPayslip(item.id, item.employee.isPartTime)
+                  }
                 >
                   Payslip
                 </Button>

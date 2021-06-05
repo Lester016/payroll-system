@@ -28,6 +28,7 @@ function Payroll() {
   const classes = useStyles();
   const [isFetching, setIsFetching] = useState(false);
   const [data, setData] = useState([]);
+  const [pslip, setPslip] = useState(true);
   const [filterFn] = useState({
     fn: (items) => {
       return items;
@@ -143,10 +144,16 @@ function Payroll() {
     },
   ];
 
-  function handlePayslip(key) {
+  function handlePayslip(key, bool) {
     const pdf = new jsPDF("a6");
+    // const data = partTimers;
 
-    const data = partTimers;
+    let data;
+    if (bool) {
+      data = partTimers;
+    } else {
+      data = regulars;
+    }
 
     let date = "JANUARY 1-31, 2021";
 
@@ -251,7 +258,7 @@ function Payroll() {
   return (
     <div style={{ textAlign: "center" }}>
       <input
-        accept="application/pdf,application/vnd.ms-excel"
+        accept="application/pdf,application/vnd.ms-excel,application/csv"
         className={classes.input}
         id="contained-button-file"
         type="file"
