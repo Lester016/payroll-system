@@ -17,17 +17,6 @@ import jsPDF from "jspdf";
 
 import { CSVReader } from "react-papaparse";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
-  input: {
-    display: "none",
-  },
-}));
-
 function Payroll() {
   const [csvObj, setcsvObj] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
