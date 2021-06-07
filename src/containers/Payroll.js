@@ -19,7 +19,7 @@ import { CSVReader } from "react-papaparse";
 function Payroll() {
   const [csvObj, setcsvObj] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [data, setData] = useState([]);
+  const [payrollData, setPayrollData] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterFn] = useState({
@@ -28,7 +28,6 @@ function Payroll() {
     },
   });
 
-  const partTimers = [];
   const regulars = [];
 
   const payroll = () => {
@@ -36,7 +35,7 @@ function Payroll() {
     axios
       .get("https://tup-payroll.herokuapp.com/api/payroll")
       .then((respond) => {
-        setData(respond.data);
+        setPayrollData(respond.data);
         setIsFetching(false);
       })
       .catch((error) => {
@@ -49,11 +48,10 @@ function Payroll() {
     payroll();
   }, []);
 
-  for (let x of data) {
+  //Put the regular employee to regular[]
+  for (let x of payrollData) {
     if (x.employee !== null) {
-      if (x.employee.isPartTime) {
-        partTimers.push(x);
-      } else {
+      if (x.employee.isPartTime === false) {
         regulars.push(x);
       }
     }
@@ -92,11 +90,6 @@ function Payroll() {
     {
       id: "overloadNetAmount",
       label: "Net Amount",
-    },
-    {
-      id: "printables",
-      label: "Printables",
-      disableSorting: true,
     },
   ];
 
@@ -137,164 +130,95 @@ function Payroll() {
     },
   ];
 
-  function handlePayslip(key, bool) {
+  function handlePayslip(key, isPartTime) {
     const pdf = new jsPDF("a6");
-    // const data = partTimers;
-    let date = "JANUARY 1-31, 2021";
+    console.log(payrollData);
+
     let data;
-    if (bool) {
-      data = partTimers;
-      // START OF PDF FILE
-      // HEADER
-      pdf.setFont("times", "bold");
-      pdf.setFontSize(12);
-      pdf.text("TUP MANILA", 90, 10);
-      pdf.text("PAYROLL PAYMENT SLIP", 75, 15);
-      pdf.text(`For the period of ${date}`, 70, 20);
-      pdf.setFontSize(12);
-      pdf.setFont("times", "normal");
-
-      // BODY
-      pdf.setFontSize(10);
-
-      // RENDERS EMPLOYEE ID
-      pdf.text("Employee No.", 10, 50);
-      pdf.setFont("times", "bold");
-      pdf.text(data[key].employee.employeeId, 40, 50);
-      pdf.setFont("times", "normal");
-
-      // RENDERS POSITION
-      pdf.text("Position: ", 100, 50);
-      pdf.setFont("times", "bold");
-      pdf.text(data[key].employee.position.title, 115, 50);
-      pdf.setFont("times", "normal");
-
-      // RENDERS EMPLOYEE NAME
-      pdf.text("Employee Name:", 10, 55);
-      pdf.setFont("times", "bold");
-      pdf.text(
-        `${data[key].employee.firstName} ${data[key].employee.lastName}`,
-        40,
-        55
-      );
-      pdf.setFont("times", "normal");
-
-      // RENDERS GROSS PAY
-      pdf.text("Gross Amount Due ", 10, 70);
-
-      pdf.line(175, 65, 200, 65);
-      pdf.setFont("times", "bold");
-      pdf.text(`${data[key].monthOverload.toFixed(2)}`, 185, 70); //Int values needs to be renders as string in jsPDF
-      pdf.setFont("times", "normal");
-      pdf.line(175, 73, 200, 73);
-
-      // RENDERS DEDUCTION
-      pdf.text("Total Deductions ", 140, 83);
-      pdf.setFont("times", "bold");
-      // pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
-      pdf.text(`${data[key].amount.toFixed(2)}`, 185, 83);
-      pdf.setFont("times", "normal");
-
-      pdf.line(140, 85, 200, 85);
-
-      // RENDERS NET PAY
-      pdf.text("Net Amount ", 140, 90);
-      pdf.setFont("times", "bold");
-      pdf.text(`${data[key].overloadNetAmount.toFixed(2)}`, 185, 90); //Int values needs to be renders as string in jsPDF
-      pdf.setFont("times", "normal");
-
-      // FOOTER
-      pdf.setFontSize(12);
-      pdf.setFont("times", "bold");
-
-      pdf.text("Prepared by: ", 10, 105);
-      pdf.text("Certified correct: ", 100, 105);
-
-      pdf.text("CATALINA M. BAQUIRAN ", 40, 125);
-      pdf.text("Administrative Officer IV ", 43, 130);
-
-      pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 130, 125);
-      pdf.text("Head, HRMS ", 155, 130);
-    } else {
+    if (!isPartTime) {
       data = regulars;
-      // START OF PDF FILE
-      // HEADER
-      pdf.setFont("times", "bold");
-      pdf.setFontSize(12);
-      pdf.text("TUP MANILA", 90, 10);
-      pdf.text("PAYROLL PAYMENT SLIP", 75, 15);
-      pdf.text(`For the period of ${date}`, 70, 20);
-      pdf.setFontSize(12);
-      pdf.setFont("times", "normal");
-
-      // BODY
-      pdf.setFontSize(10);
-
-      // RENDERS EMPLOYEE ID
-      pdf.text("Employee No.", 10, 50);
-      pdf.setFont("times", "bold");
-      pdf.text(data[key].employee.employeeId, 40, 50);
-      pdf.setFont("times", "normal");
-
-      // RENDERS POSITION
-      pdf.text("Position: ", 100, 50);
-      pdf.setFont("times", "bold");
-      pdf.text(data[key].employee.position.title, 115, 50);
-      pdf.setFont("times", "normal");
-
-      // RENDERS EMPLOYEE NAME
-      pdf.text("Employee Name:", 10, 55);
-      pdf.setFont("times", "bold");
-      pdf.text(
-        `${data[key].employee.firstName} ${data[key].employee.lastName}`,
-        40,
-        55
-      );
-      pdf.setFont("times", "normal");
-
-      // RENDERS GROSS PAY
-      pdf.text("Gross Amount Due ", 10, 70);
-
-      pdf.line(175, 65, 200, 65);
-      pdf.setFont("times", "bold");
-      pdf.text(`${data[key].grossAmount.toFixed(2)}`, 185, 70); //Int values needs to be renders as string in jsPDF
-      pdf.setFont("times", "normal");
-      pdf.line(175, 73, 200, 73);
-
-      // RENDERS DEDUCTION
-      pdf.text("Total Deductions ", 140, 83);
-      pdf.setFont("times", "bold");
-      // pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
-      pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 185, 83);
-      pdf.setFont("times", "normal");
-
-      pdf.line(140, 85, 200, 85);
-
-      // RENDERS NET PAY
-      pdf.text("Net Amount ", 140, 90);
-      pdf.setFont("times", "bold");
-      pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 185, 90); //Int values needs to be renders as string in jsPDF
-      pdf.setFont("times", "normal");
-
-      // FOOTER
-      pdf.setFontSize(12);
-      pdf.setFont("times", "bold");
-
-      pdf.text("Prepared by: ", 10, 105);
-      pdf.text("Certified correct: ", 100, 105);
-
-      pdf.text("CATALINA M. BAQUIRAN ", 40, 125);
-      pdf.text("Administrative Officer IV ", 43, 130);
-
-      pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 130, 125);
-      pdf.text("Head, HRMS ", 155, 130);
+    } else {
+      data = payrollData;
     }
+
+    let date = data[key].period;
+    // START OF PDF FILE
+    // HEADER
+    pdf.setFont("times", "bold");
+    pdf.setFontSize(12);
+    pdf.text("TUP MANILA", 90, 10);
+    pdf.text("PAYROLL PAYMENT SLIP", 75, 15);
+    pdf.text(`For the period of ${date}`, 70, 20);
+    pdf.setFontSize(12);
+    pdf.setFont("times", "normal");
+
+    // BODY
+    pdf.setFontSize(10);
+
+    // RENDERS EMPLOYEE ID
+    pdf.text("Employee No.", 10, 50);
+    pdf.setFont("times", "bold");
+    pdf.text(data[key].employee.employeeId, 40, 50);
+    pdf.setFont("times", "normal");
+
+    // RENDERS POSITION
+    pdf.text("Position: ", 100, 50);
+    pdf.setFont("times", "bold");
+    pdf.text(data[key].employee.position.title, 115, 50);
+    pdf.setFont("times", "normal");
+
+    // RENDERS EMPLOYEE NAME
+    pdf.text("Employee Name:", 10, 55);
+    pdf.setFont("times", "bold");
+    pdf.text(
+      `${data[key].employee.firstName} ${data[key].employee.lastName}`,
+      40,
+      55
+    );
+    pdf.setFont("times", "normal");
+
+    // RENDERS GROSS PAY
+    pdf.text("Gross Amount Due ", 10, 70);
+
+    pdf.line(175, 65, 200, 65);
+    pdf.setFont("times", "bold");
+    pdf.text(`${data[key].grossAmount.toFixed(2)}`, 185, 70); //Int values needs to be renders as string in jsPDF
+    pdf.setFont("times", "normal");
+    pdf.line(175, 73, 200, 73);
+
+    // RENDERS DEDUCTION
+    pdf.text("Total Deductions ", 140, 83);
+    pdf.setFont("times", "bold");
+    // pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 185, 83);
+    pdf.setFont("times", "normal");
+
+    pdf.line(140, 85, 200, 85);
+
+    // RENDERS NET PAY
+    pdf.text("Net Amount ", 140, 90);
+    pdf.setFont("times", "bold");
+    pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 185, 90); //Int values needs to be renders as string in jsPDF
+    pdf.setFont("times", "normal");
+
+    // FOOTER
+    pdf.setFontSize(12);
+    pdf.setFont("times", "bold");
+
+    pdf.text("Prepared by: ", 10, 105);
+    pdf.text("Certified correct: ", 100, 105);
+
+    pdf.text("CATALINA M. BAQUIRAN ", 40, 125);
+    pdf.text("Administrative Officer IV ", 43, 130);
+
+    pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 130, 125);
+    pdf.text("Head, HRMS ", 155, 130);
 
     // END OF PDF FILE
     pdf.save("payroll"); //Prints the pdf
   }
 
-  let csvData = partTimers.map((obj) => ({
+  let csvData = payrollData.map((obj) => ({
     employeeId: '=""' + obj.employee.employeeId + '""',
     firstName: obj.employee.firstName,
     lastName: obj.employee.lastName,
@@ -311,7 +235,7 @@ function Payroll() {
     salary: obj.employee.salary,
     tax: obj.employee.tax,
     monthOverload: obj.monthOverload,
-    rate: obj.employee.position.title,
+    rate: obj.employee.position.rate,
     amount: obj.amount,
     withTax: obj.withTax,
     netAmount: obj.overloadNetAmount,
@@ -359,20 +283,7 @@ function Payroll() {
       console.log("Select file first.");
     } else {
       // INSERT THE PDF LAYOUT HERE
-      const pdf = new jsPDF("a6");
-      pdf.setFont("times", "bold");
-      pdf.setFontSize(12);
-
-      pdf.setFont("times", "normal");
-
-      console.log(csvObj[1].data[1]); //for test only
-      console.log(csvObj[1].data[2]); //for test only
-
-      pdf.text("Employee Name:", 10, 55);
-      pdf.setFont("times", "bold");
-      pdf.text(`${csvObj[1].data[1]} ${csvObj[1].data[2]}`, 40, 55);
-
-      pdf.save("payroll"); //Prints the pdf
+      console.log("Add payroll to overload table.");
     }
   };
 
@@ -384,7 +295,7 @@ function Payroll() {
         component="span"
         onClick={handleOpen}
       >
-        + Generate Payroll
+        Generate Payroll
       </Button>
 
       <Button>
@@ -401,7 +312,7 @@ function Payroll() {
       <h1>OVERLOAD</h1>
       <Paper>
         <Table
-          lists={partTimers}
+          lists={payrollData}
           filterFn={filterFn}
           columns={overloadColumnHeads}
           propertiesOrder={overloadColumnHeads
@@ -409,6 +320,7 @@ function Payroll() {
             .map((item) => item.id)}
           isPayroll={true}
           isLoading={isFetching}
+          isOverload={true}
           printPayslip={handlePayslip} //Generate PDF functions
         />
       </Paper>

@@ -82,6 +82,7 @@ const AppTable = ({
   propertiesOrder,
   isLoading,
   isPayroll = false,
+  isOverload = false,
   printPayslip,
 }) => {
   const classes = useStyles();
@@ -152,6 +153,8 @@ const AppTable = ({
 
   const handleSortRequest = (cellId) => {
     const isAsc = orderBy === cellId && order === "asc";
+    console.log("cellId: ", cellId);
+    console.log("isAsc?  ", isAsc);
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(cellId);
   };
@@ -223,47 +226,51 @@ const AppTable = ({
               <StyledTableCell key={id}>{item[column]}</StyledTableCell>
             )
           )}
-          <StyledTableCell>
-            {!isPayroll ? (
-              <div>
-                <Button
-                  className={classes.editButton}
-                  size="small"
-                  arial-label="edit"
-                  variant="contained"
-                  // color="primary"
-                  startIcon={<Edit />}
-                  onClick={() => onEditRow(item._id ? item._id : item.id)}
-                >
-                  EDIT
-                </Button>
-                <Button
-                  className={classes.deleteButton}
-                  size="small"
-                  variant="outlined"
-                  // color="secondary"
-                  startIcon={<Delete />}
-                  onClick={() => onDeleteRow(item._id ? item._id : item.id)}
-                >
-                  DELETE
-                </Button>
-              </div>
-            ) : (
-              <div>
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="primary"
-                  startIcon={<Print />}
-                  onClick={() =>
-                    printPayslip(item.id, item.employee.isPartTime)
-                  }
-                >
-                  Payslip
-                </Button>
-              </div>
-            )}
-          </StyledTableCell>
+          {!isOverload ? (
+            <StyledTableCell>
+              {!isPayroll ? (
+                <div>
+                  <Button
+                    className={classes.editButton}
+                    size="small"
+                    arial-label="edit"
+                    variant="contained"
+                    // color="primary"
+                    startIcon={<Edit />}
+                    onClick={() => onEditRow(item._id ? item._id : item.id)}
+                  >
+                    EDIT
+                  </Button>
+                  <Button
+                    className={classes.deleteButton}
+                    size="small"
+                    variant="outlined"
+                    // color="secondary"
+                    startIcon={<Delete />}
+                    onClick={() => onDeleteRow(item._id ? item._id : item.id)}
+                  >
+                    DELETE
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Print />}
+                    onClick={() =>
+                      printPayslip(item.id, item.employee.isPartTime)
+                    }
+                  >
+                    Payslip
+                  </Button>
+                </div>
+              )}
+            </StyledTableCell>
+          ) : (
+            ""
+          )}
         </StyledTableRow>
       ));
     }
@@ -284,6 +291,7 @@ const AppTable = ({
                     direction={orderBy === item.id ? order : "asc"}
                     onClick={() => {
                       handleSortRequest(item.id);
+                      console.log("This: ", item.id);
                     }}
                   >
                     {item.label}
