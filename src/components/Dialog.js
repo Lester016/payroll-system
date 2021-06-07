@@ -9,8 +9,8 @@ import {
 const Dialog = ({ title, open, setOpen, children }) => {
   return (
     <MaterialDialog open={open} onClose={setOpen} maxWidth="md">
-      <DialogTitle>
-        <div style={{ display: "flex" }}>
+      <DialogTitle style={{backgroundColor:"#234", color:"#fff"}}>
+        <div style={{ display: "flex"}}>
           <Typography variant="h6" component="div" style={{ flexGrow: 1 }}>
             {title}
           </Typography>

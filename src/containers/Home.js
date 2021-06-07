@@ -58,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
   const classes = useStyles();
-  const [employees, setEmployees] = useState([]);
   const [totalEmployees, setTotalEmployees] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -66,14 +65,12 @@ export default function Home() {
 
   const totalPayrollGiven = 500;
 
-  // Get employees in the database
-  useEffect(() => {
+  const home = () => {
     setIsFetching(true);
     axios
       .get("https://tup-payroll.herokuapp.com/api/employees")
       .then((response) => {
         setIsFetching(false);
-        setEmployees(response.data);
         setTotalEmployees(Object.keys(response.data).length);
         for (let dataObj of response.data) {
           if (dataObj.isPartTime === true) {
@@ -85,6 +82,10 @@ export default function Home() {
         setIsFetching(false);
         console.log("Error: ", e);
       });
+  };
+  // Get employees in the database
+  useEffect(() => {
+    home();
   }, []);
 
   return (

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import {
   TextField,
   Button,
@@ -11,30 +12,77 @@ import {
 } from "@material-ui/core";
 
 import {
-  Add as AddIcon,
   Search as SearchIcon,
   Delete,
   Cancel,
   Check,
 } from "@material-ui/icons/";
 
-import Table from "../components/Table";
+import CollapsibleTable from "../components/CollapsibleTable/CollapsibleTable";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
 import NumberInputComponent from "../components/NumberInputComponent";
 
-const Deductions = () => {
+const columnHeads = [
+  {
+    id: "employeeId",
+    label: "Employee ID",
+  },
+  {
+    id: "name",
+    label: "Name",
+  },
+  {
+    id: "deductionAmount",
+    label: "Deduction Amount",
+  },
+  {
+    id: "position",
+    label: "Position",
+  },
+  {
+    id: "campus",
+    label: "Campus",
+  },
+  {
+    id: "college",
+    label: "College",
+  },
+  {
+    id: "department",
+    label: "Department",
+  },
+];
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1),
+  },
+  createbutton: {
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+  },
+}));
+
+const Deductions = ({ userToken }) => {
+  const classes = useStyles();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const [deductions, setDeductions] = useState({});
   const [deductionTitle, setDeductionTitle] = useState("");
+  const [employees, setEmployees] = useState([]);
   const [amount, setAmount] = useState();
   const [errors, setErrors] = useState({});
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [deleteKey, setDeleteKey] = useState(null);
+  const [deleteDeduction, setDeleteDeduction] = useState({
+    employeeId: null,
+    deductionId: null,
+  });
 
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -42,40 +90,13 @@ const Deductions = () => {
     },
   });
 
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      margin: theme.spacing(1),
-    },
-    createbutton: {
-      backgroundColor: "secondary",
-      "&:hover": {
-        backgroundColor: "#bf0644",
-      },
-      borderRadius: "100px",
-    },
-  }));
-
-  const classes = useStyles();
-
-  const columnHeads = [
-    {
-      id: "title",
-      label: "Description",
-    },
-    {
-      id: "options",
-      label: "Options",
-      disableSorting: true,
-    },
-  ];
-
   // Get deductions in the database
   useEffect(() => {
     setIsFetching(true);
     axios
-      .get("https://tup-payroll-default-rtdb.firebaseio.com/deductions.json")
+      .get("https://tup-payroll.herokuapp.com/api/employees")
       .then((response) => {
-        setDeductions(response.data);
+        setEmployees(response.data);
         setIsFetching(false);
       })
       .catch((error) => {
@@ -97,12 +118,18 @@ const Deductions = () => {
     setIsUpdating(null);
   };
 
-  const DeleteOpen = (key) => {
-    setDeleteKey(key);
+  const DeleteOpen = (employeeId, deductionId) => {
+    setDeleteDeduction({
+      employeeId: employeeId,
+      deductionId: deductionId,
+    });
   };
   const DeleteClose = () => {
     // Reset to default values.
-    setDeleteKey(null);
+    setDeleteDeduction({
+      employeeId: null,
+      deductionId: null,
+    });
     setIsUpdating(null);
   };
 
@@ -132,7 +159,7 @@ const Deductions = () => {
 
   /* ----- HANDLES ----- */
   // Submit handle
-  const handleSubmit = (e) => {
+  const handleSubmit1 = (e) => {
     if (validate()) {
       setIsLoading(true);
       if (isUpdating === null) {
@@ -212,22 +239,94 @@ const Deductions = () => {
     }
   };
 
+  const handleSubmit = (inputValues, employee_Id, deduction_Id, isEdit) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
+    setIsLoading(true);
+
+    const employeeIndex = employees.findIndex((employee) => {
+      return employee._id === employee_Id;
+    });
+    const employee = employees[employeeIndex];
+    let putItem = employee.deductions;
+
+    if (isEdit) {
+      let deductionIndex = putItem.findIndex((deduction) => {
+        return deduction._id === deduction_Id;
+      });
+      putItem[deductionIndex] = {
+        _id: deduction_Id,
+        title: inputValues.title,
+        amount: inputValues.amount,
+      };
+      console.log("edit");
+    } else {
+      putItem.unshift(inputValues);
+    }
+    putItem = { deductions: putItem };
+
+    axios
+      .put(
+        `https://tup-payroll.herokuapp.com/api/employees/deductions/${employee_Id}`,
+        putItem,
+        config
+      )
+      .then((response) => {
+        let updatedEmployees = Array.from(employees);
+        updatedEmployees[employeeIndex] = response.data;
+        setEmployees(updatedEmployees);
+        setIsLoading(false);
+
+        setSnackMessage("Success submit!");
+        handleSnackOpen();
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
   // Delete handle
   const handleDelete = () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
     setIsLoading(true);
+
+    let employeeIndex = employees.findIndex((employee) => {
+      return employee._id === deleteDeduction.employeeId;
+    });
+    let employee = employees[employeeIndex];
+    let putItem = employee.deductions.filter((item) => {
+      return item._id !== deleteDeduction.deductionId;
+    });
+    putItem = { deductions: putItem };
+
     axios
-      .delete(
-        `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${deleteKey}.json`
+      .put(
+        `https://tup-payroll.herokuapp.com/api/employees/deductions/${deleteDeduction.employeeId}`,
+        putItem,
+        config
       )
-      .then(() => {
-        let filteredPositions = { ...deductions };
-        delete filteredPositions[deleteKey];
-        setDeductions(filteredPositions);
+      .then((response) => {
+        let updatedEmployees = Array.from(employees);
+        updatedEmployees[employeeIndex] = response.data;
+        setEmployees(updatedEmployees);
         setIsLoading(false);
 
         setSnackMessage("Success delete!");
         handleSnackOpen();
-        setDeleteKey(null);
+        setDeleteDeduction({
+          employeeId: null,
+          deductionId: null,
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -252,8 +351,11 @@ const Deductions = () => {
       fn: (items) => {
         if (target.value === "") return items;
         else
-          return items.filter((x) =>
-            x.title.toLowerCase().includes(target.value.toLowerCase())
+          return items.filter(
+            (x) =>
+              x.employeeId.toLowerCase().includes(target.value.toLowerCase()) ||
+              x.firstName.toLowerCase().includes(target.value.toLowerCase()) ||
+              x.lastName.toLowerCase().includes(target.value.toLowerCase())
           );
       },
     });
@@ -273,43 +375,32 @@ const Deductions = () => {
           }}
           onChange={handleSearch}
         />
-
-        <Button
-          size="small"
-          variant="contained"
-          onClick={handleOpen}
-          color="primary"
-          className={classes.createbutton}
-          startIcon={<AddIcon />}
-        >
-          Create
-        </Button>
       </Toolbar>
 
       <Paper>
         <div>
-          <Table
-            lists={deductions}
+          <CollapsibleTable
+            lists={employees}
             onDeleteRow={DeleteOpen}
             onEditRow={handleEdit}
             filterFn={filterFn}
             columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 1).map((item) => item.id)}
+            propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
             isLoading={isFetching}
+            onSubmit={handleSubmit}
           />
         </div>
       </Paper>
 
       <TransitionsModal
         handleClose={DeleteClose}
-        isModalOpen={deleteKey ? true : false}
+        isModalOpen={deleteDeduction.deductionId ? true : false}
       >
         {!isLoading ? (
           <>
             <h2>DELETE?</h2>
             <center>
               <p>
-                {" "}
                 Deleting this results to discarding information included in it.
               </p>
               <Button
@@ -339,64 +430,6 @@ const Deductions = () => {
         )}
       </TransitionsModal>
 
-      <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
-        {!isLoading ? (
-          <>
-            <h2>Deduction</h2>
-            <center>
-              <div>
-                <TextField
-                  value={deductionTitle}
-                  label="Deduction"
-                  onChange={(e) => setDeductionTitle(e.target.value)}
-                  {...(errors.deductionTitle && {
-                    error: true,
-                    helperText: errors.deductionTitle,
-                  })}
-                />
-                <TextField
-                  value={amount}
-                  label="Amount"
-                  onChange={(e) => setAmount(e.target.value)}
-                  InputProps={{
-                    inputComponent: NumberInputComponent,
-                  }}
-                  {...(errors.amount && {
-                    error: true,
-                    helperText: errors.amount,
-                  })}
-                />
-              </div>
-
-              <div>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="primary"
-                  onClick={handleSubmit}
-                  classes={{ root: classes.root }}
-                  startIcon={<Check />}
-                >
-                  {isUpdating ? "Update" : "Submit"}
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  color="secondary"
-                  onClick={handleClose}
-                  classes={{ root: classes.root }}
-                  startIcon={<Cancel />}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </center>
-          </>
-        ) : (
-          <CircularProgress />
-        )}
-      </TransitionsModal>
-
       <Snack
         open={isSnackOpen}
         message={snackMessage}
@@ -406,4 +439,10 @@ const Deductions = () => {
   );
 };
 
-export default Deductions;
+const mapStateToProps = (state) => {
+  return {
+    userToken: state.auth.token,
+  };
+};
+
+export default connect(mapStateToProps)(Deductions);
