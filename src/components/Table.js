@@ -86,15 +86,22 @@ const AppTable = ({
   printPayslip,
 }) => {
   const classes = useStyles();
-
   const pages = [5, 10, 25];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
-
   const [order, setOrder] = useState();
   const [orderBy, setOrderBy] = useState();
 
-  const loading = [];
+  // Convert object to array then reverse to get latest input
+  const reversedObjectToArray = () => {
+    const result = [];
+
+    for (let key in lists) {
+      result.push(Object.assign({ id: key }, lists[key]));
+    }
+
+    return result.reverse();
+  };
 
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -141,16 +148,6 @@ const AppTable = ({
     );
   };
 
-  const reversedObjectToArray = () => {
-    const result = [];
-
-    for (let key in lists) {
-      result.push(Object.assign({ id: key }, lists[key]));
-    }
-
-    return result.reverse();
-  };
-
   const handleSortRequest = (cellId) => {
     const isAsc = orderBy === cellId && order === "asc";
     console.log("cellId: ", cellId);
@@ -159,6 +156,7 @@ const AppTable = ({
     setOrderBy(cellId);
   };
 
+  const loading = [];
   for (let index = 0; index < 6; index++) {
     loading.push(
       <StyledTableRow key={index}>

@@ -296,7 +296,7 @@ const Employees = ({ userToken }) => {
           <Button>
             <CSVLink
               data={csvData}
-              filename={"my-file.csv"}
+              filename={"employees-export.csv"}
               className="btn btn-primary"
               target="_blank"
             >
