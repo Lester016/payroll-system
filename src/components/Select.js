@@ -6,7 +6,15 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 
-const Select = ({ name, label, value, onChange, isDisabled, error = null, options }) => {
+const Select = ({
+  name,
+  label,
+  value,
+  onChange,
+  isDisabled,
+  error = null,
+  options,
+}) => {
   return (
     <FormControl disabled={isDisabled} {...(error && { error: true })}>
       <InputLabel>{label}</InputLabel>

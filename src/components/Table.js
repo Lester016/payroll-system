@@ -3,7 +3,6 @@ import NumberFormat from "react-number-format";
 
 // Material UI
 import { withStyles, makeStyles } from "@material-ui/core/styles";
-
 import {
   TableBody,
   TableCell,
@@ -14,11 +13,8 @@ import {
   TableSortLabel,
   Table,
   Button,
-  IconButton,
 } from "@material-ui/core";
-
 import Skeleton from "@material-ui/lab/Skeleton";
-
 import { Edit, Delete, Print } from "@material-ui/icons";
 
 const StyledTableCell = withStyles((theme) => ({
