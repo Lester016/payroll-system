@@ -6,24 +6,20 @@ import { CSVReader } from "react-papaparse";
 import { CSVLink } from "react-csv";
 import { Button, Paper } from "@material-ui/core";
 
-// COMPONENTS
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 
 const Payroll = ({ userToken }) => {
   const [csvObj, setcsvObj] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
   const [payrollData, setPayrollData] = useState([]);
-
+  const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const regulars = [];
   const [filterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-
-  const regulars = [];
-
   const whenPostingToOurAPI = () => {
     const config = {
       headers: {
@@ -56,7 +52,7 @@ const Payroll = ({ userToken }) => {
     payroll();
   }, []);
 
-  //Put the regular employee to regular[]
+  //Put the regular employee to regulars[]
   for (let x of payrollData) {
     if (x.employee !== null) {
       if (x.employee.isPartTime === false) {
@@ -284,8 +280,8 @@ const Payroll = ({ userToken }) => {
     }
   };
 
-  // Only allow print if there is selected file. Additional: This only prints the first employee object.
-  const printImport = () => {
+  // Only allow add if there is selected file.
+  const addImport = () => {
     // console.log(csvObj[1].data[1]);
     if (csvObj.length === 0) {
       console.log("Select file first.");
@@ -423,9 +419,9 @@ const Payroll = ({ userToken }) => {
               variant="contained"
               size="small"
               color="primary"
-              onClick={printImport}
+              onClick={addImport}
             >
-              Print
+              Add
             </Button>
             <Button
               variant="contained"
