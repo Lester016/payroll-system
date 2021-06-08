@@ -1,22 +1,16 @@
 import axios from "axios";
 import React, { useState, useEffect, createRef } from "react";
+import { connect } from "react-redux";
+import jsPDF from "jspdf";
+import { CSVReader } from "react-papaparse";
 import { CSVLink } from "react-csv";
+import { Button, Paper } from "@material-ui/core";
 
 // COMPONENTS
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 
-// MATERIAL UI
-import { Paper } from "@material-ui/core/";
-
-import { Button } from "@material-ui/core";
-
-// jsPDF Package
-import jsPDF from "jspdf";
-
-import { CSVReader } from "react-papaparse";
-
-function Payroll() {
+const Payroll = ({ userToken }) => {
   const [csvObj, setcsvObj] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [payrollData, setPayrollData] = useState([]);
@@ -29,6 +23,20 @@ function Payroll() {
   });
 
   const regulars = [];
+
+  const whenPostingToOurAPI = () => {
+    const config = {
+      headers: {
+        "Content-Type": "text/csv",
+        Authorization: `Bearer ${userToken}`,
+      },
+    };
+    axios.post(
+      `https://tup-payroll.herokuapp.com/api/payroll`,
+      `you data here`,
+      config
+    );
+  };
 
   const payroll = () => {
     setIsFetching(true);
@@ -432,6 +440,12 @@ function Payroll() {
       </TransitionsModal>
     </div>
   );
-}
+};
 
-export default Payroll;
+const mapStateToProps = (state) => {
+  return {
+    userToken: state.auth.token,
+  };
+};
+
+export default connect(mapStateToProps)(Payroll);
