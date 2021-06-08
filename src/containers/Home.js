@@ -58,26 +58,31 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Home() {
   const classes = useStyles();
+  const [totalGivenPayroll, setTotalGivenPayroll] = useState(0);
   const [totalEmployees, setTotalEmployees] = useState(0);
   const [isFetching, setIsFetching] = useState(false);
 
   let [partTimer, setPartTimer] = useState(0);
 
-  const totalPayrollGiven = 500;
-
   const home = () => {
     setIsFetching(true);
     axios
-      .get("https://tup-payroll.herokuapp.com/api/employees")
-      .then((response) => {
-        setIsFetching(false);
-        setTotalEmployees(Object.keys(response.data).length);
-        for (let dataObj of response.data) {
-          if (dataObj.isPartTime === true) {
-            setPartTimer((partTimer += 1));
+      .all([
+        axios.get("https://tup-payroll.herokuapp.com/api/payroll"),
+        axios.get("https://tup-payroll.herokuapp.com/api/employees"),
+      ])
+      .then(
+        axios.spread((...response) => {
+          setTotalGivenPayroll(Object.keys(response[0].data).length);
+          setTotalEmployees(Object.keys(response[1].data).length);
+          setIsFetching(false);
+          for (let dataObj of response[1].data) {
+            if (dataObj.isPartTime === true) {
+              setPartTimer((partTimer += 1));
+            }
           }
-        }
-      })
+        })
+      )
       .catch((e) => {
         setIsFetching(false);
         console.log("Error: ", e);
@@ -169,7 +174,7 @@ export default function Home() {
                 >
                   <div className={classes.left}>
                     <Typography className={classes.cardTitle}>
-                      {totalPayrollGiven}
+                      {totalGivenPayroll} / {totalEmployees}
                     </Typography>
                     <Typography className={classes.cardDescription}>
                       Distributed Payroll

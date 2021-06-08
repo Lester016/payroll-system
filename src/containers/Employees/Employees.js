@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#a6172f",
     },
   },
-  }));
+}));
 
 const columnHeads = [
   {
