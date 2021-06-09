@@ -195,7 +195,7 @@ const AppTable = ({
             ) : column === "rates" ? (
               <StyledTableCell key={id}>
                 <NumberFormat
-                  value={`${item["employee"].position.rate}`}
+                  value={`${item["employee"].position.rate.toFixed(2)}`}
                   displayType={"text"}
                   thousandSeparator={true}
                 />

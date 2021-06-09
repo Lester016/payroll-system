@@ -10,7 +10,7 @@ import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 
 const Payroll = ({ userToken }) => {
-  const [csvObj, setcsvObj] = useState([]);
+  const [csvObj, setcsvObj] = useState();
   const [payrollData, setPayrollData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,18 +20,25 @@ const Payroll = ({ userToken }) => {
       return items;
     },
   });
-  const whenPostingToOurAPI = () => {
+  const whenPostingToOurAPI = (csv) => {
+    setIsFetching(true);
+    console.log("File: ", csv);
     const config = {
       headers: {
         "Content-Type": "text/csv",
         Authorization: `Bearer ${userToken}`,
       },
     };
-    axios.post(
-      `https://tup-payroll.herokuapp.com/api/payroll`,
-      `you data here`,
-      config
-    );
+    axios
+      .post(`https://tup-payroll.herokuapp.com/api/payroll`, csv, config)
+      .then((response) => {
+        setPayrollData(response.data);
+        setIsFetching(false);
+      })
+      .catch((error) => {
+        // Log the error if found || catched.
+        console.log(error);
+      });
   };
 
   const payroll = () => {
@@ -250,16 +257,21 @@ const Payroll = ({ userToken }) => {
     }
   };
 
-  const handleOnFileLoad = (data) => {
+  const handleOnFileLoad = (data, file) => {
     console.log("Parsed Data: ", data);
-    setcsvObj(data); //set the csvObj to the parsed data(array of obj) when file is selected.
+    console.log("file: ", file);
+    setcsvObj(file); //set the csvObj to the parsed data(array of obj) when file is selected.
+    console.log("CSV OBJ: ", csvObj);
+    console.log("file: ", file);
   };
+
   const handleOnError = (err, file, inputElem, reason) => {
     console.log(err);
   };
 
   const handleOnRemoveFile = (data) => {
-    setcsvObj([]); //set the csvObj to empty array if the file is removed.
+    setcsvObj(); //set the csvObj to empty array if the file is removed.
+    console.log(data);
   };
 
   const handleRemoveFile = (e) => {
@@ -272,11 +284,10 @@ const Payroll = ({ userToken }) => {
   // Only allow add if there is selected file.
   const addImport = () => {
     // console.log(csvObj[1].data[1]);
-    if (csvObj.length === 0) {
+    if (!csvObj) {
       console.log("Select file first.");
     } else {
-      // INSERT THE PDF LAYOUT HERE
-      console.log("Add payroll to overload table.");
+      whenPostingToOurAPI(csvObj);
     }
   };
 
@@ -363,6 +374,7 @@ const Payroll = ({ userToken }) => {
                   }}
                 >
                   {file && file.name}
+                  {/* {console.log(file)} */}
                 </div>
                 <div>
                   <Button
