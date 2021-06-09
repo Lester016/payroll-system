@@ -50,6 +50,7 @@ const Row = ({
   onDeleteRow,
   onEditRow,
   onSubmit,
+  onSubmitCollapsibleRow,
 }) => {
   const classes = useRowStyles();
   const [open, setOpen] = useState(false);
@@ -106,7 +107,9 @@ const Row = ({
                   variant="contained"
                   // color="primary"
                   startIcon={<EditIcon />}
-                  onClick={() => {onEditRow(row.id)}}
+                  onClick={() => {
+                    onEditRow(row.id);
+                  }}
                 >
                   EDIT
                 </Button>
@@ -116,7 +119,9 @@ const Row = ({
                   variant="outlined"
                   // color="secondary"
                   startIcon={<DeleteIcon />}
-                  onClick={()=>{onDeleteRow(row.id)}}
+                  onClick={() => {
+                    onDeleteRow(row.id);
+                  }}
                 >
                   DELETE
                 </Button>
@@ -204,9 +209,10 @@ const Row = ({
                           idx={idx}
                           row={item}
                           tab={tab}
-                          employee_Id={row._id}
+                          parentId={row._id ? row._id : row.id}
                           onDeleteRow={onDeleteRow}
                           onSubmit={onSubmit}
+                          onSubmitCollapsibleRow={onSubmitCollapsibleRow}
                         />
                       )
                     )

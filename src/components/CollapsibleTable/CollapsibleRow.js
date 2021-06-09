@@ -12,9 +12,10 @@ const CollapsibleRow = ({
   row,
   idx,
   tab,
-  employee_Id,
+  parentId,
   onDeleteRow,
   onSubmit,
+  onSubmitCollapsibleRow,
 }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [inputValues, setInputValues] = useState({
@@ -47,7 +48,8 @@ const CollapsibleRow = ({
 
   const handleSubmit = () => {
     setIsEditMode(false);
-    onSubmit(inputValues, employee_Id, row._id, true);
+    if (tab === "deductions") {onSubmit(inputValues, parentId, row._id, true);}
+    else if (tab === "positions") {onSubmitCollapsibleRow(parentId, idx, inputValues.amount)}
   };
 
   return (
@@ -71,7 +73,7 @@ const CollapsibleRow = ({
               {tab !== "positions" && (
                 <IconButton
                 aria-label="delete"
-                onClick={() => onDeleteRow(employee_Id, row._id)}
+                onClick={() => onDeleteRow(parentId, row._id)}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -101,7 +103,7 @@ const CollapsibleRow = ({
             <Input
               value={inputValues.amount}
               name={"amount"}
-              onChange={() => {}}
+              onChange={handleChange}
             />
           ) : tab === "positions" ? (
             row

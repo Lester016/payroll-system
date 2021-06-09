@@ -36,6 +36,7 @@ const CollapsibleTable = ({
   onDeleteRow,
   onEditRow,
   onSubmit,
+  onSubmitCollapsibleRow,
   tab,
   filterFn,
   columns,
@@ -156,6 +157,7 @@ const CollapsibleTable = ({
                 collapsibleColumns={collapsibleColumns}
                 onDeleteRow={onDeleteRow}
                 onEditRow={onEditRow}
+                onSubmitCollapsibleRow={onSubmitCollapsibleRow}
                 onSubmit={onSubmit}
               />
             ))

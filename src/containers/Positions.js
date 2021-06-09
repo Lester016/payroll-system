@@ -178,7 +178,7 @@ const Position = () => {
             "https://tup-payroll-default-rtdb.firebaseio.com/positions.json",
             {
               title: jobTitle,
-              steps: [0, 0, 0, 0, 0, 0, 0, 0]
+              steps: [0, 0, 0, 0, 0, 0, 0, 0],
             }
           )
           .then((response) => {
@@ -190,8 +190,8 @@ const Position = () => {
               data.unshift({
                 id: response.data.name,
                 title: jobTitle,
-                steps: [0, 0, 0, 0, 0, 0, 0, 0]
-              })
+                steps: [0, 0, 0, 0, 0, 0, 0, 0],
+              });
               return data;
             });
             setIsLoading(false);
@@ -214,7 +214,7 @@ const Position = () => {
         e.preventDefault();
       } else {
         // Edit existing position
-        let prevPosition = positions.find(item => item.id === isUpdating);
+        let prevPosition = positions.find((item) => item.id === isUpdating);
         axios
           .put(
             `https://tup-payroll-default-rtdb.firebaseio.com/positions/${isUpdating}.json`,
@@ -228,12 +228,12 @@ const Position = () => {
             // Update the position to the existings positions list.
             setPositions((prevPositions) => {
               let data = [...prevPositions];
-              const idx = positions.findIndex(item => item.id === isUpdating);
+              const idx = positions.findIndex((item) => item.id === isUpdating);
               data[idx] = {
                 id: prevPosition.id,
                 title: jobTitle,
                 steps: prevPosition.steps,
-              }
+              };
               return data;
             });
             setIsLoading(false);
@@ -257,6 +257,39 @@ const Position = () => {
     }
   };
 
+  const handleCollapsibleSubmit = (parentId, idx, amount) => {
+    let updatedPosition = positions.find((item) => item.id === parentId);
+    updatedPosition.steps[idx] = amount;
+    axios
+      .put(
+        `https://tup-payroll-default-rtdb.firebaseio.com/positions/${parentId}.json`, {
+          title: updatedPosition.title,
+          steps: updatedPosition.steps.map(Number),
+        }
+      )
+      .then(() => {
+        // Update the position to the existings positions list.
+        setPositions((prevPositions) => {
+          let data = [...prevPositions];
+          const idx = positions.findIndex((item) => item.id === parentId);
+          data[idx] = {
+            id: parentId,
+            title: updatedPosition.title,
+            steps: updatedPosition.steps.map(Number),
+          };
+          return data;
+        });
+        setIsLoading(false);
+
+        setSnackMessage("Success edit!");
+        handleSnackOpen();
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
   // Delete handle
   const handleDelete = () => {
     setIsLoading(true);
@@ -267,9 +300,11 @@ const Position = () => {
       .then(() => {
         setPositions((prevPositions) => {
           let data = [...prevPositions];
-          data = data.filter((item) => {return item.id !== deleteKey})
+          data = data.filter((item) => {
+            return item.id !== deleteKey;
+          });
           return data;
-        })
+        });
         setIsLoading(false);
 
         setSnackMessage("Success delete!");
@@ -284,7 +319,7 @@ const Position = () => {
 
   // Edit handle
   const handleEdit = (key) => {
-    const oldPosition = positions.find(item => item.id === key);
+    const oldPosition = positions.find((item) => item.id === key);
     setJobTitle(oldPosition.title);
     setIsUpdating(key);
     handleOpen();
@@ -333,6 +368,7 @@ const Position = () => {
           lists={positions}
           onDeleteRow={deleteOpen}
           onEditRow={handleEdit}
+          onSubmitCollapsibleRow={handleCollapsibleSubmit}
           tab={"positions"}
           filterFn={filterFn}
           columns={columnHeads}
