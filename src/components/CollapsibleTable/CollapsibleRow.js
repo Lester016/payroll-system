@@ -8,32 +8,47 @@ import {
   Cancel as CancelIcon,
 } from "@material-ui/icons";
 
-const CollapsibleRow = ({ row, employee_Id, onDeleteRow, onSubmit }) => {
+const CollapsibleRow = ({
+  row,
+  idx,
+  tab,
+  employee_Id,
+  onDeleteRow,
+  onSubmit,
+}) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [inputValues, setInputValues] = useState({
     title: row.title,
-    amount: row.amount,
+    amount: tab === "positions" ? row : row.amount,
   });
+
+  const romanize = (num) => {
+    if (isNaN(num)) return NaN;
+    var digits = String(+num).split(""),
+      key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM","","X","XX","XXX","XL","L","LX","LXX","LXXX","XC","","I","II","III","IV","V","VI","VII","VIII","IX",],
+      roman = "",
+      i = 3;
+    while (i--) roman = (key[+digits.pop() + i * 10] || "") + roman;
+    return Array(+digits.join("") + 1).join("M") + roman;
+  };
 
   const handleIsEditing = () => {
     setIsEditMode(!isEditMode);
     setInputValues({
       title: row.title,
-      amount: row.amount,
-    })
+      amount: tab === "positions" ? row : row.amount,
+    });
   };
 
   const handleChange = (e) => {
-    const {name, value} = e.target;
-    setInputValues({...inputValues, [name]: value});
-  }
+    const { name, value } = e.target;
+    setInputValues({ ...inputValues, [name]: value });
+  };
 
   const handleSubmit = () => {
     setIsEditMode(false);
-    onSubmit(inputValues, employee_Id, row._id, true)
-  }
-
-  const handleDummy = () => {};
+    onSubmit(inputValues, employee_Id, row._id, true);
+  };
 
   return (
     <React.Fragment>
@@ -44,10 +59,7 @@ const CollapsibleRow = ({ row, employee_Id, onDeleteRow, onSubmit }) => {
               <IconButton aria-label="done" onClick={handleSubmit}>
                 <DoneIcon />
               </IconButton>
-              <IconButton
-                aria-label="cancel"
-                onClick={handleIsEditing}
-              >
+              <IconButton aria-label="cancel" onClick={handleIsEditing}>
                 <CancelIcon />
               </IconButton>
             </>
@@ -56,22 +68,30 @@ const CollapsibleRow = ({ row, employee_Id, onDeleteRow, onSubmit }) => {
               <IconButton aria-label="edit" onClick={handleIsEditing}>
                 <EditIcon />
               </IconButton>
-              <IconButton
+              {tab !== "positions" && (
+                <IconButton
                 aria-label="delete"
                 onClick={() => onDeleteRow(employee_Id, row._id)}
-              >
-                <DeleteIcon />
-              </IconButton>
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
             </>
           )}
         </TableCell>
         <TableCell component="th" scope="row">
           {isEditMode ? (
-            <Input
-              value={inputValues.title}
-              name={"title"}
-              onChange={handleChange}
-            />
+            tab !== "positions" ? (
+              <Input
+                value={inputValues.title}
+                name={"title"}
+                onChange={handleChange}
+              />
+            ) : (
+              `Step ${romanize(idx + 1)}`
+            )
+          ) : tab === "positions" ? (
+            `Step ${romanize(idx + 1)}`
           ) : (
             row.title
           )}
@@ -81,8 +101,10 @@ const CollapsibleRow = ({ row, employee_Id, onDeleteRow, onSubmit }) => {
             <Input
               value={inputValues.amount}
               name={"amount"}
-              onChange={handleChange}
+              onChange={() => {}}
             />
+          ) : tab === "positions" ? (
+            row
           ) : (
             row.amount
           )}

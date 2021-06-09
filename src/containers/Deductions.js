@@ -54,6 +54,17 @@ const columnHeads = [
   },
 ];
 
+const collapsibleColumnHeads = [
+  {
+    id: "title",
+    label:"Title"
+  },
+  {
+    id: "amount",
+    label:"Amount"
+  }
+]
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: theme.spacing(1),
@@ -378,18 +389,17 @@ const Deductions = ({ userToken }) => {
       </Toolbar>
 
       <Paper>
-        <div>
-          <CollapsibleTable
-            lists={employees}
-            onDeleteRow={DeleteOpen}
-            onEditRow={handleEdit}
-            filterFn={filterFn}
-            columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
-            isLoading={isFetching}
-            onSubmit={handleSubmit}
-          />
-        </div>
+        <CollapsibleTable
+          lists={employees}
+          onDeleteRow={DeleteOpen}
+          onEditRow={handleEdit}
+          filterFn={filterFn}
+          columns={columnHeads}
+          collapsibleColumns={collapsibleColumnHeads}
+          propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
+          isLoading={isFetching}
+          onSubmit={handleSubmit}
+        />
       </Paper>
 
       <TransitionsModal

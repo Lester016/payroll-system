@@ -13,6 +13,7 @@ import {
   Typography,
   Fab,
   Toolbar,
+  Button,
 } from "@material-ui/core/";
 import {
   Add as AddIcon,
@@ -20,6 +21,8 @@ import {
   KeyboardArrowUp as KeyboardArrowUpIcon,
   Done as DoneIcon,
   Cancel as CancelIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
 } from "@material-ui/icons";
 
 import CollapsibleRow from "./CollapsibleRow";
@@ -39,7 +42,15 @@ const useRowStyles = makeStyles({
   },
 });
 
-const Row = ({ row, onDeleteRow, onSubmit }) => {
+const Row = ({
+  row,
+  columns,
+  collapsibleColumns,
+  tab,
+  onDeleteRow,
+  onEditRow,
+  onSubmit,
+}) => {
   const classes = useRowStyles();
   const [open, setOpen] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -65,7 +76,7 @@ const Row = ({ row, onDeleteRow, onSubmit }) => {
     setInputValues({
       title: "",
       amount: 0,
-    })
+    });
   };
 
   return (
@@ -80,15 +91,41 @@ const Row = ({ row, onDeleteRow, onSubmit }) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {row.employeeId}
-        </TableCell>
-        <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-        <TableCell>{getDeductionsAmount(row.deductions)}</TableCell>
-        <TableCell>{row.position.title}</TableCell>
-        <TableCell>{row.campus}</TableCell>
-        <TableCell>{row.college}</TableCell>
-        <TableCell>{row.department}</TableCell>
+        {columns.map((item) => {
+          if (item.id === "deductionAmount") {
+            return <TableCell>{getDeductionsAmount(row.deductions)}</TableCell>;
+          } else if (item.id === "name") {
+            return <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>;
+          } else if (item.id === "options") {
+            return (
+              <TableCell>
+                <Button
+                  className={classes.editButton}
+                  size="small"
+                  arial-label="edit"
+                  variant="contained"
+                  // color="primary"
+                  startIcon={<EditIcon />}
+                  onClick={() => {onEditRow(row.id)}}
+                >
+                  EDIT
+                </Button>
+                <Button
+                  className={classes.deleteButton}
+                  size="small"
+                  variant="outlined"
+                  // color="secondary"
+                  startIcon={<DeleteIcon />}
+                  onClick={()=>{onDeleteRow(row.id)}}
+                >
+                  DELETE
+                </Button>
+              </TableCell>
+            );
+          } else {
+            return <TableCell>{row[item.id]}</TableCell>;
+          }
+        })}
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -96,24 +133,27 @@ const Row = ({ row, onDeleteRow, onSubmit }) => {
             <Box margin={1}>
               <Toolbar>
                 <Typography variant="h6" component="div" display="inline">
-                  Deductions
+                  {tab === "positions" ? "Steps" : "Deductions"}
                 </Typography>
-                <Fab
-                  size="small"
-                  onClick={() => setIsAdding(!isAdding)}
-                  color="primary"
-                  className={classes.createbutton}
-                  display="inline"
-                >
-                  <AddIcon />
-                </Fab>
+                {tab === "deductions" && (
+                  <Fab
+                    size="small"
+                    onClick={() => setIsAdding(!isAdding)}
+                    color="primary"
+                    className={classes.createbutton}
+                    display="inline"
+                  >
+                    <AddIcon />
+                  </Fab>
+                )}
               </Toolbar>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
                     <TableCell />
-                    <TableCell>Deduction</TableCell>
-                    <TableCell>Amount</TableCell>
+                    {collapsibleColumns.map((item) => (
+                      <TableCell>{item.label}</TableCell>
+                    ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -123,10 +163,7 @@ const Row = ({ row, onDeleteRow, onSubmit }) => {
                         <IconButton aria-label="done" onClick={handleSubmit}>
                           <DoneIcon />
                         </IconButton>
-                        <IconButton
-                          aria-label="cancel"
-                          onClick={handleCancel}
-                        >
+                        <IconButton aria-label="cancel" onClick={handleCancel}>
                           <CancelIcon />
                         </IconButton>
                       </TableCell>
@@ -156,18 +193,23 @@ const Row = ({ row, onDeleteRow, onSubmit }) => {
                       </TableCell>
                     </TableRow>
                   )}
-                  {row.deductions.length <= 0 && !isAdding ? (
+                  {row[`${tab === "positions" ? "steps" : "deductions"}`]
+                    .length <= 0 && !isAdding ? (
                     <Typography>Empty</Typography>
                   ) : (
-                    row.deductions.map((deduction) => (
-                      <CollapsibleRow
-                        key={deduction._id}
-                        row={deduction}
-                        employee_Id={row._id}
-                        onDeleteRow={onDeleteRow}
-                        onSubmit={onSubmit}
-                      />
-                    ))
+                    row[`${tab === "positions" ? "steps" : "deductions"}`].map(
+                      (item, idx) => (
+                        <CollapsibleRow
+                          key={item._id ? item._id : item.id}
+                          idx={idx}
+                          row={item}
+                          tab={tab}
+                          employee_Id={row._id}
+                          onDeleteRow={onDeleteRow}
+                          onSubmit={onSubmit}
+                        />
+                      )
+                    )
                   )}
                 </TableBody>
               </Table>

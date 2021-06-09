@@ -11,6 +11,7 @@ import {
   TableRow,
   Paper,
 } from "@material-ui/core/";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 import Row from "./Row";
 
@@ -35,8 +36,10 @@ const CollapsibleTable = ({
   onDeleteRow,
   onEditRow,
   onSubmit,
+  tab,
   filterFn,
   columns,
+  collapsibleColumns,
   propertiesOrder,
   isLoading,
 }) => {
@@ -101,6 +104,22 @@ const CollapsibleTable = ({
   };
   /* END OF SORTING AND SEARCHING METHODS */
 
+  const loading = [];
+  for (let index = 0; index < 6; index++) {
+    loading.push(
+      <TableRow key={index}>
+        {propertiesOrder.map((_, id) => (
+          <TableCell key={id}>
+            <TableCell variant="text" animation="wave" width={150} height={20} />
+          </TableCell>
+        ))}
+        <TableCell>
+          <Skeleton variant="text" animation="wave" width={100} height={40} />
+        </TableCell>
+      </TableRow>
+    );
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -127,14 +146,20 @@ const CollapsibleTable = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {listsAfterPagingAndSorting(lists).map((employee, idx) => (
-            <Row
-              key={employee._id}
-              row={employee}
-              onDeleteRow={onDeleteRow}
-              onSubmit={onSubmit}
-            />
-          ))}
+          {isLoading ? loading : 
+            listsAfterPagingAndSorting(lists).map((item, idx) => (
+              <Row
+                key={item._id ? item._id : item.id}
+                tab={tab}
+                row={item}
+                columns={columns}
+                collapsibleColumns={collapsibleColumns}
+                onDeleteRow={onDeleteRow}
+                onEditRow={onEditRow}
+                onSubmit={onSubmit}
+              />
+            ))
+          }
         </TableBody>
       </Table>
       <TablePagination
