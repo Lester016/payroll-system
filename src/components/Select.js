@@ -15,6 +15,7 @@ const Select = ({
   error = null,
   options,
 }) => {
+  console.log(options)
   return (
     <FormControl disabled={isDisabled} {...(error && { error: true })}>
       <InputLabel>{label}</InputLabel>
@@ -27,7 +28,7 @@ const Select = ({
       >
         {options &&
           options.map((item) => (
-            <MenuItem key={item.toLowerCase()} value={item}>
+            <MenuItem key={item} value={item}>
               {item}
             </MenuItem>
           ))}

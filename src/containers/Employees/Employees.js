@@ -49,7 +49,9 @@ const initialValues = {
   birthDate: new Date(),
   positionTitle: "",
   positionRate: "",
-  salary: "",
+  salary: 0,
+  positionIdx: -1,
+  stepIdx: -1,
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -106,7 +108,7 @@ const Employees = ({ userToken }) => {
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const [tup, setTUP] = useState({});
-  const [positions, setPositions] = useState({});
+  const [positions, setPositions] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [employeeFormOpen, setEmployeeFormOpen] = useState(false);
   const [values, setValues] = useState(initialValues);
@@ -130,7 +132,7 @@ const Employees = ({ userToken }) => {
         axios.spread((...response) => {
           setEmployees(response[0].data);
           setTUP(response[1].data);
-          setPositions(response[2].data);
+          setPositions(reversedObjectToArray(response[2].data));
           setIsFetching(false);
         })
       )
@@ -139,6 +141,14 @@ const Employees = ({ userToken }) => {
         setIsFetching(false);
       });
   }, []);
+
+  const reversedObjectToArray = (lists) => {
+    const result = [];
+    for (let key in lists) {
+      result.push(Object.assign({ id: key }, lists[key]));
+    }
+    return result.reverse();
+  };
 
   // Modal toggler.
   const handleOpen = () => {
@@ -202,6 +212,9 @@ const Employees = ({ userToken }) => {
     let item = employees.filter(function (employee) {
       return employee._id === key;
     })[0];
+    let positionIdx = positions.findIndex((x) => x.title === item.position.title);
+    console.log(positionIdx);
+    let stepIdx = positions[positionIdx].steps.findIndex((x) => x === item.salary);
     setValues({
       firstName: item.firstName,
       lastName: item.lastName,
@@ -228,8 +241,10 @@ const Employees = ({ userToken }) => {
       address: item.address,
       birthDate: item.birthDate,
       positionTitle: item.position.title ? item.position.title : "",
-      positionRate: item.position.rate ? item.position.rate : "",
+      //positionRate: item.position.rate ? item.position.rate : "",
       salary: parseFloat(item.salary),
+      positionIdx: positionIdx,
+      stepIdx: stepIdx
     });
     setIsUpdating(key);
     handleOpen();

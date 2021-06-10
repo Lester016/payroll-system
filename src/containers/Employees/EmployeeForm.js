@@ -147,13 +147,20 @@ const EmployeeForm = ({
   };
 
   const handlePosition = (event) => {
-    const foundPosition = Object.values(positions).find(
-      (x) => x.title === event.target.value
-    );
+    const foundIdx = positions.findIndex((x) => x.title === event.target.value);
     setValues({
       ...values,
-      positionTitle: foundPosition.title,
-      positionRate: foundPosition.rate,
+      positionIdx: foundIdx,
+      positionTitle: positions[foundIdx].title,
+    });
+  };
+
+  const handleStep = (event) => {
+    //const foundIdx = positions.findIndex((x) => x.title === values.positionTitle);
+    setValues({
+      ...values,
+      stepIdx: event.target.value,
+      salary: positions[values.positionIdx].steps[event.target.value - 1],
     });
   };
 
@@ -255,7 +262,6 @@ const EmployeeForm = ({
               birthDate: values.birthDate,
               position: {
                 title: values.positionTitle,
-                rate: parseFloat(values.positionRate),
               },
               salary: parseFloat(values.salary),
             };
@@ -518,12 +524,15 @@ const EmployeeForm = ({
             md={4}
             className={values.isPartTime ? classes.hidden : ""}
           >
+            {console.log(positions)}
             <Select
               name="position"
               label="Position"
               value={values.positionTitle}
               onChange={handlePosition}
-              options={Object.values(positions).map((item) => item.title)}
+              options={positions.map((item) => {
+                return item.title;
+              })}
               error={errors.positionTitle}
               isDisabled={
                 isFetching || Object.keys(positions).length === 0 ? true : false
@@ -534,37 +543,47 @@ const EmployeeForm = ({
             item
             xs={12}
             sm={12}
-            md={2}
+            md={4}
             className={values.isPartTime ? classes.hidden : ""}
           >
-            <Typography>
-              {`Rate: ${!values.positionRate ? "None" : ""}`}
-              <NumberFormat
-                value={values.positionRate}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix="₱"
+            {values.positionTitle === "" ? (
+              <Select
+                name="step"
+                label="Step"
+                value=""
+                onChange={handleDept}
+                isDisabled={true}
+                error={errors.department}
               />
-            </Typography>
+            ) : (
+              <Select
+                name="step"
+                label="Step"
+                value={values.stepIdx}
+                onChange={handleStep}
+                options={positions[values.positionIdx].steps.map((item, idx) => {
+                  return idx + 1;
+                })}
+                error={errors.department}
+              />
+            )}
           </Grid>
           <Grid
             item
             xs={12}
             sm={12}
-            md={6}
+            md={4}
             className={values.isPartTime ? classes.hidden : ""}
           >
-            <TextField
-              variant="outlined"
-              label="Salary"
-              name="Salary"
-              value={values.salary}
-              onChange={(e) => setValues({ ...values, salary: e.target.value })}
-              InputProps={{
-                inputComponent: NumberInputComponent,
-              }}
-              error={errors.salary}
-            />
+            <Typography>
+              {`Salary: `}
+              <NumberFormat
+                value={values.salary}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix="₱"
+              />
+            </Typography>
           </Grid>
 
           <Grid item xs={12} sm={12} md={4}>
