@@ -97,6 +97,8 @@ const Row = ({
             return <TableCell>{getDeductionsAmount(row.deductions)}</TableCell>;
           } else if (item.id === "name") {
             return <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>;
+          } else if (item.id === "position") {
+            return <TableCell>{row[item.id].title}</TableCell>
           } else if (item.id === "options") {
             return (
               <TableCell>

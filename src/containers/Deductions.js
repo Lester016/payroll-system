@@ -111,8 +111,8 @@ const Deductions = ({ userToken }) => {
         setIsFetching(false);
       })
       .catch((error) => {
-        setIsFetching(false);
         console.log(error);
+        setIsFetching(false);
       });
   }, []);
 
@@ -251,6 +251,7 @@ const Deductions = ({ userToken }) => {
   };
 
   const handleSubmit = (inputValues, employee_Id, deduction_Id, isEdit) => {
+    console.log(inputValues);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -391,6 +392,7 @@ const Deductions = ({ userToken }) => {
       <Paper>
         <CollapsibleTable
           lists={employees}
+          tab={"deductions"}
           onDeleteRow={DeleteOpen}
           onEditRow={handleEdit}
           filterFn={filterFn}
