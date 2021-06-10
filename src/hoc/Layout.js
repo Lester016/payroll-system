@@ -9,6 +9,8 @@ import {
   MoneyOff as MoneyOffIcon,
   Schedule as ScheduleIcon,
   AttachMoney as AttachMoneyIcon,
+  Help as HelpIcon,
+  Info as InfoIcon,
 } from "@material-ui/icons";
 
 import NavItem from "../components/Navigations/NavItem";
@@ -107,12 +109,12 @@ export default function Layout({ children }) {
           <NavItem
             route={"/help"}
             title={"Help"}
-            IconComponent={ScheduleIcon}
+            IconComponent={HelpIcon}
           />
           <NavItem
             route={"/about"}
             title={"About"}
-            IconComponent={ScheduleIcon}
+            IconComponent={InfoIcon}
           />
         </List>
       </NavDrawer>
