@@ -212,9 +212,8 @@ const Employees = ({ userToken }) => {
     let item = employees.filter(function (employee) {
       return employee._id === key;
     })[0];
-    let positionIdx = positions.findIndex((x) => x.title === item.position.title);
-    console.log(positionIdx);
-    let stepIdx = positions[positionIdx].steps.findIndex((x) => x === item.salary);
+    let positionIdx = item.position.title !== "Part Time" ? positions.findIndex((x) => x.title === item.position.title) : -1;
+    let stepIdx = positionIdx !== -1 ? positions[positionIdx].steps.findIndex((x) => x === item.salary) : -1;
     setValues({
       firstName: item.firstName,
       lastName: item.lastName,

@@ -524,7 +524,6 @@ const EmployeeForm = ({
             md={4}
             className={values.isPartTime ? classes.hidden : ""}
           >
-            {console.log(positions)}
             <Select
               name="position"
               label="Position"
@@ -546,7 +545,7 @@ const EmployeeForm = ({
             md={4}
             className={values.isPartTime ? classes.hidden : ""}
           >
-            {values.positionTitle === "" ? (
+            {values.positionTitle === "" || values.isPartTime ? (
               <Select
                 name="step"
                 label="Step"
