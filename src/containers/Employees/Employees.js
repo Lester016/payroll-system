@@ -239,7 +239,7 @@ const Employees = ({ userToken }) => {
       contactInfo: item.contactInfo,
       address: item.address,
       birthDate: item.birthDate,
-      positionTitle: item.position.title ? item.position.title : "",
+      positionTitle: item.position.title && item.position.title !== "Part Time" ? item.position.title : "",
       //positionRate: item.position.rate ? item.position.rate : "",
       salary: parseFloat(item.salary),
       positionIdx: positionIdx,

@@ -9,6 +9,7 @@ import {
   Grid,
   Typography,
   Button,
+  CircularProgress,
 } from "@material-ui/core";
 import { Add as AddIcon, Cancel as CancelIcon } from "@material-ui/icons";
 
@@ -57,6 +58,9 @@ const useStyle = makeStyles((theme) => ({
   },
   hidden: {
     visibility: "hidden",
+  },
+  progressBar: {
+    color: "#bf1d38",
   },
 }));
 
@@ -201,7 +205,7 @@ const EmployeeForm = ({
       temp.positionTitle = fieldValues.positionTitle
         ? ""
         : "This field is required.";
-      temp.salary = fieldValues.salary ? "" : "This field is required.";
+      //temp.salary = fieldValues.salary ? "" : "This field is required.";
     }
 
     setErrors({
@@ -560,9 +564,11 @@ const EmployeeForm = ({
                 label="Step"
                 value={values.stepIdx}
                 onChange={handleStep}
-                options={positions[values.positionIdx].steps.map((item, idx) => {
-                  return idx + 1;
-                })}
+                options={positions[values.positionIdx].steps.map(
+                  (item, idx) => {
+                    return idx + 1;
+                  }
+                )}
                 error={errors.department}
               />
             )}
@@ -585,27 +591,39 @@ const EmployeeForm = ({
             </Typography>
           </Grid>
 
-          <Grid item xs={12} sm={12} md={4}>
-            <Button
-              size="small"
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={handleSubmit}
-              className={classes.createButton}
-            >
-              Create
-            </Button>
-            <Button
-              size="small"
-              variant="contained"
-              color="secondary"
-              startIcon={<CancelIcon />}
-              onClick={handleFormClose}
-              className={classes.cancelButton}
-            >
-              Cancel
-            </Button>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={4}
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            {isLoading ? (
+              <CircularProgress className={classes.progressBar} />
+            ) : (
+              <>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  onClick={handleSubmit}
+                  className={classes.createButton}
+                >
+                  Create
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<CancelIcon />}
+                  onClick={handleFormClose}
+                  className={classes.cancelButton}
+                >
+                  Cancel
+                </Button>
+              </>
+            )}
           </Grid>
         </Grid>
       </Container>

@@ -15,7 +15,6 @@ const Select = ({
   error = null,
   options,
 }) => {
-  console.log(options)
   return (
     <FormControl disabled={isDisabled} {...(error && { error: true })}>
       <InputLabel>{label}</InputLabel>
