@@ -54,6 +54,17 @@ const columnHeads = [
   },
 ];
 
+const collapsibleColumnHeads = [
+  {
+    id: "title",
+    label:"Title"
+  },
+  {
+    id: "amount",
+    label:"Amount"
+  }
+]
+
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: theme.spacing(1),
@@ -100,8 +111,8 @@ const Deductions = ({ userToken }) => {
         setIsFetching(false);
       })
       .catch((error) => {
-        setIsFetching(false);
         console.log(error);
+        setIsFetching(false);
       });
   }, []);
 
@@ -240,6 +251,7 @@ const Deductions = ({ userToken }) => {
   };
 
   const handleSubmit = (inputValues, employee_Id, deduction_Id, isEdit) => {
+    console.log(inputValues);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -378,18 +390,18 @@ const Deductions = ({ userToken }) => {
       </Toolbar>
 
       <Paper>
-        <div>
-          <CollapsibleTable
-            lists={employees}
-            onDeleteRow={DeleteOpen}
-            onEditRow={handleEdit}
-            filterFn={filterFn}
-            columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
-            isLoading={isFetching}
-            onSubmit={handleSubmit}
-          />
-        </div>
+        <CollapsibleTable
+          lists={employees}
+          tab={"deductions"}
+          onDeleteRow={DeleteOpen}
+          onEditRow={handleEdit}
+          filterFn={filterFn}
+          columns={columnHeads}
+          collapsibleColumns={collapsibleColumnHeads}
+          propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
+          isLoading={isFetching}
+          onSubmit={handleSubmit}
+        />
       </Paper>
 
       <TransitionsModal
