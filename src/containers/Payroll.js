@@ -36,6 +36,7 @@ const Payroll = ({ userToken }) => {
         setIsFetching(false);
       })
       .catch((error) => {
+        setIsFetching(false);
         // Log the error if found || catched.
         console.log(error);
       });
@@ -258,11 +259,7 @@ const Payroll = ({ userToken }) => {
   };
 
   const handleOnFileLoad = (data, file) => {
-    console.log("Parsed Data: ", data);
-    console.log("file: ", file);
-    setcsvObj(file); //set the csvObj to the parsed data(array of obj) when file is selected.
-    console.log("CSV OBJ: ", csvObj);
-    console.log("file: ", file);
+    setcsvObj(file);
   };
 
   const handleOnError = (err, file, inputElem, reason) => {
@@ -288,6 +285,7 @@ const Payroll = ({ userToken }) => {
       console.log("Select file first.");
     } else {
       whenPostingToOurAPI(csvObj);
+
     }
   };
 
