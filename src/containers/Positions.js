@@ -17,7 +17,7 @@ import {
   Cancel as CancelIcon,
 } from "@material-ui/icons";
 
-import Table from "../components/Table";
+import CollapsibleTable from "../components/CollapsibleTable/CollapsibleTable";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
 import NumberInputComponent from "../components/NumberInputComponent";
@@ -26,9 +26,8 @@ const Position = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
-  const [positions, setPositions] = useState({});
+  const [positions, setPositions] = useState([]);
   const [jobTitle, setJobTitle] = useState("");
-  const [ratePerHour, setRatePerHour] = useState();
   const [errors, setErrors] = useState({});
   const [isUpdating, setIsUpdating] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,14 +40,14 @@ const Position = () => {
     },
   });
 
-  const useStyles= makeStyles(theme=>({
-    root:{
-      margin:theme.spacing(.5)
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      margin: theme.spacing(0.5),
     },
-    createbutton:{
-      backgroundColor:"#bf1d38",
-      "&:hover":{
-        backgroundColor:"#a6172f"
+    createbutton: {
+      backgroundColor: "#bf1d38",
+      "&:hover": {
+        backgroundColor: "#a6172f",
       },
     },
     submitButton: {
@@ -64,8 +63,8 @@ const Position = () => {
       marginTop: 10,
       borderRadius: 15,
       backgroundColor: "#8388a5",
-    "&:hover": {
-      backgroundColor: "#5f6484",
+      "&:hover": {
+        backgroundColor: "#5f6484",
       },
     },
     textField: {
@@ -82,13 +81,21 @@ const Position = () => {
       label: "Position Title",
     },
     {
-      id: "rate",
-      label: "Rate Per Hour",
-    },
-    {
       id: "options",
       label: "Options",
       disableSorting: true,
+    },
+  ];
+
+  const collapsibleColumnHeads = [
+    {
+      id: "step",
+      label: "Step",
+    },
+
+    {
+      id: "amount",
+      label: "Amount",
     },
   ];
 
@@ -98,7 +105,7 @@ const Position = () => {
     axios
       .get("https://tup-payroll-default-rtdb.firebaseio.com/positions.json")
       .then((response) => {
-        setPositions(response.data);
+        setPositions(reversedObjectToArray(response.data));
         setIsFetching(false);
       })
       .catch((error) => {
@@ -107,6 +114,14 @@ const Position = () => {
       });
   }, []);
 
+  const reversedObjectToArray = (lists) => {
+    const result = [];
+    for (let key in lists) {
+      result.push(Object.assign({ id: key }, lists[key]));
+    }
+    return result.reverse();
+  };
+
   // Modal toggler.
   const handleOpen = () => {
     setIsModalOpen(true);
@@ -114,16 +129,15 @@ const Position = () => {
   const handleClose = () => {
     // Reset to default values
     setJobTitle("");
-    setRatePerHour();
 
     setIsModalOpen(false);
     setIsUpdating(null);
   };
 
-  const DeleteOpen = (key) => {
+  const deleteOpen = (key) => {
     setDeleteKey(key);
   };
-  const DeleteClose = () => {
+  const deleteClose = () => {
     // Reset to default values.
     setDeleteKey(null);
     setIsUpdating(null);
@@ -144,7 +158,6 @@ const Position = () => {
   const validate = () => {
     let temp = {};
     temp.jobTitle = jobTitle ? "" : "This field is required.";
-    temp.ratePerHour = ratePerHour ? "" : "This field is required.";
 
     setErrors({
       ...temp,
@@ -165,17 +178,21 @@ const Position = () => {
             "https://tup-payroll-default-rtdb.firebaseio.com/positions.json",
             {
               title: jobTitle,
-              rate: parseFloat(ratePerHour),
+              steps: [0, 0, 0, 0, 0, 0, 0, 0],
             }
           )
           .then((response) => {
+            console.log(response);
             // Submit the position to the existings positions list.
-            setPositions({
-              ...positions,
-              [response.data.name]: {
-                rate: parseFloat(ratePerHour),
+            setPositions((prevPositions) => {
+              let data = [...prevPositions];
+              console.log(data);
+              data.unshift({
+                id: response.data.name,
                 title: jobTitle,
-              },
+                steps: [0, 0, 0, 0, 0, 0, 0, 0],
+              });
+              return data;
             });
             setIsLoading(false);
 
@@ -197,22 +214,27 @@ const Position = () => {
         e.preventDefault();
       } else {
         // Edit existing position
+        let prevPosition = positions.find((item) => item.id === isUpdating);
         axios
           .put(
             `https://tup-payroll-default-rtdb.firebaseio.com/positions/${isUpdating}.json`,
             {
               title: jobTitle,
-              rate: parseFloat(ratePerHour),
+              steps: prevPosition.steps,
             }
           )
-          .then(() => {
+          .then((response) => {
+            console.log(response.data.name);
             // Update the position to the existings positions list.
-            setPositions({
-              ...positions,
-              [isUpdating]: {
-                rate: ratePerHour,
+            setPositions((prevPositions) => {
+              let data = [...prevPositions];
+              const idx = positions.findIndex((item) => item.id === isUpdating);
+              data[idx] = {
+                id: prevPosition.id,
                 title: jobTitle,
-              },
+                steps: prevPosition.steps,
+              };
+              return data;
             });
             setIsLoading(false);
 
@@ -235,6 +257,39 @@ const Position = () => {
     }
   };
 
+  const handleCollapsibleSubmit = (parentId, idx, amount) => {
+    let updatedPosition = positions.find((item) => item.id === parentId);
+    updatedPosition.steps[idx] = amount;
+    axios
+      .put(
+        `https://tup-payroll-default-rtdb.firebaseio.com/positions/${parentId}.json`, {
+          title: updatedPosition.title,
+          steps: updatedPosition.steps.map(Number),
+        }
+      )
+      .then(() => {
+        // Update the position to the existings positions list.
+        setPositions((prevPositions) => {
+          let data = [...prevPositions];
+          const idx = positions.findIndex((item) => item.id === parentId);
+          data[idx] = {
+            id: parentId,
+            title: updatedPosition.title,
+            steps: updatedPosition.steps.map(Number),
+          };
+          return data;
+        });
+        setIsLoading(false);
+
+        setSnackMessage("Success edit!");
+        handleSnackOpen();
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+  };
+
   // Delete handle
   const handleDelete = () => {
     setIsLoading(true);
@@ -243,9 +298,13 @@ const Position = () => {
         `https://tup-payroll-default-rtdb.firebaseio.com/positions/${deleteKey}.json`
       )
       .then(() => {
-        let filteredPositions = { ...positions };
-        delete filteredPositions[deleteKey];
-        setPositions(filteredPositions);
+        setPositions((prevPositions) => {
+          let data = [...prevPositions];
+          data = data.filter((item) => {
+            return item.id !== deleteKey;
+          });
+          return data;
+        });
         setIsLoading(false);
 
         setSnackMessage("Success delete!");
@@ -253,16 +312,15 @@ const Position = () => {
         setDeleteKey(null);
       })
       .catch((error) => {
+        console.log(error);
         setIsLoading(false);
       });
   };
 
   // Edit handle
   const handleEdit = (key) => {
-    const oldJobTitle = positions[key].title;
-    const oldRatePerHour = positions[key].rate;
-    setJobTitle(oldJobTitle);
-    setRatePerHour(oldRatePerHour);
+    const oldPosition = positions.find((item) => item.id === key);
+    setJobTitle(oldPosition.title);
     setIsUpdating(key);
     handleOpen();
   };
@@ -301,26 +359,27 @@ const Position = () => {
           color="primary"
           className={classes.createbutton}
         >
-        <AddIcon />
-        </Fab>   
+          <AddIcon />
+        </Fab>
       </Toolbar>
 
       <Paper>
-        <div>
-          <Table
-            lists={positions}
-            onDeleteRow={DeleteOpen}
-            onEditRow={handleEdit}
-            filterFn={filterFn}
-            columns={columnHeads}
-            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
-            isLoading={isFetching}
-          />
-        </div>
+        <CollapsibleTable
+          lists={positions}
+          onDeleteRow={deleteOpen}
+          onEditRow={handleEdit}
+          onSubmitCollapsibleRow={handleCollapsibleSubmit}
+          tab={"positions"}
+          filterFn={filterFn}
+          columns={columnHeads}
+          collapsibleColumns={collapsibleColumnHeads}
+          propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
+          isLoading={isFetching}
+        />
       </Paper>
 
       <TransitionsModal
-        handleClose={DeleteClose}
+        handleClose={deleteClose}
         isModalOpen={deleteKey ? true : false}
       >
         {!isLoading ? (
@@ -343,7 +402,7 @@ const Position = () => {
                   variant="contained"
                   size="small"
                   color="primary"
-                  onClick={DeleteClose}
+                  onClick={deleteClose}
                   startIcon={<CancelIcon />}
                 >
                   Cancel
@@ -373,21 +432,6 @@ const Position = () => {
                     helperText: errors.jobTitle,
                   })}
                 />
-                <TextField
-                  className={classes.textField}
-                  value={ratePerHour}
-                  label="Rate Per Hour"
-                  variant="outlined"
-                  onChange={(e) => setRatePerHour(e.target.value)}
-                  classes={{ root: classes.root }}
-                  InputProps={{
-                    inputComponent: NumberInputComponent,
-                  }}
-                  {...(errors.ratePerHour && {
-                    error: true,
-                    helperText: errors.ratePerHour,
-                  })}
-                />
               </div>
 
               <div>
@@ -401,7 +445,7 @@ const Position = () => {
                   {isUpdating ? "Update" : "Submit"}
                 </Button>
                 <Button
-                className={classes.cancelButton}
+                  className={classes.cancelButton}
                   variant="contained"
                   size="small"
                   color="secondary"

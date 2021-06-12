@@ -9,6 +9,7 @@ import {
   Grid,
   Typography,
   Button,
+  CircularProgress,
 } from "@material-ui/core";
 import { Add as AddIcon, Cancel as CancelIcon } from "@material-ui/icons";
 
@@ -57,6 +58,9 @@ const useStyle = makeStyles((theme) => ({
   },
   hidden: {
     visibility: "hidden",
+  },
+  progressBar: {
+    color: "#bf1d38",
   },
 }));
 
@@ -147,13 +151,20 @@ const EmployeeForm = ({
   };
 
   const handlePosition = (event) => {
-    const foundPosition = Object.values(positions).find(
-      (x) => x.title === event.target.value
-    );
+    const foundIdx = positions.findIndex((x) => x.title === event.target.value);
     setValues({
       ...values,
-      positionTitle: foundPosition.title,
-      positionRate: foundPosition.rate,
+      positionIdx: foundIdx,
+      positionTitle: positions[foundIdx].title,
+    });
+  };
+
+  const handleStep = (event) => {
+    //const foundIdx = positions.findIndex((x) => x.title === values.positionTitle);
+    setValues({
+      ...values,
+      stepIdx: event.target.value,
+      salary: positions[values.positionIdx].steps[event.target.value - 1],
     });
   };
 
@@ -194,7 +205,7 @@ const EmployeeForm = ({
       temp.positionTitle = fieldValues.positionTitle
         ? ""
         : "This field is required.";
-      temp.salary = fieldValues.salary ? "" : "This field is required.";
+      //temp.salary = fieldValues.salary ? "" : "This field is required.";
     }
 
     setErrors({
@@ -255,7 +266,6 @@ const EmployeeForm = ({
               birthDate: values.birthDate,
               position: {
                 title: values.positionTitle,
-                rate: parseFloat(values.positionRate),
               },
               salary: parseFloat(values.salary),
             };
@@ -523,7 +533,9 @@ const EmployeeForm = ({
               label="Position"
               value={values.positionTitle}
               onChange={handlePosition}
-              options={Object.values(positions).map((item) => item.title)}
+              options={positions.map((item) => {
+                return item.title;
+              })}
               error={errors.positionTitle}
               isDisabled={
                 isFetching || Object.keys(positions).length === 0 ? true : false
@@ -534,60 +546,84 @@ const EmployeeForm = ({
             item
             xs={12}
             sm={12}
-            md={2}
+            md={4}
+            className={values.isPartTime ? classes.hidden : ""}
+          >
+            {values.positionTitle === "" || values.isPartTime ? (
+              <Select
+                name="step"
+                label="Step"
+                value=""
+                onChange={handleDept}
+                isDisabled={true}
+                error={errors.department}
+              />
+            ) : (
+              <Select
+                name="step"
+                label="Step"
+                value={values.stepIdx}
+                onChange={handleStep}
+                options={positions[values.positionIdx].steps.map(
+                  (item, idx) => {
+                    return idx + 1;
+                  }
+                )}
+                error={errors.department}
+              />
+            )}
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={4}
             className={values.isPartTime ? classes.hidden : ""}
           >
             <Typography>
-              {`Rate: ${!values.positionRate ? "None" : ""}`}
+              {`Salary: `}
               <NumberFormat
-                value={values.positionRate}
+                value={values.salary}
                 displayType={"text"}
                 thousandSeparator={true}
                 prefix="₱"
               />
             </Typography>
           </Grid>
+
           <Grid
             item
             xs={12}
             sm={12}
-            md={6}
-            className={values.isPartTime ? classes.hidden : ""}
+            md={4}
+            style={{ display: "flex", justifyContent: "center" }}
           >
-            <TextField
-              variant="outlined"
-              label="Salary"
-              name="Salary"
-              value={values.salary}
-              onChange={(e) => setValues({ ...values, salary: e.target.value })}
-              InputProps={{
-                inputComponent: NumberInputComponent,
-              }}
-              error={errors.salary}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={12} md={4}>
-            <Button
-              size="small"
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={handleSubmit}
-              className={classes.createButton}
-            >
-              Create
-            </Button>
-            <Button
-              size="small"
-              variant="contained"
-              color="secondary"
-              startIcon={<CancelIcon />}
-              onClick={handleFormClose}
-              className={classes.cancelButton}
-            >
-              Cancel
-            </Button>
+            {isLoading ? (
+              <CircularProgress className={classes.progressBar} />
+            ) : (
+              <>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  onClick={handleSubmit}
+                  className={classes.createButton}
+                >
+                  Create
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<CancelIcon />}
+                  onClick={handleFormClose}
+                  className={classes.cancelButton}
+                >
+                  Cancel
+                </Button>
+              </>
+            )}
           </Grid>
         </Grid>
       </Container>
