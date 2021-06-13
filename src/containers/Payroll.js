@@ -10,7 +10,8 @@ import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 
 const Payroll = ({ userToken }) => {
-  const [csvObj, setcsvObj] = useState();
+  const formData = new FormData();
+  let [csvObj, setcsvObj] = useState();
   const [payrollData, setPayrollData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,23 +23,22 @@ const Payroll = ({ userToken }) => {
   });
   const whenPostingToOurAPI = (csv) => {
     setIsFetching(true);
-    console.log("File: ", csv);
     const config = {
       headers: {
-        "Content-Type": "text/csv",
+        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${userToken}`,
       },
     };
     axios
       .post(`https://tup-payroll.herokuapp.com/api/payroll`, csv, config)
       .then((response) => {
+        console.log(response);
         setPayrollData(response.data);
         setIsFetching(false);
       })
       .catch((error) => {
         setIsFetching(false);
-        // Log the error if found || catched.
-        console.log(error);
+        console.log(error.response.data);
       });
   };
 
@@ -89,7 +89,7 @@ const Payroll = ({ userToken }) => {
     },
     {
       id: "rates",
-      label: "rate",
+      label: "Rate",
     },
     {
       id: "amount",
@@ -247,47 +247,25 @@ const Payroll = ({ userToken }) => {
   };
   const handleClose = () => {
     setIsModalOpen(false);
+    setcsvObj();
   };
 
-  const buttonRef = createRef();
-
-  const handleOpenDialog = (e) => {
-    // Note that the ref is set async, so it might be null at some point
-    if (buttonRef.current) {
-      buttonRef.current.open(e);
-    }
+  const handleFile = (e) => {
+    csvObj = e.target.files[0];
+    console.log(csvObj);
   };
 
-  const handleOnFileLoad = (data, file) => {
-    setcsvObj(file);
-  };
-
-  const handleOnError = (err, file, inputElem, reason) => {
-    console.log(err);
-  };
-
-  const handleOnRemoveFile = (data) => {
-    setcsvObj(); //set the csvObj to empty array if the file is removed.
-    console.log(data);
-  };
-
-  const handleRemoveFile = (e) => {
-    // Note that the ref is set async, so it might be null at some point
-    if (buttonRef.current) {
-      buttonRef.current.removeFile(e);
-    }
-  };
-
-  // Only allow add if there is selected file.
   const addImport = () => {
-    // console.log(csvObj[1].data[1]);
     if (!csvObj) {
       console.log("Select file first.");
     } else {
-      whenPostingToOurAPI(csvObj);
-
+      formData.append("file", csvObj);
+      whenPostingToOurAPI(formData);
     }
   };
+
+  // console.log("Regulars: ", regulars);
+  // console.log("Overload: ", payrollData);
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -347,71 +325,13 @@ const Payroll = ({ userToken }) => {
         title="/ Select File"
       >
         <center>
-          <CSVReader
-            ref={buttonRef}
-            onFileLoad={handleOnFileLoad}
-            onError={handleOnError}
-            noClick
-            noDrag
-            onRemoveFile={handleOnRemoveFile}
-          >
-            {({ file }) => (
-              <>
-                <div
-                  style={{
-                    borderWidth: 1,
-                    borderStyle: "solid",
-                    borderColor: "#ccc",
-                    height: 45,
-                    lineHeight: 2.5,
-                    marginTop: 5,
-                    marginBottom: 5,
-                    paddingLeft: 13,
-                    paddingTop: 3,
-                    width: "60%",
-                  }}
-                >
-                  {file && file.name}
-                  {/* {console.log(file)} */}
-                </div>
-                <div>
-                  <Button
-                    size="large"
-                    variant="outlined"
-                    component="span"
-                    type="button"
-                    onClick={handleOpenDialog}
-                    style={{
-                      borderRadius: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                      width: "40%",
-                      paddingLeft: 0,
-                      paddingRight: 0,
-                    }}
-                  >
-                    Browse
-                  </Button>
-
-                  <Button
-                    size="large"
-                    variant="outlined"
-                    component="span"
-                    style={{
-                      borderRadius: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                      paddingLeft: 20,
-                      paddingRight: 20,
-                    }}
-                    onClick={handleRemoveFile}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </>
-            )}
-          </CSVReader>
+          <form>
+            <input
+              type="file"
+              name="file"
+              onChange={(e) => handleFile(e)}
+            ></input>
+          </form>
 
           <div>
             <Button

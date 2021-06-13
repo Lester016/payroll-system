@@ -185,7 +185,7 @@ const AppTable = ({
             column === "overloadNetAmount" ? (
               <StyledTableCell key={id}>
                 <NumberFormat
-                  value={item[column].toFixed(2)}
+                  value={item[column]}
                   displayType={"text"}
                   thousandSeparator={true}
                 />
