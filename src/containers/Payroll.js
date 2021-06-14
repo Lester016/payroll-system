@@ -182,9 +182,9 @@ const Payroll = ({ userToken }) => {
     // BODY
     pdf.setFontSize(10);
 
-     //RENDERS COLLEGES
-     pdf.text("College", 10, 45);
-     pdf.setFont("times", "normal");
+    //RENDERS COLLEGES
+    pdf.text("College", 10, 45);
+    pdf.setFont("times", "normal");
 
     // RENDERS EMPLOYEE ID
     pdf.text("Employee No.", 10, 50);
@@ -221,7 +221,6 @@ const Payroll = ({ userToken }) => {
     pdf.setFont("times", "normal");
     pdf.line(175, 71, 200, 71);
 
-    
     //RENDER DEDUCTIONS
     // data[key].employee.deductions.map((x) => {
     //   let yPos = 90;
@@ -233,15 +232,15 @@ const Payroll = ({ userToken }) => {
     //   yPos = yPos + 5;
     //   return;
     // })
-    for (let counter of data[key].employee.deductions.title){
+    // for (let counter of data[key].employee.deductions.title){
 
-    }
-    
+    // }
+
     //RENDER SALARY
     pdf.text("Salary: ", 10, 208);
     pdf.text("1st Half", 30, 208);
     //1sthalf salary
-    pdf.text("2nd Half", 80, 208)
+    pdf.text("2nd Half", 80, 208);
     //2ndhalf salary
 
     // RENDERS DEDUCTION
