@@ -10,5 +10,65 @@
   "-MbQtdpqtTLzJQ673Djo": {
     "title": "Instructor III",
     "steps": [30799, 31143, 31491, 31844, 32200, 32561, 32927, 33297]
+  },
+  "-MaBgfQdsGdshOi9f7n9": {
+    "title": "Assistant Professor I",
+    "steps": [33575, 33953, 34336, 34724, 35116, 35513, 35915, 36323]
+  },
+  "-McHsfOnMqdQr6G24DuI": {
+    "title": "Assistant Professor II",
+    "steps": [36628, 37044, 37465, 37891, 38323, 38760, 39203, 39650]
+  },
+  "-MqRfHt72DvUbfpU9V1Z": {
+    "title": "Assistant Professor III",
+    "step": [39986, 40444, 40907, 41376, 41851, 42332, 42818, 43311]
+  },
+  "-MxTeg7A2Dgho90nBvqH": {
+    "title": "Assistant Professor IV",
+    "steps": [43681, 44184, 44694, 45209, 45732, 46261, 46796, 47338]
+  },
+  "-Mz2rEqOyb3Vg6HqmkLn": {
+    "title": "Associate Professor I",
+    "steps": [48313, 49052, 49803, 50566, 51342, 52130, 52932, 53746]
+  },
+  "-MaVf5rDqU7Gfspkx1Bth": {
+    "title": "Associate Professor II",
+    "steps": [54251, 55085, 55934, 56796, 57673, 58564, 59469, 60389]
+  },
+  "-MqHeqF2f6Vq9pMbQ1V5": {
+    "title": "Associate Professor III",
+    "steps": [60901, 61844, 62803, 63777, 64768, 65774, 66797, 67837]
+  },
+  "-Mvqg4Q12TxgSoYp8uV8": {
+    "title": "Associate Professor IV",
+    "steps": [68415, 69481, 70565, 71666, 72785, 73923, 75079, 76253]
+  },
+  "-MqAg7fW2Vcorphd21bV": {
+    "title": "Associate Professor V",
+    "steps": [76907, 78111, 79336, 80583, 81899, 83235, 84594, 85975]
+  },
+  "-Mqh2f5s8tXthoQgm1Dv": {
+    "title": "Professor I",
+    "steps": [86742, 88158, 89597, 91059, 92545, 94057, 95592, 97152]
+  },
+  "-MpQt3X8gsjry3Bmts8Q": {
+    "title": "Professor II",
+    "steps": [98886, 100500, 102140, 103808, 105502, 107224, 108974, 110753]
+  },
+  "-MtSge4Wob7jd1S5hoxW": {
+    "title": "Professor III",
+    "steps": [111742, 113565, 115419, 117303, 119217, 121163, 123140, 125150]
+  },
+  "-MyCgdSro5h3Vcu9Ms3h": {
+    "title": "Professor IV",
+    "steps": [126267, 128329, 130423, 132552, 134715, 136914, 139149, 141420]
+  },
+  "-MnGrs4SqoVthFs4Xivw": {
+    "title": "Professor V",
+    "steps": [142683, 145011, 147378, 149784, 152228, 154714, 157239, 159804]
+  },
+  "-Mgw2Fditv5qvkayt7Dqy": {
+    "title": "Professor VI",
+    "steps": [161231, 163863, 166537, 169256, 172018, 174826, 177679, 180579]
   }
 }

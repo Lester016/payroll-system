@@ -182,6 +182,10 @@ const Payroll = ({ userToken }) => {
     // BODY
     pdf.setFontSize(10);
 
+     //RENDERS COLLEGES
+     pdf.text("College", 10, 45);
+     pdf.setFont("times", "normal");
+
     // RENDERS EMPLOYEE ID
     pdf.text("Employee No.", 10, 50);
     pdf.setFont("times", "bold");
@@ -204,42 +208,69 @@ const Payroll = ({ userToken }) => {
     );
     pdf.setFont("times", "normal");
 
+    //RENDERS BASIC SALARY
+    pdf.text("Basic Salary", 10, 65);
+    pdf.setFont("times", "normal");
+
     // RENDERS GROSS PAY
     pdf.text("Gross Amount Due ", 10, 70);
 
-    pdf.line(175, 65, 200, 65);
+    pdf.line(175, 66.5, 200, 66.5);
     pdf.setFont("times", "bold");
     pdf.text(`${data[key].grossAmount.toFixed(2)}`, 185, 70); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
-    pdf.line(175, 73, 200, 73);
+    pdf.line(175, 71, 200, 71);
+
+    
+    //RENDER DEDUCTIONS
+    // data[key].employee.deductions.map((x) => {
+    //   let yPos = 90;
+    //   pdf.text(`${x.title}`, 10, yPos);
+    //   pdf.setFont("times", "normal");
+    //   pdf.text(`${x.amount}`, 40, yPos);
+    //   pdf.setFont("times", "bold");
+
+    //   yPos = yPos + 5;
+    //   return;
+    // })
+    for (let counter of data[key].employee.deductions.title){
+
+    }
+    
+    //RENDER SALARY
+    pdf.text("Salary: ", 10, 208);
+    pdf.text("1st Half", 30, 208);
+    //1sthalf salary
+    pdf.text("2nd Half", 80, 208)
+    //2ndhalf salary
 
     // RENDERS DEDUCTION
-    pdf.text("Total Deductions ", 140, 83);
+    pdf.text("Total Deductions ", 140, 203);
     pdf.setFont("times", "bold");
     // pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
-    pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 185, 83);
+    pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 185, 203);
     pdf.setFont("times", "normal");
 
-    pdf.line(140, 85, 200, 85);
+    pdf.line(140, 204, 200, 204);
 
     // RENDERS NET PAY
-    pdf.text("Net Amount ", 140, 90);
+    pdf.text("Net Amount ", 140, 208);
     pdf.setFont("times", "bold");
-    pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 185, 90); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 185, 208); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
 
     // FOOTER
     pdf.setFontSize(12);
     pdf.setFont("times", "bold");
 
-    pdf.text("Prepared by: ", 10, 105);
-    pdf.text("Certified correct: ", 100, 105);
+    pdf.text("Prepared by: ", 10, 220);
+    pdf.text("Certified correct: ", 100, 220);
 
-    pdf.text("CATALINA M. BAQUIRAN ", 40, 125);
-    pdf.text("Administrative Officer IV ", 43, 130);
+    pdf.text("CATALINA M. BAQUIRAN ", 40, 245);
+    pdf.text("Administrative Officer IV ", 43, 250);
 
-    pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 130, 125);
-    pdf.text("Head, HRMS ", 155, 130);
+    pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 130, 245);
+    pdf.text("Head, HRMS ", 155, 250);
 
     // END OF PDF FILE
     pdf.save("payroll"); //Prints the pdf

@@ -29,6 +29,10 @@ const useRowStyles = makeStyles({
     borderRadius: 15,
     marginRight: 5,
   },
+  table: {
+    background: "#384448",
+    color: "#fff"
+  },
 });
 
 const CollapsibleTable = ({
@@ -124,7 +128,7 @@ const CollapsibleTable = ({
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
-        <TableHead>
+        <TableHead className={classes.table}>
           <TableRow>
             <TableCell />
             {columns.map((item) => (
