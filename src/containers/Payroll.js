@@ -1,46 +1,29 @@
 import axios from "axios";
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import jsPDF from "jspdf";
-import { CSVReader } from "react-papaparse";
 import { CSVLink } from "react-csv";
-import { Button, Paper } from "@material-ui/core";
+import { Button, Paper, Toolbar } from "@material-ui/core";
+import { DatePicker } from "@material-ui/pickers";
 
 import Table from "../components/Table";
+import Select from "../components/Select";
 import TransitionsModal from "../components/Modal";
 
 const Payroll = ({ userToken }) => {
-  const formData = new FormData();
   let [csvObj, setcsvObj] = useState();
   const [payrollData, setPayrollData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMsg, setErrorMsg] = useState();
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const regulars = [];
-  const [filterFn] = useState({
+  const overload = [];
+  const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-  const whenPostingToOurAPI = (csv) => {
-    setIsFetching(true);
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${userToken}`,
-      },
-    };
-    axios
-      .post(`https://tup-payroll.herokuapp.com/api/payroll`, csv, config)
-      .then((response) => {
-        console.log(response);
-        setPayrollData(response.data);
-        setIsFetching(false);
-      })
-      .catch((error) => {
-        setIsFetching(false);
-        console.log(error.response.data);
-      });
-  };
 
   const payroll = () => {
     setIsFetching(true);
@@ -60,11 +43,43 @@ const Payroll = ({ userToken }) => {
     payroll();
   }, []);
 
+  const addImport = () => {
+    if (!csvObj) {
+      console.log("Select file first.");
+    } else {
+      const formData = new FormData();
+
+      formData.append("file", csvObj);
+      setIsFetching(true);
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${userToken}`,
+        },
+      };
+      axios
+        .post("https://tup-payroll.herokuapp.com/api/payroll", formData, config)
+        .then((response) => {
+          console.log(response);
+          setPayrollData(response.data);
+          setIsFetching(false);
+        })
+        .catch((error) => {
+          setIsFetching(false);
+          // console.log(error.response.data.message);
+          setErrorMsg(error.response.data.message);
+        });
+    }
+  };
+
   //Put the regular employee to regulars[]
   for (let x of payrollData) {
-    if (x.employee !== null) {
+    if (x.employee !== null && x.employee !== undefined) {
       if (x.employee.isPartTime === false) {
         regulars.push(x);
+      }
+      if (x.monthOverload !== null && x.monthOverload !== undefined) {
+        overload.push(x);
       }
     }
   }
@@ -230,7 +245,7 @@ const Payroll = ({ userToken }) => {
     pdf.save("payroll"); //Prints the pdf
   }
 
-  let csvData = payrollData.map((obj) => ({
+  let csvData = overload.map((obj) => ({
     employeeId: '=""' + obj.employee.employeeId + '""',
     firstName: obj.employee.firstName,
     lastName: obj.employee.lastName,
@@ -247,6 +262,7 @@ const Payroll = ({ userToken }) => {
   };
   const handleClose = () => {
     setIsModalOpen(false);
+    setErrorMsg();
     setcsvObj();
   };
 
@@ -255,17 +271,33 @@ const Payroll = ({ userToken }) => {
     console.log(csvObj);
   };
 
-  const addImport = () => {
-    if (!csvObj) {
-      console.log("Select file first.");
-    } else {
-      formData.append("file", csvObj);
-      whenPostingToOurAPI(formData);
-    }
-  };
-
   // console.log("Regulars: ", regulars);
-  // console.log("Overload: ", payrollData);
+  // console.log("Overload: ", overload);
+
+  const monthValues = [
+    // { 1: "January" },
+    // { 2: "February" },
+    // { 3: "March" },
+    // { 4: "April" },
+    // { 5: "May" },
+    // { 6: "June" },
+    // { 7: "July" },
+    // { 8: "August" },
+    // { 9: "September" },
+    // { 10: "October" },
+    // { 11: "November" },
+    // { 12: "December" },
+    "January",
+    "February",
+    "March",
+    "April",
+  ];
+
+  const handleDateChange = (date) => {
+    // setSelectedDate(date);
+    setSelectedDate(date);
+    console.log(`${selectedDate.getMonth()}/${selectedDate.getFullYear()}`);
+  };
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -292,7 +324,7 @@ const Payroll = ({ userToken }) => {
       <h1>OVERLOAD</h1>
       <Paper>
         <Table
-          lists={payrollData}
+          lists={overload}
           filterFn={filterFn}
           columns={overloadColumnHeads}
           propertiesOrder={overloadColumnHeads
@@ -307,6 +339,24 @@ const Payroll = ({ userToken }) => {
 
       <h1>REGULARS</h1>
       <Paper>
+        <Toolbar>
+          {/* <Select
+            name="month"
+            label="Month"
+            value=""
+            onChange={handleMonthSelect}
+            options={monthValues}
+          /> */}
+          <DatePicker
+            variant="inline"
+            openTo="year"
+            views={["year", "month"]}
+            label="Year and Month"
+            helperText="Start from year selection"
+            value={selectedDate}
+            onChange={handleDateChange}
+          />
+        </Toolbar>
         <Table
           lists={regulars}
           filterFn={filterFn}
@@ -332,7 +382,7 @@ const Payroll = ({ userToken }) => {
               onChange={(e) => handleFile(e)}
             ></input>
           </form>
-
+          <h4 style={{ color: "red" }}>{errorMsg}</h4>
           <div>
             <Button
               variant="contained"
