@@ -19,7 +19,7 @@ import { Edit, Delete, Print } from "@material-ui/icons";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.text.secondary,
+    backgroundColor: "#384448",
     color: theme.palette.common.white,
   },
   body: {
