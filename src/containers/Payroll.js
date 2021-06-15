@@ -4,8 +4,11 @@ import { connect } from "react-redux";
 import jsPDF from "jspdf";
 import { CSVLink } from "react-csv";
 import { Button, Paper, Toolbar } from "@material-ui/core";
-import { DatePicker } from "@material-ui/pickers";
-
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import Table from "../components/Table";
 import Select from "../components/Select";
 import TransitionsModal from "../components/Modal";
@@ -17,9 +20,10 @@ const Payroll = ({ userToken }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  let [currentDate] = useState();
   const regulars = [];
   const overload = [];
-  const [filterFn, setFilterFn] = useState({
+  let [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
@@ -305,28 +309,32 @@ const Payroll = ({ userToken }) => {
   // console.log("Overload: ", overload);
 
   const monthValues = [
-    // { 1: "January" },
-    // { 2: "February" },
-    // { 3: "March" },
-    // { 4: "April" },
-    // { 5: "May" },
-    // { 6: "June" },
-    // { 7: "July" },
-    // { 8: "August" },
-    // { 9: "September" },
-    // { 10: "October" },
-    // { 11: "November" },
-    // { 12: "December" },
-    "January",
-    "February",
-    "March",
-    "April",
+    { 1: "January" },
+    { 2: "February" },
+    { 3: "March" },
+    { 4: "April" },
+    { 5: "May" },
+    { 6: "June" },
+    { 7: "July" },
+    { 8: "August" },
+    { 9: "September" },
+    { 10: "October" },
+    { 11: "November" },
+    { 12: "December" },
   ];
 
   const handleDateChange = (date) => {
-    // setSelectedDate(date);
     setSelectedDate(date);
-    console.log(`${selectedDate.getMonth()}/${selectedDate.getFullYear()}`);
+    currentDate = date.getMonth() + 1 + "/" + date.getFullYear();
+    // console.log(currentDate);
+
+    setFilterFn({
+      fn: (items) => {
+        if (currentDate === false) {
+          return items;
+        } else return items.filter((x) => x.period.includes(currentDate));
+      },
+    });
   };
 
   return (
@@ -377,15 +385,20 @@ const Payroll = ({ userToken }) => {
             onChange={handleMonthSelect}
             options={monthValues}
           /> */}
-          <DatePicker
-            variant="inline"
-            openTo="year"
-            views={["year", "month"]}
-            label="Year and Month"
-            helperText="Start from year selection"
-            value={selectedDate}
-            onChange={handleDateChange}
-          />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              margin="normal"
+              id="date-picker-dialog"
+              label="Month Year Picker"
+              views={["year", "month"]}
+              format="MM/yyyy"
+              value={selectedDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                "aria-label": "change date",
+              }}
+            />
+          </MuiPickersUtilsProvider>
         </Toolbar>
         <Table
           lists={regulars}
