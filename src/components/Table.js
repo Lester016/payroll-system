@@ -67,6 +67,10 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
     marginRight: 5,
   },
+  payslipButton: {
+    borderRadius: 15,
+    marginRight: 5,
+  },
 }));
 
 const AppTable = ({
@@ -249,6 +253,7 @@ const AppTable = ({
               ) : (
                 <div>
                   <Button
+                    className={classes.payslipButton}
                     size="small"
                     variant="contained"
                     color="primary"
