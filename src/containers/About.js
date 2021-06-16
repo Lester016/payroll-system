@@ -1,13 +1,13 @@
-import React from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
+import React from "react";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Link from "@material-ui/core/Link";
 
 import tupLogo from "../asset/tupLogo.png";
 import MarcialDP from "../asset/MarcialDP.jpg";
@@ -30,24 +30,24 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(2),
   },
   card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
   },
   cardMedia: {
-    paddingTop: '100%', // 16:9
+    paddingTop: "100%", // 16:9
   },
   cardContent: {
     color: "#ffffff",
     backgroundColor: "#bf1d38",
     flexGrow: 1,
   },
-  cardContent2:{
+  cardContent2: {
     fontWeight: "bold",
   },
   footer: {
     backgroundColor: theme.palette,
-    padding: theme.spacing(6,0,2),
+    padding: theme.spacing(6, 0, 2),
   },
 }));
 
@@ -62,13 +62,17 @@ export default function About() {
       <main>
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
-            <Typography  variant="h3" align="center" color="textPrimary" gutterBottom>
+            <Typography
+              variant="h3"
+              align="center"
+              color="textPrimary"
+              gutterBottom
+            >
               Payroll System
             </Typography>
           </Container>
         </div>
         <Container className={classes.cardGrid} maxWidth="md">
-
           <Grid container spacing={4}>
             {cards.map((card) => (
               <Grid item key={card} xs={12} sm={6} md={4}>
@@ -100,10 +104,10 @@ export default function About() {
                   />
                   <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
-                     Lester De Guzman
+                      Lester De Guzman
                     </Typography>
                     <Typography className={classes.cardContent2}>
-                      Backend 
+                      Backend Engineer & QA
                     </Typography>
                   </CardContent>
                 </Card>
@@ -123,7 +127,7 @@ export default function About() {
                       Jan Erickson Bataclan
                     </Typography>
                     <Typography className={classes.cardContent2}>
-                      Backend
+                      Frontend Engineer
                     </Typography>
                   </CardContent>
                 </Card>
@@ -140,10 +144,10 @@ export default function About() {
                   />
                   <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
-                     Albert John Tulop
+                      Albert John Tulop
                     </Typography>
                     <Typography className={classes.cardContent2}>
-                      Frontend Leader
+                      Frontend Engineer
                     </Typography>
                   </CardContent>
                 </Card>
@@ -160,10 +164,10 @@ export default function About() {
                   />
                   <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
-                     Jonas Andrei Ballarta
+                      Jonas Andrei Ballarta
                     </Typography>
                     <Typography className={classes.cardContent2}>
-                      Frontend
+                      Frontend Design
                     </Typography>
                   </CardContent>
                 </Card>
@@ -180,16 +184,15 @@ export default function About() {
                   />
                   <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
-                     Aerom Von Canimo
+                      Aerom Von Canimo
                     </Typography>
                     <Typography className={classes.cardContent2}>
-                      Frontend
+                      Frontend Design
                     </Typography>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
-
           </Grid>
         </Container>
       </main>
@@ -200,7 +203,12 @@ export default function About() {
             <img src={tupLogo} alt="logo" width="55" />
           </center>
         </Link>
-        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
+        <Typography
+          variant="subtitle1"
+          align="center"
+          color="textSecondary"
+          component="p"
+        >
           Site by BSCS-NS-3A
         </Typography>
         <Copyright />
@@ -212,12 +220,12 @@ export default function About() {
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+      {"Copyright © "}
       <Link color="inherit" href="https://tup-payroll.web.app/">
         TUP Payroll System
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
