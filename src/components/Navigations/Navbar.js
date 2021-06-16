@@ -18,6 +18,7 @@ import {
 import { Menu as MenuIcon } from "@material-ui/icons";
 
 import { drawerWidth } from "../../config/layout";
+import { green } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: '#bf1d38',
+    backgroundColor: "#bf1d38",
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -45,9 +46,14 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  purple: {
+    color: "#fff",
+    backgroundColor: "#384448",
+  },
 }));
 
-const Navbar = ({ isOpen, title, handleDrawerOpen }) => {
+const Navbar = ({ isOpen, title, handleDrawerOpen, admin }) => {
+  console.log(admin);
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -105,14 +111,12 @@ const Navbar = ({ isOpen, title, handleDrawerOpen }) => {
         </Typography>
 
         <IconButton
-          // className={classes.avatar}
-          size="small"
           ref={anchorRef}
           aria-controls={open ? "menu-list-grow" : undefined}
           aria-haspopup="true"
           onClick={handleAvatarToggle}
         >
-          <Avatar src="" alt="Jonas Andrei" />
+          <Avatar className={classes.purple} src="/" alt={admin} />
         </IconButton>
         <Popper
           open={open}
