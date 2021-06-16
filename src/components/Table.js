@@ -68,6 +68,11 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 5,
   },
   payslipButton: {
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+    color: "#fff",
     borderRadius: 15,
     marginRight: 5,
   },

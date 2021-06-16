@@ -351,8 +351,7 @@ const Payroll = ({ userToken }) => {
         </CSVLink>
       </Button>
 
-      <h1>OVERLOAD</h1>
-      <Paper>
+      <Paper style={{ marginTop: 20 }}>
         <Table
           lists={overload}
           filterFn={filterFn}
@@ -367,8 +366,7 @@ const Payroll = ({ userToken }) => {
         />
       </Paper>
 
-      <h1>REGULARS</h1>
-      <Paper>
+      <Paper style={{ marginTop: 20 }}>
         <Toolbar>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
