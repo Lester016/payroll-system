@@ -28,6 +28,11 @@ const Payroll = ({ userToken }) => {
       return items;
     },
   });
+  let [filterFnc, setFilterFnc] = useState({
+    fn: (items) => {
+      return items;
+    },
+  });
 
   const payroll = () => {
     setIsFetching(true);
@@ -227,30 +232,17 @@ const Payroll = ({ userToken }) => {
     pdf.setFont("times", "normal");
     pdf.line(250, 71, 285, 71);
 
-    //RENDER DEDUCTIONS
-    // data[key].employee.deductions.map((x) => {
-    //   let yPos = 90;
-    //   pdf.text(`${x.title}`, 10, yPos);
-    //   pdf.setFont("times", "normal");
-    //   pdf.text(`${x.amount}`, 40, yPos);
-    //   pdf.setFont("times", "bold");
-
-    //   yPos = yPos + 5;
-    //   return;
-    // })
     let yPos = 90;
-    for (let x = 0; x < data[key].employee.deductions.length; x++){
+    for (let x = 0; x < data[key].employee.deductions.length; x++) {
       yPos += 5;
 
       pdf.text(`${data[key].employee.deductions[x].title}`, 10, yPos);
-      pdf.text(`${data[key].employee.deductions[x].amount.toFixed(2)}`, 70, yPos);
+      pdf.text(
+        `${data[key].employee.deductions[x].amount.toFixed(2)}`,
+        70,
+        yPos
+      );
     }
-    // for (let counter of data[key].employee.deductions.title){
-
-    // }
-    
-    // pdf.text(`${data[key].employee.deductions.title}`, 10, 90);
-    // pdf.text(`${data[key].employee.deductions.amount}`, 40, 90);
 
     //RENDER SALARY
     pdf.setFont("times", "bold");
@@ -281,12 +273,12 @@ const Payroll = ({ userToken }) => {
 
     pdf.text("Prepared by: ", 10, 180);
     pdf.text("Certified correct: ", 120, 180);
-    
+
     pdf.setFont("times", "bold");
     pdf.text("CATALINA M. BAQUIRAN ", 40, 200);
     pdf.setFont("times", "normal");
     pdf.text("Administrative Officer IV ", 43, 205);
-    
+
     pdf.setFont("times", "bold");
     pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 150, 200);
     pdf.setFont("times", "normal");
@@ -322,32 +314,14 @@ const Payroll = ({ userToken }) => {
     console.log(csvObj);
   };
 
-  // console.log("Regulars: ", regulars);
-  // console.log("Overload: ", overload);
-
-  const monthValues = [
-    { 1: "January" },
-    { 2: "February" },
-    { 3: "March" },
-    { 4: "April" },
-    { 5: "May" },
-    { 6: "June" },
-    { 7: "July" },
-    { 8: "August" },
-    { 9: "September" },
-    { 10: "October" },
-    { 11: "November" },
-    { 12: "December" },
-  ];
-
   const handleDateChange = (date) => {
     setSelectedDate(date);
     currentDate = date.getMonth() + 1 + "/" + date.getFullYear();
-    // console.log(currentDate);
-
-    setFilterFn({
+    console.log(currentDate.length);
+    // console.log(isNaN(currentDate));
+    setFilterFnc({
       fn: (items) => {
-        if (currentDate === false) {
+        if (currentDate.length === 7) {
           return items;
         } else return items.filter((x) => x.period.includes(currentDate));
       },
@@ -395,18 +369,11 @@ const Payroll = ({ userToken }) => {
       <h1>REGULARS</h1>
       <Paper>
         <Toolbar>
-          {/* <Select
-            name="month"
-            label="Month"
-            value=""
-            onChange={handleMonthSelect}
-            options={monthValues}
-          /> */}
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
               margin="normal"
               id="date-picker-dialog"
-              label="Month Year Picker"
+              label="Select month/year"
               views={["year", "month"]}
               format="MM/yyyy"
               value={selectedDate}
@@ -419,13 +386,14 @@ const Payroll = ({ userToken }) => {
         </Toolbar>
         <Table
           lists={regulars}
-          filterFn={filterFn}
+          filterFn={filterFnc}
           columns={regularColumnHeads}
           propertiesOrder={regularColumnHeads
             .slice(0, 7)
             .map((item) => item.id)}
           isPayroll={true}
           isLoading={isFetching}
+          isOverload={false}
           printPayslip={handlePayslip} //Generate PDF functions
         />
       </Paper>
