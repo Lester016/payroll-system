@@ -258,11 +258,22 @@ const Payroll = ({ userToken }) => {
     pdf.setFont("times", "normal");
     pdf.line(250, 71, 285, 71);
 
+    pdf.line(10, 80, 200, 80);
+    pdf.setFont("times", "bold");
+    pdf.text("DEDUCTION BREAKDOWN", 15, 85);
+    pdf.setFont("times", "normal");
+    pdf.line(10, 90, 200, 90);
+    // X1, Y1, X2, Y2
+    pdf.line(10, 80, 10, 170);
+    pdf.line(200, 80, 200, 170);
+    pdf.line(10, 160, 200, 160);
+    pdf.line(10, 170, 200, 170);
+
     let yPos = 90;
     for (let x = 0; x < data[key].employee.deductions.length; x++) {
       yPos += 5;
 
-      pdf.text(`${data[key].employee.deductions[x].title}`, 10, yPos);
+      pdf.text(`${data[key].employee.deductions[x].title}`, 15, yPos);
       pdf.text(
         `${data[key].employee.deductions[x].amount.toFixed(2)}`,
         70,
@@ -272,7 +283,7 @@ const Payroll = ({ userToken }) => {
 
     //RENDER SALARY
     pdf.setFont("times", "bold");
-    pdf.text("Salary: ", 10, 165);
+    pdf.text("SALARY ", 15, 165);
     pdf.text(`1st Half: ${data[key].firstHalf.toFixed(2)}`, 50, 165);
     //1sthalf salary
     pdf.text(`2nd Half: ${data[key].secondHalf.toFixed(2)}`, 140, 165);
