@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import NumberFormat from "react-number-format";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Box,
@@ -111,11 +112,21 @@ const Row = ({
         </TableCell>
         {columns.map((item) => {
           if (item.id === "deductionAmount") {
-            return <TableCell>{getDeductionsAmount(row.deductions)}</TableCell>;
+            return (
+              <TableCell>
+                <NumberFormat
+                  value={getDeductionsAmount(row.deductions)}
+                  name={"amount"}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix="₱"
+                />
+              </TableCell>
+            );
           } else if (item.id === "name") {
             return <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>;
           } else if (item.id === "position") {
-            return <TableCell>{row[item.id].title}</TableCell>
+            return <TableCell>{row[item.id].title}</TableCell>;
           } else if (item.id === "options") {
             return (
               <TableCell>
