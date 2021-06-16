@@ -285,7 +285,7 @@ const Employees = ({ userToken }) => {
 
   return (
     <>
-      <Container component={Paper}>
+      <Container component={Paper} className={classes.paper}>
         <Toolbar>
           <TextField
             label="Search..."

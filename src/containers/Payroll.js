@@ -4,8 +4,11 @@ import { connect } from "react-redux";
 import jsPDF from "jspdf";
 import { CSVLink } from "react-csv";
 import { Button, Paper, Toolbar } from "@material-ui/core";
-import { DatePicker } from "@material-ui/pickers";
-
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import Table from "../components/Table";
 import Select from "../components/Select";
 import TransitionsModal from "../components/Modal";
@@ -17,9 +20,10 @@ const Payroll = ({ userToken }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  let [currentDate] = useState();
   const regulars = [];
   const overload = [];
-  const [filterFn, setFilterFn] = useState({
+  let [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
@@ -158,7 +162,7 @@ const Payroll = ({ userToken }) => {
   ];
 
   function handlePayslip(key, isPartTime) {
-    const pdf = new jsPDF("a6");
+    const pdf = new jsPDF("landscape");
     console.log(payrollData);
 
     let data;
@@ -173,18 +177,19 @@ const Payroll = ({ userToken }) => {
     // HEADER
     pdf.setFont("times", "bold");
     pdf.setFontSize(12);
-    pdf.text("TUP MANILA", 90, 10);
-    pdf.text("PAYROLL PAYMENT SLIP", 75, 15);
-    pdf.text(`For the period of ${date}`, 70, 20);
+    pdf.text("TUP MANILA", 140, 10);
+    pdf.text("PAYROLL PAYMENT SLIP", 125, 15);
+    pdf.text(`For the period of ${date}`, 130, 20);
     pdf.setFontSize(12);
     pdf.setFont("times", "normal");
 
     // BODY
     pdf.setFontSize(10);
 
-     //RENDERS COLLEGES
-     pdf.text("College", 10, 45);
-     pdf.setFont("times", "normal");
+    //RENDERS COLLEGES
+    pdf.text("College", 10, 45);
+    pdf.setFont("times", "normal");
+    pdf.text(data[key].employee.college, 40, 45);
 
     // RENDERS EMPLOYEE ID
     pdf.text("Employee No.", 10, 50);
@@ -193,9 +198,9 @@ const Payroll = ({ userToken }) => {
     pdf.setFont("times", "normal");
 
     // RENDERS POSITION
-    pdf.text("Position: ", 100, 50);
+    pdf.text("Position: ", 145, 50);
     pdf.setFont("times", "bold");
-    pdf.text(data[key].employee.position.title, 115, 50);
+    pdf.text(data[key].employee.position.title, 160, 50);
     pdf.setFont("times", "normal");
 
     // RENDERS EMPLOYEE NAME
@@ -211,17 +216,17 @@ const Payroll = ({ userToken }) => {
     //RENDERS BASIC SALARY
     pdf.text("Basic Salary", 10, 65);
     pdf.setFont("times", "normal");
+    pdf.text(`${data[key].employee.salary.toFixed(2)}`, 265, 65);
 
     // RENDERS GROSS PAY
     pdf.text("Gross Amount Due ", 10, 70);
 
-    pdf.line(175, 66.5, 200, 66.5);
+    pdf.line(250, 66.5, 285, 66.5);
     pdf.setFont("times", "bold");
-    pdf.text(`${data[key].grossAmount.toFixed(2)}`, 185, 70); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].grossAmount.toFixed(2)}`, 265, 70); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
-    pdf.line(175, 71, 200, 71);
+    pdf.line(250, 71, 285, 71);
 
-    
     //RENDER DEDUCTIONS
     // data[key].employee.deductions.map((x) => {
     //   let yPos = 90;
@@ -233,44 +238,59 @@ const Payroll = ({ userToken }) => {
     //   yPos = yPos + 5;
     //   return;
     // })
-    for (let counter of data[key].employee.deductions.title){
+    let yPos = 90;
+    for (let x = 0; x < data[key].employee.deductions.length; x++){
+      yPos += 5;
 
+      pdf.text(`${data[key].employee.deductions[x].title}`, 10, yPos);
+      pdf.text(`${data[key].employee.deductions[x].amount.toFixed(2)}`, 70, yPos);
     }
+    // for (let counter of data[key].employee.deductions.title){
+
+    // }
     
+    // pdf.text(`${data[key].employee.deductions.title}`, 10, 90);
+    // pdf.text(`${data[key].employee.deductions.amount}`, 40, 90);
+
     //RENDER SALARY
-    pdf.text("Salary: ", 10, 208);
-    pdf.text("1st Half", 30, 208);
+    pdf.setFont("times", "bold");
+    pdf.text("Salary: ", 10, 165);
+    pdf.text("1st Half", 50, 165);
     //1sthalf salary
-    pdf.text("2nd Half", 80, 208)
+    pdf.text("2nd Half", 140, 165);
     //2ndhalf salary
 
     // RENDERS DEDUCTION
-    pdf.text("Total Deductions ", 140, 203);
+    pdf.setFont("times", "normal");
+    pdf.text("Total Deductions ", 225, 160);
     pdf.setFont("times", "bold");
     // pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
-    pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 185, 203);
+    pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 265, 160);
     pdf.setFont("times", "normal");
 
-    pdf.line(140, 204, 200, 204);
+    pdf.line(225, 161, 285, 161);
 
     // RENDERS NET PAY
-    pdf.text("Net Amount ", 140, 208);
+    pdf.text("Net Amount ", 225, 165);
     pdf.setFont("times", "bold");
-    pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 185, 208); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 265, 165); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
 
     // FOOTER
     pdf.setFontSize(12);
+
+    pdf.text("Prepared by: ", 10, 180);
+    pdf.text("Certified correct: ", 120, 180);
+    
     pdf.setFont("times", "bold");
-
-    pdf.text("Prepared by: ", 10, 220);
-    pdf.text("Certified correct: ", 100, 220);
-
-    pdf.text("CATALINA M. BAQUIRAN ", 40, 245);
-    pdf.text("Administrative Officer IV ", 43, 250);
-
-    pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 130, 245);
-    pdf.text("Head, HRMS ", 155, 250);
+    pdf.text("CATALINA M. BAQUIRAN ", 40, 200);
+    pdf.setFont("times", "normal");
+    pdf.text("Administrative Officer IV ", 43, 205);
+    
+    pdf.setFont("times", "bold");
+    pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 150, 200);
+    pdf.setFont("times", "normal");
+    pdf.text("Head, HRMS ", 175, 205);
 
     // END OF PDF FILE
     pdf.save("payroll"); //Prints the pdf
@@ -306,28 +326,32 @@ const Payroll = ({ userToken }) => {
   // console.log("Overload: ", overload);
 
   const monthValues = [
-    // { 1: "January" },
-    // { 2: "February" },
-    // { 3: "March" },
-    // { 4: "April" },
-    // { 5: "May" },
-    // { 6: "June" },
-    // { 7: "July" },
-    // { 8: "August" },
-    // { 9: "September" },
-    // { 10: "October" },
-    // { 11: "November" },
-    // { 12: "December" },
-    "January",
-    "February",
-    "March",
-    "April",
+    { 1: "January" },
+    { 2: "February" },
+    { 3: "March" },
+    { 4: "April" },
+    { 5: "May" },
+    { 6: "June" },
+    { 7: "July" },
+    { 8: "August" },
+    { 9: "September" },
+    { 10: "October" },
+    { 11: "November" },
+    { 12: "December" },
   ];
 
   const handleDateChange = (date) => {
-    // setSelectedDate(date);
     setSelectedDate(date);
-    console.log(`${selectedDate.getMonth()}/${selectedDate.getFullYear()}`);
+    currentDate = date.getMonth() + 1 + "/" + date.getFullYear();
+    // console.log(currentDate);
+
+    setFilterFn({
+      fn: (items) => {
+        if (currentDate === false) {
+          return items;
+        } else return items.filter((x) => x.period.includes(currentDate));
+      },
+    });
   };
 
   return (
@@ -378,15 +402,20 @@ const Payroll = ({ userToken }) => {
             onChange={handleMonthSelect}
             options={monthValues}
           /> */}
-          <DatePicker
-            variant="inline"
-            openTo="year"
-            views={["year", "month"]}
-            label="Year and Month"
-            helperText="Start from year selection"
-            value={selectedDate}
-            onChange={handleDateChange}
-          />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              margin="normal"
+              id="date-picker-dialog"
+              label="Month Year Picker"
+              views={["year", "month"]}
+              format="MM/yyyy"
+              value={selectedDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                "aria-label": "change date",
+              }}
+            />
+          </MuiPickersUtilsProvider>
         </Toolbar>
         <Table
           lists={regulars}
