@@ -258,17 +258,22 @@ const Payroll = ({ userToken }) => {
     pdf.setFont("times", "normal");
     pdf.line(250, 71, 285, 71);
 
+    // DEDUCTION TABLE LAYOUT
     pdf.line(10, 80, 200, 80);
     pdf.setFont("times", "bold");
     pdf.text("DEDUCTION BREAKDOWN", 15, 85);
     pdf.setFont("times", "normal");
     pdf.line(10, 90, 200, 90);
-    // X1, Y1, X2, Y2
     pdf.line(10, 80, 10, 170);
     pdf.line(200, 80, 200, 170);
     pdf.line(10, 160, 200, 160);
     pdf.line(10, 170, 200, 170);
 
+    //renders withholdingTax
+    pdf.text("With Holding Tax: ", 140, 95);
+    pdf.text(`${data[key].withholdingTax}`, 175, 95);
+
+    // Dynamically positioning the deductions
     let yPos = 90;
     for (let x = 0; x < data[key].employee.deductions.length; x++) {
       yPos += 5;
