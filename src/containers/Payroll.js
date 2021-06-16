@@ -1,39 +1,51 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import jsPDF from "jspdf";
 import { CSVLink } from "react-csv";
-import { Button, Paper, Toolbar } from "@material-ui/core";
+import jsPDF from "jspdf";
+import DateFnsUtils from "@date-io/date-fns";
+
+import { Button, Paper, Toolbar, Fab, makeStyles } from "@material-ui/core";
+import { Add as AddIcon } from "@material-ui/icons";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+
 import Table from "../components/Table";
-import Select from "../components/Select";
 import TransitionsModal from "../components/Modal";
 
 const Payroll = ({ userToken }) => {
-  let [csvObj, setcsvObj] = useState();
   const [payrollData, setPayrollData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  let [currentDate] = useState();
   const regulars = [];
   const overload = [];
-  let [filterFn, setFilterFn] = useState({
+  let [csvObj, setcsvObj] = useState();
+  let [currentDate] = useState();
+  const [filterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
-  let [filterFnc, setFilterFnc] = useState({
+  const [filterFnc, setFilterFnc] = useState({
     fn: (items) => {
       return items;
     },
   });
 
+  const useStyles = makeStyles((theme) => ({
+    createbutton: {
+      backgroundColor: "#bf1d38",
+      "&:hover": {
+        backgroundColor: "#a6172f",
+      },
+    },
+  }));
+
+  const classes = useStyles();
   const payroll = () => {
     setIsFetching(true);
     axios
@@ -331,27 +343,28 @@ const Payroll = ({ userToken }) => {
 
   return (
     <div style={{ textAlign: "center" }}>
-      <Button
-        size="large"
-        variant="outlined"
-        component="span"
-        onClick={handleOpen}
-      >
-        Generate Payroll
-      </Button>
-
-      <Button>
-        <CSVLink
-          data={csvData}
-          filename={"overload.csv"}
-          className="btn btn-primary"
-          target="_blank"
-        >
-          Export Overload CSV
-        </CSVLink>
-      </Button>
-
       <Paper style={{ marginTop: 20 }}>
+        <Toolbar>
+          <Fab
+            size="medium"
+            onClick={handleOpen}
+            color="primary"
+            className={classes.createbutton}
+          >
+            <AddIcon />
+          </Fab>
+
+          <Button>
+            <CSVLink
+              data={csvData}
+              filename={"overload.csv"}
+              className="btn btn-primary"
+              target="_blank"
+            >
+              Export Overload CSV
+            </CSVLink>
+          </Button>
+        </Toolbar>
         <Table
           lists={overload}
           filterFn={filterFn}
@@ -399,12 +412,13 @@ const Payroll = ({ userToken }) => {
       <TransitionsModal
         handleClose={handleClose}
         isModalOpen={isModalOpen}
-        title="/ Select File"
+        title=" Payroll"
       >
         <center>
           <form>
             <input
               type="file"
+              accept=".csv"
               name="file"
               onChange={(e) => handleFile(e)}
             ></input>
