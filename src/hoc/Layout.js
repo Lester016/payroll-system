@@ -25,7 +25,6 @@ const titleBar = {
   "/payroll": "Payroll",
   "/employees": "Employees",
   "/attendance": "Attendance",
-  "/help": "Help",
   "/about": "About",
 };
 
@@ -76,7 +75,7 @@ export default function Layout({ children }) {
       <NavDrawer handleDrawerClose={handleDrawerClose} isOpen={open}>
         {/* Navigation Links */}
         <List className={classes.button}>
-          <NavItem 
+          <NavItem
             route={"/"}
             title={"Dashboard"}
             IconComponent={DashboardIcon}
@@ -105,17 +104,7 @@ export default function Layout({ children }) {
           />
 
           <Divider />
-
-          <NavItem
-            route={"/help"}
-            title={"Help"}
-            IconComponent={HelpIcon}
-          />
-          <NavItem
-            route={"/about"}
-            title={"About"}
-            IconComponent={InfoIcon}
-          />
+          <NavItem route={"/about"} title={"About"} IconComponent={InfoIcon} />
         </List>
       </NavDrawer>
 
