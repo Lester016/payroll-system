@@ -20,7 +20,6 @@ import {
 import CollapsibleTable from "../components/CollapsibleTable/CollapsibleTable";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
-import NumberInputComponent from "../components/NumberInputComponent";
 
 const Position = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

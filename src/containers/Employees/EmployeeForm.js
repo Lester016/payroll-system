@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import NumberFormat from "react-number-format";
 import { KeyboardDatePicker } from "@material-ui/pickers";
@@ -17,7 +17,6 @@ import TextField from "../../components/TextField";
 import RadioGroup from "../../components/RadioGroup";
 import Select from "../../components/Select";
 import Snack from "../../components/Snack";
-import NumberInputComponent from "../../components/NumberInputComponent";
 
 const useStyle = makeStyles((theme) => ({
   root: {
@@ -227,6 +226,8 @@ const EmployeeForm = ({
         Authorization: `Bearer ${userToken}`,
       },
     };
+
+    console.log(userToken);
 
     let employeeId = `${values.campus.idx}${values.college.idx}${zeroPad(
       values.department.idx,
