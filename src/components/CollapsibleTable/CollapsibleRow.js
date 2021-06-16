@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import NumberFormat from "react-number-format";
 import { IconButton, TableCell, TableRow, Input } from "@material-ui/core/";
 import {
   Edit as EditIcon,
@@ -23,16 +23,6 @@ const CollapsibleRow = ({
     amount: tab === "positions" ? row : row.amount,
   });
 
-  const romanize = (num) => {
-    if (isNaN(num)) return NaN;
-    var digits = String(+num).split(""),
-      key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM","","X","XX","XXX","XL","L","LX","LXX","LXXX","XC","","I","II","III","IV","V","VI","VII","VIII","IX",],
-      roman = "",
-      i = 3;
-    while (i--) roman = (key[+digits.pop() + i * 10] || "") + roman;
-    return Array(+digits.join("") + 1).join("M") + roman;
-  };
-
   const handleIsEditing = () => {
     setIsEditMode(!isEditMode);
     setInputValues({
@@ -43,13 +33,17 @@ const CollapsibleRow = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(value);
     setInputValues({ ...inputValues, [name]: value });
   };
 
   const handleSubmit = () => {
     setIsEditMode(false);
-    if (tab === "deductions") {onSubmit(inputValues, parentId, row._id, true);}
-    else if (tab === "positions") {onSubmitCollapsibleRow(parentId, idx, inputValues.amount)}
+    if (tab === "deductions") {
+      onSubmit(inputValues, parentId, row._id, true);
+    } else if (tab === "positions") {
+      onSubmitCollapsibleRow(parentId, idx, inputValues.amount);
+    }
   };
 
   return (
@@ -72,8 +66,8 @@ const CollapsibleRow = ({
               </IconButton>
               {tab !== "positions" && (
                 <IconButton
-                aria-label="delete"
-                onClick={() => onDeleteRow(parentId, row._id)}
+                  aria-label="delete"
+                  onClick={() => onDeleteRow(parentId, row._id)}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -90,25 +84,43 @@ const CollapsibleRow = ({
                 onChange={handleChange}
               />
             ) : (
-              `Step ${romanize(idx + 1)}`
+              `Step ${idx + 1}`
             )
           ) : tab === "positions" ? (
-            `Step ${romanize(idx + 1)}`
+            `Step ${idx + 1}`
           ) : (
             row.title
           )}
         </TableCell>
         <TableCell>
           {isEditMode ? (
-            <Input
+            <NumberFormat
               value={inputValues.amount}
               name={"amount"}
-              onChange={handleChange}
+              displayType={"input"}
+              thousandSeparator={true}
+              prefix="₱"
+              isNumericString="true"
+              customInput={Input}
+              onValueChange={(values) => {
+                const { value } = values;
+                setInputValues({ ...inputValues, amount: value });
+              }}
             />
           ) : tab === "positions" ? (
-            row
+            <NumberFormat
+              value={row}
+              displayType={"text"}
+              thousandSeparator={true}
+              prefix="₱"
+            />
           ) : (
-            row.amount
+            <NumberFormat
+              value={row.amount}
+              displayType={"text"}
+              thousandSeparator={true}
+              prefix="₱"
+            />
           )}
         </TableCell>
       </TableRow>
