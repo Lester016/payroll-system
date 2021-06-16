@@ -166,7 +166,7 @@ const Payroll = ({ userToken }) => {
     },
   ];
 
-  function handlePayslip(key, isPartTime) {
+  const handlePayslip = (key, isPartTime) => {
     const pdf = new jsPDF("landscape");
     console.log(payrollData);
 
@@ -247,16 +247,15 @@ const Payroll = ({ userToken }) => {
     //RENDER SALARY
     pdf.setFont("times", "bold");
     pdf.text("Salary: ", 10, 165);
-    pdf.text("1st Half", 50, 165);
+    pdf.text(`1st Half: ${data[key].firstHalf.toFixed(2)}`, 50, 165);
     //1sthalf salary
-    pdf.text("2nd Half", 140, 165);
+    pdf.text(`2nd Half: ${data[key].secondHalf.toFixed(2)}`, 140, 165);
     //2ndhalf salary
 
     // RENDERS DEDUCTION
     pdf.setFont("times", "normal");
     pdf.text("Total Deductions ", 225, 160);
     pdf.setFont("times", "bold");
-    // pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
     pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 265, 160);
     pdf.setFont("times", "normal");
 
@@ -286,7 +285,7 @@ const Payroll = ({ userToken }) => {
 
     // END OF PDF FILE
     pdf.save("payroll"); //Prints the pdf
-  }
+  };
 
   let csvData = overload.map((obj) => ({
     employeeId: '=""' + obj.employee.employeeId + '""',
@@ -300,6 +299,7 @@ const Payroll = ({ userToken }) => {
     netAmount: obj.overloadNetAmount,
   }));
 
+  // HANDLES
   const handleOpen = () => {
     setIsModalOpen(true);
   };
@@ -317,11 +317,12 @@ const Payroll = ({ userToken }) => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
     currentDate = date.getMonth() + 1 + "/" + date.getFullYear();
-    console.log(currentDate.length);
-    // console.log(isNaN(currentDate));
+    // console.log(currentDate.length); //For debugging, checks if the currentDate is NaN if its length is equal to 7.
+
     setFilterFnc({
       fn: (items) => {
         if (currentDate.length === 7) {
+          //If the currentDate is NaN, it's length === 7. So if it's NaN, just return the original items.
           return items;
         } else return items.filter((x) => x.period.includes(currentDate));
       },

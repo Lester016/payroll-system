@@ -92,7 +92,6 @@ const AppTable = ({
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
   const [order, setOrder] = useState();
   const [orderBy, setOrderBy] = useState();
-  let filter;
   // Convert object to array then reverse to get latest input
   const reversedObjectToArray = () => {
     const result = [];
