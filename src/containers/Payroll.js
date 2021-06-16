@@ -178,6 +178,20 @@ const Payroll = ({ userToken }) => {
     },
   ];
 
+  let csvData = overload.map((obj) => ({
+    employeeId: '=""' + obj.employee.employeeId + '""',
+    firstName: obj.employee.firstName,
+    lastName: obj.employee.lastName,
+    position: obj.employee.position.title,
+    monthOverload: obj.monthOverload,
+    rate: obj.employee.position.rate,
+    amount: obj.amount,
+    withTax: obj.withTax,
+    netAmount: obj.overloadNetAmount,
+  }));
+
+  /* ----- HANDLES ----- */
+  //Print handle
   const handlePayslip = (key, isPartTime) => {
     const pdf = new jsPDF("landscape");
     console.log(payrollData);
@@ -299,19 +313,6 @@ const Payroll = ({ userToken }) => {
     pdf.save("payroll"); //Prints the pdf
   };
 
-  let csvData = overload.map((obj) => ({
-    employeeId: '=""' + obj.employee.employeeId + '""',
-    firstName: obj.employee.firstName,
-    lastName: obj.employee.lastName,
-    position: obj.employee.position.title,
-    monthOverload: obj.monthOverload,
-    rate: obj.employee.position.rate,
-    amount: obj.amount,
-    withTax: obj.withTax,
-    netAmount: obj.overloadNetAmount,
-  }));
-
-  // HANDLES
   const handleOpen = () => {
     setIsModalOpen(true);
   };
