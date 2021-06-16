@@ -83,7 +83,6 @@ const AppTable = ({
   onDeleteRow,
   onEditRow,
   filterFn,
-  filterFnc,
   columns,
   propertiesOrder,
   isLoading,
