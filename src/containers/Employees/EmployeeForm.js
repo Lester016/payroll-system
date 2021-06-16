@@ -156,6 +156,7 @@ const EmployeeForm = ({
       ...values,
       positionIdx: foundIdx,
       positionTitle: positions[foundIdx].title,
+      salary: values.stepIdx !== -1 && (positions[foundIdx].steps[values.stepIdx - 1])
     });
   };
 
