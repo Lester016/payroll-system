@@ -169,89 +169,8 @@ const Deductions = ({ userToken }) => {
   };
 
   /* ----- HANDLES ----- */
-  // Submit handle
-  const handleSubmit1 = (e) => {
-    if (validate()) {
-      setIsLoading(true);
-      if (isUpdating === null) {
-        //Submit new deduction
-        axios
-          .post(
-            "https://tup-payroll-default-rtdb.firebaseio.com/deductions.json",
-            {
-              title: deductionTitle,
-              amount: parseFloat(amount),
-            }
-          )
-          .then((response) => {
-            // Submit the deduction to the existings deductions list.
-            setDeductions({
-              ...deductions,
-              [response.data.name]: {
-                title: deductionTitle,
-                amount: parseFloat(amount),
-              },
-            });
-            setIsLoading(false);
-
-            // Close modal
-            handleClose();
-
-            // Open snackbar
-            setSnackMessage("Success submit!");
-            handleSnackOpen();
-          })
-          .catch((error) => {
-            // Log the error if found || catched.
-            console.log(error);
-            setIsLoading(false);
-
-            // Close modal
-            handleClose();
-          });
-        e.preventDefault();
-      } else {
-        //Edit existing deduction
-        axios
-          .put(
-            `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${isUpdating}.json`,
-            {
-              title: deductionTitle,
-              amount: parseFloat(amount),
-            }
-          )
-          .then(() => {
-            // Update the deduction to the existings deductions list.
-            setDeductions({
-              ...deductions,
-              [isUpdating]: {
-                title: deductionTitle,
-                amount: amount,
-              },
-            });
-            setIsLoading(false);
-
-            // Close modal
-            handleClose();
-
-            // Open snackbar
-            setSnackMessage("Success edit!");
-            handleSnackOpen();
-          })
-          .catch((error) => {
-            // Log the error if found || catched.
-            console.log(error);
-            setIsLoading(false);
-
-            // Close modal
-            handleClose();
-          });
-      }
-    }
-  };
-
+  // Submit Handle
   const handleSubmit = (inputValues, employee_Id, deduction_Id, isEdit) => {
-    console.log(inputValues);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -273,9 +192,8 @@ const Deductions = ({ userToken }) => {
       putItem[deductionIndex] = {
         _id: deduction_Id,
         title: inputValues.title,
-        amount: inputValues.amount,
+        amount: parseFloat(inputValues.amount),
       };
-      console.log("edit");
     } else {
       putItem.unshift(inputValues);
     }
