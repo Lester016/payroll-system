@@ -1,12 +1,41 @@
 import React, { useState } from "react";
 import NumberFormat from "react-number-format";
-import { IconButton, TableCell, TableRow, Input } from "@material-ui/core/";
+import { IconButton, TableCell, TableRow, Input, makeStyles } from "@material-ui/core/";
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Done as DoneIcon,
   Cancel as CancelIcon,
 } from "@material-ui/icons";
+
+const useStyles = makeStyles((theme) => ({
+  editButton: {
+    color: "#009acd",
+    "&:hover": {
+      color: "#00688b",
+    },
+  },
+  doneButton: {
+    color: "#00cd00",
+    "&:hover": {
+      color: "#00b300",
+    },
+  },
+  cancelButton: {
+    color: "#ff0000",
+    "&:hover": {
+      color: "#cc0000",
+    },
+  },
+  titleFont: {
+    fontWeight: "bold",
+  },deleteButton: {
+    color: "#000",
+    "&:hover": {
+      color: "#000",
+    },
+  },
+}));
 
 const CollapsibleRow = ({
   row,
@@ -46,26 +75,28 @@ const CollapsibleRow = ({
     }
   };
 
+  const classes = useStyles();
+
   return (
     <React.Fragment>
       <TableRow key={row.title}>
         <TableCell>
           {isEditMode ? (
             <>
-              <IconButton aria-label="done" onClick={handleSubmit}>
+              <IconButton aria-label="done" onClick={handleSubmit} className={classes.doneButton}>
                 <DoneIcon />
               </IconButton>
-              <IconButton aria-label="cancel" onClick={handleIsEditing}>
+              <IconButton aria-label="cancel" onClick={handleIsEditing} className={classes.cancelButton}>
                 <CancelIcon />
               </IconButton>
             </>
           ) : (
             <>
-              <IconButton aria-label="edit" onClick={handleIsEditing}>
+              <IconButton aria-label="edit" onClick={handleIsEditing} className={classes.editButton}>
                 <EditIcon />
               </IconButton>
               {tab !== "positions" && (
-                <IconButton
+                <IconButton className={classes.deleteButton}
                   aria-label="delete"
                   onClick={() => onDeleteRow(parentId, row._id)}
                 >
