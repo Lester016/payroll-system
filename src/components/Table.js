@@ -19,7 +19,7 @@ import { Edit, Delete, Print } from "@material-ui/icons";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.text.secondary,
+    backgroundColor: "#384448",
     color: theme.palette.common.white,
   },
   body: {
@@ -67,6 +67,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 15,
     marginRight: 5,
   },
+  payslipButton: {
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+    color: "#fff",
+    borderRadius: 15,
+    marginRight: 5,
+  },
 }));
 
 const AppTable = ({
@@ -87,7 +96,6 @@ const AppTable = ({
   const [rowsPerPage, setRowsPerPage] = useState(pages[page]);
   const [order, setOrder] = useState();
   const [orderBy, setOrderBy] = useState();
-
   // Convert object to array then reverse to get latest input
   const reversedObjectToArray = () => {
     const result = [];
@@ -195,7 +203,7 @@ const AppTable = ({
             ) : column === "rates" ? (
               <StyledTableCell key={id}>
                 <NumberFormat
-                  value={`${item["employee"].position.rate}`}
+                  value={`${item["employee"].position.rate.toFixed(2)}`}
                   displayType={"text"}
                   thousandSeparator={true}
                 />
@@ -249,6 +257,7 @@ const AppTable = ({
               ) : (
                 <div>
                   <Button
+                    className={classes.payslipButton}
                     size="small"
                     variant="contained"
                     color="primary"

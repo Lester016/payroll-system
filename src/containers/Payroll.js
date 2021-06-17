@@ -1,43 +1,51 @@
 import axios from "axios";
-import React, { useState, useEffect, createRef } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import jsPDF from "jspdf";
-import { CSVReader } from "react-papaparse";
 import { CSVLink } from "react-csv";
-import { Button, Paper } from "@material-ui/core";
+import jsPDF from "jspdf";
+import DateFnsUtils from "@date-io/date-fns";
 
-// COMPONENTS
+import { Button, Paper, Toolbar, Fab, makeStyles } from "@material-ui/core";
+import { Add as AddIcon } from "@material-ui/icons";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 
 const Payroll = ({ userToken }) => {
-  const [csvObj, setcsvObj] = useState([]);
-  const [isFetching, setIsFetching] = useState(false);
   const [payrollData, setPayrollData] = useState([]);
-
+  const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMsg, setErrorMsg] = useState();
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const regulars = [];
+  const overload = [];
+  let [csvObj, setcsvObj] = useState();
+  let [currentDate] = useState();
   const [filterFn] = useState({
     fn: (items) => {
       return items;
     },
   });
+  const [filterFnc, setFilterFnc] = useState({
+    fn: (items) => {
+      return items;
+    },
+  });
 
-  const regulars = [];
-
-  const whenPostingToOurAPI = () => {
-    const config = {
-      headers: {
-        "Content-Type": "text/csv",
-        Authorization: `Bearer ${userToken}`,
+  const useStyles = makeStyles((theme) => ({
+    createbutton: {
+      backgroundColor: "#bf1d38",
+      "&:hover": {
+        backgroundColor: "#a6172f",
       },
-    };
-    axios.post(
-      `https://tup-payroll.herokuapp.com/api/payroll`,
-      `you data here`,
-      config
-    );
-  };
+    },
+  }));
 
+  const classes = useStyles();
   const payroll = () => {
     setIsFetching(true);
     axios
@@ -56,11 +64,43 @@ const Payroll = ({ userToken }) => {
     payroll();
   }, []);
 
-  //Put the regular employee to regular[]
+  const addImport = () => {
+    if (!csvObj) {
+      console.log("Select file first.");
+    } else {
+      const formData = new FormData();
+
+      formData.append("file", csvObj);
+      setIsFetching(true);
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${userToken}`,
+        },
+      };
+      axios
+        .post("https://tup-payroll.herokuapp.com/api/payroll", formData, config)
+        .then((response) => {
+          console.log(response);
+          setPayrollData(response.data);
+          setIsFetching(false);
+        })
+        .catch((error) => {
+          setIsFetching(false);
+          // console.log(error.response.data.message);
+          setErrorMsg(error.response.data.message);
+        });
+    }
+  };
+
+  //Put the regular employee to regulars[]
   for (let x of payrollData) {
-    if (x.employee !== null) {
+    if (x.employee !== null && x.employee !== undefined) {
       if (x.employee.isPartTime === false) {
         regulars.push(x);
+      }
+      if (x.monthOverload !== null && x.monthOverload !== undefined) {
+        overload.push(x);
       }
     }
   }
@@ -85,7 +125,7 @@ const Payroll = ({ userToken }) => {
     },
     {
       id: "rates",
-      label: "rate",
+      label: "Rate",
     },
     {
       id: "amount",
@@ -138,8 +178,22 @@ const Payroll = ({ userToken }) => {
     },
   ];
 
-  function handlePayslip(key, isPartTime) {
-    const pdf = new jsPDF("a6");
+  let csvData = overload.map((obj) => ({
+    employeeId: '=""' + obj.employee.employeeId + '""',
+    firstName: obj.employee.firstName,
+    lastName: obj.employee.lastName,
+    position: obj.employee.position.title,
+    monthOverload: obj.monthOverload,
+    rate: obj.employee.position.rate,
+    amount: obj.amount,
+    withTax: obj.withTax,
+    netAmount: obj.overloadNetAmount,
+  }));
+
+  /* ----- HANDLES ----- */
+  //Print handle
+  const handlePayslip = (key, isPartTime) => {
+    const pdf = new jsPDF("landscape");
     console.log(payrollData);
 
     let data;
@@ -154,14 +208,19 @@ const Payroll = ({ userToken }) => {
     // HEADER
     pdf.setFont("times", "bold");
     pdf.setFontSize(12);
-    pdf.text("TUP MANILA", 90, 10);
-    pdf.text("PAYROLL PAYMENT SLIP", 75, 15);
-    pdf.text(`For the period of ${date}`, 70, 20);
+    pdf.text("TUP MANILA", 140, 10);
+    pdf.text("PAYROLL PAYMENT SLIP", 125, 15);
+    pdf.text(`For the period of ${date}`, 130, 20);
     pdf.setFontSize(12);
     pdf.setFont("times", "normal");
 
     // BODY
     pdf.setFontSize(10);
+
+    //RENDERS COLLEGES
+    pdf.text("College", 10, 45);
+    pdf.setFont("times", "normal");
+    pdf.text(data[key].employee.college, 40, 45);
 
     // RENDERS EMPLOYEE ID
     pdf.text("Employee No.", 10, 50);
@@ -170,9 +229,9 @@ const Payroll = ({ userToken }) => {
     pdf.setFont("times", "normal");
 
     // RENDERS POSITION
-    pdf.text("Position: ", 100, 50);
+    pdf.text("Position: ", 145, 50);
     pdf.setFont("times", "bold");
-    pdf.text(data[key].employee.position.title, 115, 50);
+    pdf.text(data[key].employee.position.title, 160, 50);
     pdf.setFont("times", "normal");
 
     // RENDERS EMPLOYEE NAME
@@ -185,142 +244,146 @@ const Payroll = ({ userToken }) => {
     );
     pdf.setFont("times", "normal");
 
+    //RENDERS BASIC SALARY
+    pdf.text("Basic Salary", 10, 65);
+    pdf.setFont("times", "normal");
+    pdf.text(`${data[key].employee.salary.toFixed(2)}`, 265, 65);
+
     // RENDERS GROSS PAY
     pdf.text("Gross Amount Due ", 10, 70);
 
-    pdf.line(175, 65, 200, 65);
+    pdf.line(250, 66.5, 285, 66.5);
     pdf.setFont("times", "bold");
-    pdf.text(`${data[key].grossAmount.toFixed(2)}`, 185, 70); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].grossAmount.toFixed(2)}`, 265, 70); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
-    pdf.line(175, 73, 200, 73);
+    pdf.line(250, 71, 285, 71);
+
+    // DEDUCTION TABLE LAYOUT
+    pdf.line(10, 80, 200, 80);
+    pdf.setFont("times", "bold");
+    pdf.text("DEDUCTION BREAKDOWN", 15, 85);
+    pdf.setFont("times", "normal");
+    pdf.line(10, 90, 200, 90);
+    pdf.line(10, 80, 10, 170);
+    pdf.line(200, 80, 200, 170);
+    pdf.line(10, 160, 200, 160);
+    pdf.line(10, 170, 200, 170);
+
+    //renders withholdingTax
+    pdf.text("With Holding Tax: ", 140, 95);
+    pdf.text(`${data[key].withholdingTax}`, 175, 95);
+
+    // Dynamically positioning the deductions
+    let yPos = 90;
+    for (let x = 0; x < data[key].employee.deductions.length; x++) {
+      yPos += 5;
+
+      pdf.text(`${data[key].employee.deductions[x].title}`, 15, yPos);
+      pdf.text(
+        `${data[key].employee.deductions[x].amount.toFixed(2)}`,
+        70,
+        yPos
+      );
+    }
+
+    //RENDER SALARY
+    pdf.setFont("times", "bold");
+    pdf.text("SALARY ", 15, 165);
+    pdf.text(`1st Half: ${data[key].firstHalf.toFixed(2)}`, 50, 165);
+    //1sthalf salary
+    pdf.text(`2nd Half: ${data[key].secondHalf.toFixed(2)}`, 140, 165);
+    //2ndhalf salary
 
     // RENDERS DEDUCTION
-    pdf.text("Total Deductions ", 140, 83);
+    pdf.setFont("times", "normal");
+    pdf.text("Total Deductions ", 225, 160);
     pdf.setFont("times", "bold");
-    // pdf.text(`${data[key].overloadNetAmount}`, 185, 83); //Int values needs to be renders as string in jsPDF
-    pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 185, 83);
+    pdf.text(`${data[key].totalDeductions.toFixed(2)}`, 265, 160);
     pdf.setFont("times", "normal");
 
-    pdf.line(140, 85, 200, 85);
+    pdf.line(225, 161, 285, 161);
 
     // RENDERS NET PAY
-    pdf.text("Net Amount ", 140, 90);
+    pdf.text("Net Amount ", 225, 165);
     pdf.setFont("times", "bold");
-    pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 185, 90); //Int values needs to be renders as string in jsPDF
+    pdf.text(`${data[key].regularNetAmount.toFixed(2)}`, 265, 165); //Int values needs to be renders as string in jsPDF
     pdf.setFont("times", "normal");
 
     // FOOTER
     pdf.setFontSize(12);
+
+    pdf.text("Prepared by: ", 10, 180);
+    pdf.text("Certified correct: ", 120, 180);
+
     pdf.setFont("times", "bold");
+    pdf.text("CATALINA M. BAQUIRAN ", 40, 200);
+    pdf.setFont("times", "normal");
+    pdf.text("Administrative Officer IV ", 43, 205);
 
-    pdf.text("Prepared by: ", 10, 105);
-    pdf.text("Certified correct: ", 100, 105);
-
-    pdf.text("CATALINA M. BAQUIRAN ", 40, 125);
-    pdf.text("Administrative Officer IV ", 43, 130);
-
-    pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 130, 125);
-    pdf.text("Head, HRMS ", 155, 130);
+    pdf.setFont("times", "bold");
+    pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 150, 200);
+    pdf.setFont("times", "normal");
+    pdf.text("Head, HRMS ", 175, 205);
 
     // END OF PDF FILE
     pdf.save("payroll"); //Prints the pdf
-  }
-
-  let csvData = payrollData.map((obj) => ({
-    employeeId: '=""' + obj.employee.employeeId + '""',
-    firstName: obj.employee.firstName,
-    lastName: obj.employee.lastName,
-    position: obj.employee.position.title,
-    isPartTime: obj.employee.isPartTime ? "1" : "0",
-    campus: obj.employee.campus,
-    college: obj.employee.college,
-    department: obj.employee.department,
-    gender: obj.employee.gender,
-    email: obj.employee.email,
-    contactInfo: '=""' + obj.employee.contactInfo + '""',
-    address: obj.employee.address,
-    birthDate: obj.employee.birthDate,
-    salary: obj.employee.salary,
-    tax: obj.employee.tax,
-    monthOverload: obj.monthOverload,
-    rate: obj.employee.position.rate,
-    amount: obj.amount,
-    withTax: obj.withTax,
-    netAmount: obj.overloadNetAmount,
-  }));
+  };
 
   const handleOpen = () => {
     setIsModalOpen(true);
   };
   const handleClose = () => {
     setIsModalOpen(false);
+    setErrorMsg();
+    setcsvObj();
   };
 
-  const buttonRef = createRef();
-
-  const handleOpenDialog = (e) => {
-    // Note that the ref is set async, so it might be null at some point
-    if (buttonRef.current) {
-      buttonRef.current.open(e);
-    }
+  const handleFile = (e) => {
+    csvObj = e.target.files[0];
+    console.log(csvObj);
   };
 
-  const handleOnFileLoad = (data) => {
-    console.log("Parsed Data: ", data);
-    setcsvObj(data); //set the csvObj to the parsed data(array of obj) when file is selected.
-  };
-  const handleOnError = (err, file, inputElem, reason) => {
-    console.log(err);
-  };
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    currentDate = date.getMonth() + 1 + "/" + date.getFullYear();
+    // console.log(currentDate.length); //For debugging, checks if the currentDate is NaN if its length is equal to 7.
 
-  const handleOnRemoveFile = (data) => {
-    setcsvObj([]); //set the csvObj to empty array if the file is removed.
-  };
-
-  const handleRemoveFile = (e) => {
-    // Note that the ref is set async, so it might be null at some point
-    if (buttonRef.current) {
-      buttonRef.current.removeFile(e);
-    }
-  };
-
-  // Only allow print if there is selected file. Additional: This only prints the first employee object.
-  const printImport = () => {
-    // console.log(csvObj[1].data[1]);
-    if (csvObj.length === 0) {
-      console.log("Select file first.");
-    } else {
-      // INSERT THE PDF LAYOUT HERE
-      console.log("Add payroll to overload table.");
-    }
+    setFilterFnc({
+      fn: (items) => {
+        if (currentDate.length === 7) {
+          //If the currentDate is NaN, it's length === 7. So if it's NaN, just return the original items.
+          return items;
+        } else return items.filter((x) => x.period.includes(currentDate));
+      },
+    });
   };
 
   return (
     <div style={{ textAlign: "center" }}>
-      <Button
-        size="large"
-        variant="outlined"
-        component="span"
-        onClick={handleOpen}
-      >
-        Generate Payroll
-      </Button>
+      <Paper style={{ marginTop: 20 }}>
+        <Toolbar>
+          <Fab
+            size="medium"
+            onClick={handleOpen}
+            color="primary"
+            className={classes.createbutton}
+          >
+            <AddIcon />
+          </Fab>
 
-      <Button>
-        <CSVLink
-          data={csvData}
-          filename={"overload.csv"}
-          className="btn btn-primary"
-          target="_blank"
-        >
-          Export Overload CSV
-        </CSVLink>
-      </Button>
-
-      <h1>OVERLOAD</h1>
-      <Paper>
+          <Button>
+            <CSVLink
+              data={csvData}
+              filename={"overload.csv"}
+              className="btn btn-primary"
+              target="_blank"
+            >
+              Export Overload CSV
+            </CSVLink>
+          </Button>
+        </Toolbar>
         <Table
-          lists={payrollData}
+          lists={overload}
           filterFn={filterFn}
           columns={overloadColumnHeads}
           propertiesOrder={overloadColumnHeads
@@ -333,99 +396,59 @@ const Payroll = ({ userToken }) => {
         />
       </Paper>
 
-      <h1>REGULARS</h1>
-      <Paper>
+      <Paper style={{ marginTop: 20 }}>
+        <Toolbar>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              margin="normal"
+              id="date-picker-dialog"
+              label="Select month/year"
+              views={["year", "month"]}
+              format="MM/yyyy"
+              value={selectedDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                "aria-label": "change date",
+              }}
+            />
+          </MuiPickersUtilsProvider>
+        </Toolbar>
         <Table
           lists={regulars}
-          filterFn={filterFn}
+          filterFn={filterFnc}
           columns={regularColumnHeads}
           propertiesOrder={regularColumnHeads
             .slice(0, 7)
             .map((item) => item.id)}
           isPayroll={true}
           isLoading={isFetching}
+          isOverload={false}
           printPayslip={handlePayslip} //Generate PDF functions
         />
       </Paper>
       <TransitionsModal
         handleClose={handleClose}
         isModalOpen={isModalOpen}
-        title="/ Select File"
+        title=" Payroll"
       >
         <center>
-          <CSVReader
-            ref={buttonRef}
-            onFileLoad={handleOnFileLoad}
-            onError={handleOnError}
-            noClick
-            noDrag
-            onRemoveFile={handleOnRemoveFile}
-          >
-            {({ file }) => (
-              <>
-                <div
-                  style={{
-                    borderWidth: 1,
-                    borderStyle: "solid",
-                    borderColor: "#ccc",
-                    height: 45,
-                    lineHeight: 2.5,
-                    marginTop: 5,
-                    marginBottom: 5,
-                    paddingLeft: 13,
-                    paddingTop: 3,
-                    width: "60%",
-                  }}
-                >
-                  {file && file.name}
-                </div>
-                <div>
-                  <Button
-                    size="large"
-                    variant="outlined"
-                    component="span"
-                    type="button"
-                    onClick={handleOpenDialog}
-                    style={{
-                      borderRadius: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                      width: "40%",
-                      paddingLeft: 0,
-                      paddingRight: 0,
-                    }}
-                  >
-                    Browse
-                  </Button>
-
-                  <Button
-                    size="large"
-                    variant="outlined"
-                    component="span"
-                    style={{
-                      borderRadius: 0,
-                      marginLeft: 0,
-                      marginRight: 0,
-                      paddingLeft: 20,
-                      paddingRight: 20,
-                    }}
-                    onClick={handleRemoveFile}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </>
-            )}
-          </CSVReader>
-
+          <form>
+            <input
+              type="file"
+              accept=".csv"
+              name="file"
+              onChange={(e) => handleFile(e)}
+            ></input>
+          </form>
+          <h4 style={{ color: "red" }}>{errorMsg}</h4>
           <div>
             <Button
               variant="contained"
               size="small"
               color="primary"
-              onClick={printImport}
+              onClick={addImport}
             >
-              Print
+              Add
             </Button>
             <Button
               variant="contained"

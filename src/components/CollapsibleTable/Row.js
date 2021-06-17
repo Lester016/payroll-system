@@ -41,6 +41,23 @@ const useRowStyles = makeStyles({
       backgroundColor: "#a6172f",
     },
   },
+  editButton: {
+    backgroundColor: "#bf1d38",
+    "&:hover": {
+      backgroundColor: "#a6172f",
+    },
+    color: "#fff",
+    borderRadius: 15,
+    marginRight: 5,
+  },
+  deleteButton: {
+    color: "#bf1d38",
+    "&:hover": {
+      color: "#a6172f",
+    },
+    borderRadius: 15,
+    marginRight: 5,
+  },
 });
 
 const Row = ({

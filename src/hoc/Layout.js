@@ -7,13 +7,14 @@ import {
   Group as GroupIcon,
   PersonAdd as PersonAddIcon,
   MoneyOff as MoneyOffIcon,
-  Schedule as ScheduleIcon,
   AttachMoney as AttachMoneyIcon,
+  Info as InfoIcon,
 } from "@material-ui/icons";
 
 import NavItem from "../components/Navigations/NavItem";
 import Navbar from "../components/Navigations/Navbar";
 import NavDrawer from "../components/Navigations/NavDrawer";
+import { connect } from "react-redux";
 
 const titleBar = {
   "/": "Dashboard",
@@ -23,7 +24,6 @@ const titleBar = {
   "/payroll": "Payroll",
   "/employees": "Employees",
   "/attendance": "Attendance",
-  "/help": "Help",
   "/about": "About",
 };
 
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Layout({ children }) {
+const Layout = ({ children, admin }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
 
@@ -69,12 +69,13 @@ export default function Layout({ children }) {
         handleDrawerOpen={handleDrawerOpen}
         isOpen={open}
         title={titleBar[useLocation().pathname]}
+        admin={admin}
       />
 
       <NavDrawer handleDrawerClose={handleDrawerClose} isOpen={open}>
         {/* Navigation Links */}
         <List className={classes.button}>
-          <NavItem 
+          <NavItem
             route={"/"}
             title={"Dashboard"}
             IconComponent={DashboardIcon}
@@ -103,17 +104,7 @@ export default function Layout({ children }) {
           />
 
           <Divider />
-
-          <NavItem
-            route={"/help"}
-            title={"Help"}
-            IconComponent={ScheduleIcon}
-          />
-          <NavItem
-            route={"/about"}
-            title={"About"}
-            IconComponent={ScheduleIcon}
-          />
+          <NavItem route={"/about"} title={"About"} IconComponent={InfoIcon} />
         </List>
       </NavDrawer>
 
@@ -124,4 +115,12 @@ export default function Layout({ children }) {
       </main>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    admin: state.auth.name,
+  };
+};
+
+export default connect(mapStateToProps)(Layout);

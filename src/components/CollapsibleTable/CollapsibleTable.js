@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
   Table,
   TableBody,
@@ -30,6 +30,16 @@ const useRowStyles = makeStyles({
     marginRight: 5,
   },
 });
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: "#384448",
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
 const CollapsibleTable = ({
   lists,
@@ -124,11 +134,11 @@ const CollapsibleTable = ({
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
+        <TableHead >
+          <TableRow className={classes.table}>
+            <StyledTableCell />
             {columns.map((item) => (
-              <TableCell key={item.label}>
+              <StyledTableCell key={item.label}>
                 {item.disableSorting ? (
                   item.label
                 ) : (
@@ -142,7 +152,7 @@ const CollapsibleTable = ({
                     {item.label}
                   </TableSortLabel>
                 )}
-              </TableCell>
+              </StyledTableCell>
             ))}
           </TableRow>
         </TableHead>
