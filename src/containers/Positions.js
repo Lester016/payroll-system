@@ -340,6 +340,7 @@ const Position = () => {
       <Toolbar>
         <TextField
           label="Search..."
+          variant="outlined"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -407,7 +408,9 @@ const Position = () => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 
@@ -453,7 +456,9 @@ const Position = () => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 
