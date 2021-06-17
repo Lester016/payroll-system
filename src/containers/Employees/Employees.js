@@ -292,6 +292,7 @@ const Employees = ({ userToken }) => {
         <Toolbar>
           <TextField
             label="Search..."
+            variant="outlined"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
