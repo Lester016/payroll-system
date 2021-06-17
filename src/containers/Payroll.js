@@ -15,7 +15,8 @@ import {
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 
-const Payroll = ({ userToken }) => {
+const Payroll = ({ userToken, admin }) => {
+  console.log(admin); // Admin Name
   const [payrollData, setPayrollData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -475,6 +476,7 @@ const Payroll = ({ userToken }) => {
 const mapStateToProps = (state) => {
   return {
     userToken: state.auth.token,
+    admin: state.auth.name,
   };
 };
 
