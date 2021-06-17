@@ -359,29 +359,27 @@ const Payroll = ({ userToken }) => {
   };
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <Paper style={{ marginTop: 20 }}>
-        <Toolbar>
-          <Fab
-            size="medium"
-            onClick={handleOpen}
-            color="primary"
-            className={classes.createbutton}
-          >
-            <AddIcon />
-          </Fab>
+    <div style={{}}>
+      <Fab
+        size="medium"
+        onClick={handleOpen}
+        color="primary"
+        className={classes.createbutton}
+      >
+        <AddIcon />
+      </Fab>
 
-          <Button>
-            <CSVLink
-              data={csvData}
-              filename={"overload.csv"}
-              className="btn btn-primary"
-              target="_blank"
-            >
-              Export Overload CSV
-            </CSVLink>
-          </Button>
-        </Toolbar>
+      <Button>
+        <CSVLink
+          data={csvData}
+          filename={"overload.csv"}
+          className="btn btn-primary"
+          target="_blank"
+        >
+          Export Overload CSV
+        </CSVLink>
+      </Button>
+      <Paper style={{ marginTop: 20 }}>
         <Table
           lists={overload}
           filterFn={filterFn}
