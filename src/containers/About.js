@@ -60,19 +60,10 @@ export default function About() {
     <React.Fragment>
       <CssBaseline />
       <main>
-        <div className={classes.heroContent}>
-          <Container maxWidth="sm">
-            <Typography
-              variant="h3"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Payroll System
-            </Typography>
-          </Container>
-        </div>
         <Container className={classes.cardGrid} maxWidth="md">
+          <div className={classes.heroContent}>
+            <h4>About the Team</h4>
+          </div>
           <Grid container spacing={4}>
             {cards.map((card) => (
               <Grid item key={card} xs={12} sm={6} md={4}>

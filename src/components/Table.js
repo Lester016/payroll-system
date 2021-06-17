@@ -199,7 +199,9 @@ const AppTable = ({
                 />
               </StyledTableCell>
             ) : column === "position" ? (
-              <StyledTableCell key={id}>{item[column].title}</StyledTableCell>
+              <StyledTableCell key={id} style={{ maxWidth: 120 }}>
+                {item[column].title}
+              </StyledTableCell>
             ) : column === "rates" ? (
               <StyledTableCell key={id}>
                 <NumberFormat
@@ -225,7 +227,9 @@ const AppTable = ({
                 key={id}
               >{`${item["firstName"]} ${item["lastName"]}`}</StyledTableCell>
             ) : (
-              <StyledTableCell key={id}>{item[column]}</StyledTableCell>
+              <StyledTableCell key={id} style={{ maxWidth: 150 }}>
+                {item[column]}
+              </StyledTableCell>
             )
           )}
           {!isOverload ? (
