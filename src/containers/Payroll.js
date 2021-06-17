@@ -184,15 +184,15 @@ const Payroll = ({ userToken }) => {
   ];
 
   let csvData = overload.map((obj) => ({
-    employeeId: '=""' + obj.employee.employeeId + '""',
-    firstName: obj.employee.firstName,
-    lastName: obj.employee.lastName,
-    position: obj.employee.position.title,
-    monthOverload: obj.monthOverload,
-    rate: obj.employee.position.rate,
-    amount: obj.amount,
-    withTax: obj.withTax,
-    netAmount: obj.overloadNetAmount,
+    EmployeeID: '=""' + obj.employee.employeeId + '""',
+    FirstName: obj.employee.firstName,
+    LastName: obj.employee.lastName,
+    PositionTitle: obj.employee.position.title,
+    MonthOverload: obj.monthOverload,
+    Rate: obj.employee.position.rate,
+    Amount: obj.amount,
+    WithTax: obj.withTax,
+    NetAmount: obj.overloadNetAmount,
   }));
 
   /* ----- HANDLES ----- */
