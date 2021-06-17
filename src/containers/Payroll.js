@@ -25,12 +25,7 @@ const Payroll = ({ userToken }) => {
   const overload = [];
   let [csvObj, setcsvObj] = useState();
   let [currentDate] = useState();
-  const [filterFn] = useState({
-    fn: (items) => {
-      return items;
-    },
-  });
-  const [filterFnc, setFilterFnc] = useState({
+  const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
     },
@@ -348,7 +343,7 @@ const Payroll = ({ userToken }) => {
     currentDate = date.getMonth() + 1 + "/" + date.getFullYear();
     // console.log(currentDate.length); //For debugging, checks if the currentDate is NaN if its length is equal to 7.
 
-    setFilterFnc({
+    setFilterFn({
       fn: (items) => {
         if (currentDate.length === 7) {
           //If the currentDate is NaN, it's length === 7. So if it's NaN, just return the original items.
@@ -360,26 +355,28 @@ const Payroll = ({ userToken }) => {
 
   return (
     <div style={{}}>
-      <Fab
-        size="medium"
-        onClick={handleOpen}
-        color="primary"
-        className={classes.createbutton}
-      >
-        <AddIcon />
-      </Fab>
-
-      <Button>
-        <CSVLink
-          data={csvData}
-          filename={"overload.csv"}
-          className="btn btn-primary"
-          target="_blank"
-        >
-          Export Overload CSV
-        </CSVLink>
-      </Button>
       <Paper style={{ marginTop: 20 }}>
+        <Toolbar>
+          <Fab
+            size="medium"
+            onClick={handleOpen}
+            color="primary"
+            className={classes.createbutton}
+          >
+            <AddIcon />
+          </Fab>
+
+          <Button>
+            <CSVLink
+              data={csvData}
+              filename={"overload.csv"}
+              className="btn btn-primary"
+              target="_blank"
+            >
+              Export Overload CSV
+            </CSVLink>
+          </Button>
+        </Toolbar>
         <Table
           lists={overload}
           filterFn={filterFn}
@@ -413,7 +410,7 @@ const Payroll = ({ userToken }) => {
         </Toolbar>
         <Table
           lists={regulars}
-          filterFn={filterFnc}
+          filterFn={filterFn}
           columns={regularColumnHeads}
           propertiesOrder={regularColumnHeads
             .slice(0, 7)
@@ -454,7 +451,7 @@ const Payroll = ({ userToken }) => {
               color="secondary"
               onClick={handleClose}
             >
-              Cancel
+              Close
             </Button>
           </div>
         </center>
