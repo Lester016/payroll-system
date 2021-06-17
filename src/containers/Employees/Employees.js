@@ -61,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#a6172f",
     },
   },
+  paper: {
+    padding: 0,
+  }
 }));
 
 const columnHeads = [

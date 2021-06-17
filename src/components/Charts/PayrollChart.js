@@ -41,18 +41,19 @@ const PayrollChart = () => {
       .then((respond) => {
         setIsFetching(false);
         // Sets the total amount for each campus payroll for each  employees
+        //Formula: Campus budget = Summation of salary for regular employees + Summation of rates for part-time employees
         for (let dataObj of respond.data) {
           if (dataObj.campus === "TUPM") {
-            setTupMBudget((tupMBudget += dataObj.position.rate));
+            setTupMBudget(dataObj.salary? (tupMBudget += dataObj.salary):(tupMBudget += dataObj.position.rate));
           }
           if (dataObj.campus === "TUPT") {
-            setTupTBudget((tupTBudget += dataObj.position.rate));
+            setTupTBudget(dataObj.salary? (tupTBudget += dataObj.salary):(tupTBudget += dataObj.position.rate));
           }
           if (dataObj.campus === "TUPC") {
-            setTupCBudget((tupCBudget += dataObj.position.rate));
+            setTupCBudget(dataObj.salary? (tupCBudget += dataObj.salary):(tupCBudget += dataObj.position.rate));
           }
           if (dataObj.campus === "TUPV") {
-            setTupVBudget((tupVBudget += dataObj.position.rate));
+            setTupVBudget(dataObj.salary? (tupVBudget += dataObj.salary):(tupVBudget += dataObj.position.rate));
           }
         }
         campusPayroll.push(parseInt(tupMBudget));
