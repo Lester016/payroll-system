@@ -5,8 +5,9 @@ import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 import DateFnsUtils from "@date-io/date-fns";
 
-import { Button, Paper, Toolbar, Fab, makeStyles } from "@material-ui/core";
+import { Button, Paper, Toolbar, Fab, makeStyles, IconButton } from "@material-ui/core";
 import { Add as AddIcon } from "@material-ui/icons";
+import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -37,6 +38,13 @@ const Payroll = ({ userToken }) => {
       "&:hover": {
         backgroundColor: "#a6172f",
       },
+    },
+    export: {
+      color: "#000",
+      "&:hover": {
+        color: "#000",
+      },
+      marginLeft: 15,
     },
   }));
 
@@ -266,7 +274,7 @@ const Payroll = ({ userToken }) => {
 
     //renders withholdingTax
     pdf.text("With Holding Tax: ", 140, 95);
-    pdf.text(`${data[key].withholdingTax}`, 175, 95);
+    pdf.text(`${data[key].withholdingTax.toFixed(2)}`, 175, 95);
 
     // Dynamically positioning the deductions
     let yPos = 90;
@@ -366,16 +374,16 @@ const Payroll = ({ userToken }) => {
             <AddIcon />
           </Fab>
 
-          <Button>
+          <IconButton className={classes.export}>
             <CSVLink
               data={csvData}
               filename={"overload.csv"}
               className="btn btn-primary"
               target="_blank"
             >
-              Export Overload CSV
+              <SystemUpdateAltIcon/>
             </CSVLink>
-          </Button>
+          </IconButton>
         </Toolbar>
         <Table
           lists={overload}
