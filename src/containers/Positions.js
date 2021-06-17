@@ -181,11 +181,9 @@ const Position = () => {
             }
           )
           .then((response) => {
-            console.log(response);
             // Submit the position to the existings positions list.
             setPositions((prevPositions) => {
               let data = [...prevPositions];
-              console.log(data);
               data.unshift({
                 id: response.data.name,
                 title: jobTitle,
@@ -223,7 +221,6 @@ const Position = () => {
             }
           )
           .then((response) => {
-            console.log(response.data.name);
             // Update the position to the existings positions list.
             setPositions((prevPositions) => {
               let data = [...prevPositions];

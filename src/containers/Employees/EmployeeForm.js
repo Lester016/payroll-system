@@ -227,8 +227,6 @@ const EmployeeForm = ({
       },
     };
 
-    console.log(userToken);
-
     let employeeId = `${values.campus.idx}${values.college.idx}${zeroPad(
       values.department.idx,
       2
