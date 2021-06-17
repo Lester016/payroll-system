@@ -84,11 +84,13 @@ const Payroll = ({ userToken }) => {
           console.log(response);
           setPayrollData(response.data);
           setIsFetching(false);
+          payroll();
         })
         .catch((error) => {
           setIsFetching(false);
           // console.log(error.response.data.message);
           setErrorMsg(error.response.data.message);
+          payroll();
         });
     }
   };
