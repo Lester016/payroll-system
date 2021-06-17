@@ -27,9 +27,7 @@ const useStyles = makeStyles((theme) => ({
       color: "#cc0000",
     },
   },
-  titleFont: {
-    fontWeight: "bold",
-  },deleteButton: {
+  deleteButton: {
     color: "#000",
     "&:hover": {
       color: "#000",

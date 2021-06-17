@@ -61,9 +61,17 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: "#a6172f",
     },
+    marginLeft: 15,
+    marginTop: 6,
   },
   paper: {
     padding: 0,
+  },
+  // button: {
+    
+  // },
+  toolbar: {
+    justifyContent: "space-between",
   },
 }));
 
@@ -299,30 +307,33 @@ const Employees = ({ userToken }) => {
   return (
     <>
       <Container component={Paper} className={classes.paper}>
-        <Toolbar>
-          <TextField
-            className={classes.search}
-            style={{ margin: 10 }}
-            label="Search..."
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
-
-          <Fab
-            className={classes.createButton}
-            size="medium"
-            color="primary"
-            onClick={handleOpen}
-          >
-            <AddIcon />
-          </Fab>
+        <Toolbar className={classes.toolbar}>
+          <div>
+            <TextField
+              size="small"
+              className={classes.search}
+              style={{ margin: 10 }}
+              label="Search..."
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={handleSearch}
+            />
+            
+            <Fab
+              className={classes.createButton}
+              size="medium"
+              color="primary"
+              onClick={handleOpen}
+            >
+              <AddIcon />
+            </Fab>
+            </div>
           <Button>
             <CSVLink
               data={csvData}

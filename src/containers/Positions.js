@@ -343,43 +343,46 @@ const Position = () => {
 
   return (
     <div>
-      <Toolbar>
-        <TextField
-          label="Search..."
-          variant="outlined"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          onChange={handleSearch}
-        />
-        <Fab
-          size="medium"
-          onClick={handleOpen}
-          color="primary"
-          className={classes.createbutton}
-        >
-          <AddIcon />
-        </Fab>
-      </Toolbar>
+      <Container component={Paper} className={classes.paper}>
+        <Toolbar>
+          <TextField
+            size="small"
+            label="Search..."
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleSearch}
+          />
+          <Fab
+            size="medium"
+            onClick={handleOpen}
+            color="primary"
+            className={classes.createbutton}
+          >
+            <AddIcon />
+          </Fab>
+        </Toolbar>
 
-      <Paper>
-        <CollapsibleTable
-          lists={positions}
-          onDeleteRow={deleteOpen}
-          onEditRow={handleEdit}
-          onSubmitCollapsibleRow={handleCollapsibleSubmit}
-          tab={"positions"}
-          filterFn={filterFn}
-          columns={columnHeads}
-          collapsibleColumns={collapsibleColumnHeads}
-          propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
-          isLoading={isFetching}
-        />
-      </Paper>
+        <Paper>
+          <CollapsibleTable
+            lists={positions}
+            onDeleteRow={deleteOpen}
+            onEditRow={handleEdit}
+            onSubmitCollapsibleRow={handleCollapsibleSubmit}
+            tab={"positions"}
+            filterFn={filterFn}
+            columns={columnHeads}
+            collapsibleColumns={collapsibleColumnHeads}
+            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
+            isLoading={isFetching}
+          />
+        </Paper>
+      </Container>
 
       <TransitionsModal
         handleClose={deleteClose}
