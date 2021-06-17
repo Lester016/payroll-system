@@ -357,7 +357,9 @@ const Deductions = ({ userToken }) => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 

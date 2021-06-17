@@ -408,7 +408,9 @@ const Position = () => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 
@@ -454,7 +456,9 @@ const Position = () => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 

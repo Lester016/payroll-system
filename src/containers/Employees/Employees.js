@@ -382,7 +382,9 @@ const Employees = ({ userToken }) => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 
