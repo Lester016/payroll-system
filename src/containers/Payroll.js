@@ -25,14 +25,16 @@ import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
 
 const Payroll = ({ userToken, admin }) => {
-  console.log(admin); // Admin Name
+  // console.log(admin); // Admin Name
   const [payrollData, setPayrollData] = useState([]);
 
   const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSnackOpen, setIsSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(
+    new Date("January 01, 2000")
+  );
   const regulars = [];
   const overload = [];
   let [csvObj, setcsvObj] = useState();
@@ -189,6 +191,10 @@ const Payroll = ({ userToken, admin }) => {
     {
       id: "regularNetAmount",
       label: "Net Amount",
+    },
+    {
+      id: "period",
+      label: "Period",
     },
     {
       id: "printables",
@@ -388,6 +394,16 @@ const Payroll = ({ userToken, admin }) => {
     });
   };
 
+  const handleDateReset = () => {
+    let date = new Date("January 01, 2000");
+    setSelectedDate(date);
+    setFilterFn({
+      fn: (items) => {
+        return items;
+      },
+    });
+  };
+
   return (
     <div style={{}}>
       <Fab
@@ -447,13 +463,22 @@ const Payroll = ({ userToken, admin }) => {
               }}
             />
           </MuiPickersUtilsProvider>
+          <Button
+            style={{ marginTop: 20, marginLeft: 10 }}
+            variant="outlined"
+            size="small"
+            color="secondary"
+            onClick={handleDateReset}
+          >
+            Reset Table
+          </Button>
         </Toolbar>
         <Table
           lists={regulars}
           filterFn={filterFn}
           columns={regularColumnHeads}
           propertiesOrder={regularColumnHeads
-            .slice(0, 7)
+            .slice(0, 8)
             .map((item) => item.id)}
           isPayroll={true}
           isLoading={isFetching}
