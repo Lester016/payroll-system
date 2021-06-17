@@ -6,7 +6,7 @@ import jsPDF from "jspdf";
 import DateFnsUtils from "@date-io/date-fns";
 
 import { Button, Paper, Toolbar, Fab, makeStyles } from "@material-ui/core";
-import { Add as AddIcon } from "@material-ui/icons";
+import { Add as AddIcon, SystemUpdateAlt } from "@material-ui/icons";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -378,7 +378,14 @@ const Payroll = ({ userToken }) => {
           className="btn btn-primary"
           target="_blank"
         >
-          Export Overload CSV
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "#4caf50", color: "white" }}
+            className={classes.button}
+            endIcon={<SystemUpdateAlt>send</SystemUpdateAlt>}
+          >
+            Export Overload
+          </Button>
         </CSVLink>
       </Button>
       <Paper style={{ marginTop: 20 }}>

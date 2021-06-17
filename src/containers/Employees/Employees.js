@@ -17,6 +17,7 @@ import {
   Search as SearchIcon,
   Delete as DeleteIcon,
   Cancel as CancelIcon,
+  SystemUpdateAlt,
 } from "@material-ui/icons";
 
 import EmployeeForm from "./EmployeeForm";
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: 0,
-  }
+  },
 }));
 
 const columnHeads = [
@@ -215,8 +216,14 @@ const Employees = ({ userToken }) => {
     let item = employees.filter(function (employee) {
       return employee._id === key;
     })[0];
-    let positionIdx = item.position.title !== "Part Time" ? positions.findIndex((x) => x.title === item.position.title) : -1;
-    let stepIdx = positionIdx !== -1 ? positions[positionIdx].steps.findIndex((x) => x === item.salary) : -1;
+    let positionIdx =
+      item.position.title !== "Part Time"
+        ? positions.findIndex((x) => x.title === item.position.title)
+        : -1;
+    let stepIdx =
+      positionIdx !== -1
+        ? positions[positionIdx].steps.findIndex((x) => x === item.salary)
+        : -1;
     setValues({
       firstName: item.firstName,
       lastName: item.lastName,
@@ -242,11 +249,14 @@ const Employees = ({ userToken }) => {
       contactInfo: item.contactInfo,
       address: item.address,
       birthDate: item.birthDate,
-      positionTitle: item.position.title && item.position.title !== "Part Time" ? item.position.title : "",
+      positionTitle:
+        item.position.title && item.position.title !== "Part Time"
+          ? item.position.title
+          : "",
       //positionRate: item.position.rate ? item.position.rate : "",
       salary: parseFloat(item.salary),
       positionIdx: positionIdx,
-      stepIdx: stepIdx
+      stepIdx: stepIdx,
     });
     setIsUpdating(key);
     handleOpen();
@@ -318,7 +328,14 @@ const Employees = ({ userToken }) => {
               className="btn btn-primary"
               target="_blank"
             >
-              Export Employee CSV
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "#4caf50", color: "white" }}
+                className={classes.button}
+                endIcon={<SystemUpdateAlt>send</SystemUpdateAlt>}
+              >
+                Export Employee
+              </Button>
             </CSVLink>
           </Button>
         </Toolbar>
