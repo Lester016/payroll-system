@@ -24,7 +24,8 @@ import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
 
-const Payroll = ({ userToken }) => {
+const Payroll = ({ userToken, admin }) => {
+  console.log(admin); // Admin Name
   const [payrollData, setPayrollData] = useState([]);
 
   const [isFetching, setIsFetching] = useState(false);
@@ -334,9 +335,9 @@ const Payroll = ({ userToken }) => {
     pdf.text("Certified correct: ", 120, 180);
 
     pdf.setFont("times", "bold");
-    pdf.text("CATALINA M. BAQUIRAN ", 40, 200);
+    pdf.text(admin, 40, 200);
     pdf.setFont("times", "normal");
-    pdf.text("Administrative Officer IV ", 43, 205);
+    pdf.text("Admin ", 43, 205);
 
     pdf.setFont("times", "bold");
     pdf.text("ATTY. CHRISTOPHER M. MORTEL ", 150, 200);
@@ -389,28 +390,33 @@ const Payroll = ({ userToken }) => {
 
   return (
     <div style={{}}>
-      <Paper style={{ marginTop: 20 }}>
-        <Toolbar>
-          <Fab
-            size="medium"
-            onClick={handleOpen}
-            color="primary"
-            className={classes.createbutton}
-          >
-            <AddIcon />
-          </Fab>
+      <Fab
+        size="medium"
+        onClick={handleOpen}
+        color="primary"
+        className={classes.createbutton}
+      >
+        <AddIcon />
+      </Fab>
 
-          <IconButton className={classes.export}>
-            <CSVLink
-              data={csvData}
-              filename={"overload.csv"}
-              className="btn btn-primary"
-              target="_blank"
-            >
-              <SystemUpdateAltIcon />
-            </CSVLink>
-          </IconButton>
-        </Toolbar>
+      <Button>
+        <CSVLink
+          data={csvData}
+          filename={"overload.csv"}
+          className="btn btn-primary"
+          target="_blank"
+        >
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "#4caf50", color: "white" }}
+            className={classes.button}
+            endIcon={<SystemUpdateAltIcon>send</SystemUpdateAltIcon>}
+          >
+            Export Overload
+          </Button>
+        </CSVLink>
+      </Button>
+      <Paper style={{ marginTop: 20 }}>
         <Table
           lists={overload}
           filterFn={filterFn}
@@ -502,6 +508,7 @@ const Payroll = ({ userToken }) => {
 const mapStateToProps = (state) => {
   return {
     userToken: state.auth.token,
+    admin: state.auth.name,
   };
 };
 

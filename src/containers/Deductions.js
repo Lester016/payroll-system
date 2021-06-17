@@ -58,13 +58,13 @@ const columnHeads = [
 const collapsibleColumnHeads = [
   {
     id: "title",
-    label:"Title"
+    label: "Title",
   },
   {
     id: "amount",
-    label:"Amount"
-  }
-]
+    label: "Amount",
+  },
+];
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   paper: {
-    padding:  0,
+    padding: 0,
   },
 }));
 
@@ -173,89 +173,8 @@ const Deductions = ({ userToken }) => {
   };
 
   /* ----- HANDLES ----- */
-  // Submit handle
-  const handleSubmit1 = (e) => {
-    if (validate()) {
-      setIsLoading(true);
-      if (isUpdating === null) {
-        //Submit new deduction
-        axios
-          .post(
-            "https://tup-payroll-default-rtdb.firebaseio.com/deductions.json",
-            {
-              title: deductionTitle,
-              amount: parseFloat(amount),
-            }
-          )
-          .then((response) => {
-            // Submit the deduction to the existings deductions list.
-            setDeductions({
-              ...deductions,
-              [response.data.name]: {
-                title: deductionTitle,
-                amount: parseFloat(amount),
-              },
-            });
-            setIsLoading(false);
-
-            // Close modal
-            handleClose();
-
-            // Open snackbar
-            setSnackMessage("Success submit!");
-            handleSnackOpen();
-          })
-          .catch((error) => {
-            // Log the error if found || catched.
-            console.log(error);
-            setIsLoading(false);
-
-            // Close modal
-            handleClose();
-          });
-        e.preventDefault();
-      } else {
-        //Edit existing deduction
-        axios
-          .put(
-            `https://tup-payroll-default-rtdb.firebaseio.com/deductions/${isUpdating}.json`,
-            {
-              title: deductionTitle,
-              amount: parseFloat(amount),
-            }
-          )
-          .then(() => {
-            // Update the deduction to the existings deductions list.
-            setDeductions({
-              ...deductions,
-              [isUpdating]: {
-                title: deductionTitle,
-                amount: amount,
-              },
-            });
-            setIsLoading(false);
-
-            // Close modal
-            handleClose();
-
-            // Open snackbar
-            setSnackMessage("Success edit!");
-            handleSnackOpen();
-          })
-          .catch((error) => {
-            // Log the error if found || catched.
-            console.log(error);
-            setIsLoading(false);
-
-            // Close modal
-            handleClose();
-          });
-      }
-    }
-  };
-
+  // Submit Handle
   const handleSubmit = (inputValues, employee_Id, deduction_Id, isEdit) => {
-    console.log(inputValues);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -277,9 +196,8 @@ const Deductions = ({ userToken }) => {
       putItem[deductionIndex] = {
         _id: deduction_Id,
         title: inputValues.title,
-        amount: inputValues.amount,
+        amount: parseFloat(inputValues.amount),
       };
-      console.log("edit");
     } else {
       putItem.unshift(inputValues);
     }
@@ -379,21 +297,22 @@ const Deductions = ({ userToken }) => {
 
   return (
     <div>
-      <Container component={Paper} className={classes.paper}>
-        <Toolbar>
-          <TextField
-            label="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
-        </Toolbar>
+      <Toolbar>
+        <TextField
+          label="Search..."
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          onChange={handleSearch}
+        />
+      </Toolbar>
 
+      <Paper>
         <CollapsibleTable
           lists={employees}
           tab={"deductions"}
@@ -405,8 +324,8 @@ const Deductions = ({ userToken }) => {
           propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
           isLoading={isFetching}
           onSubmit={handleSubmit}
-          />
-      </Container> 
+        />
+      </Paper>
 
       <TransitionsModal
         handleClose={DeleteClose}
@@ -442,7 +361,9 @@ const Deductions = ({ userToken }) => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 

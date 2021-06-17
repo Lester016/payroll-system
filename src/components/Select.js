@@ -16,14 +16,14 @@ const Select = ({
   options,
 }) => {
   return (
-    <FormControl disabled={isDisabled} {...(error && { error: true })}>
+    <FormControl disabled={isDisabled} variant="outlined" {...(error && { error: true })}>
       <InputLabel>{label}</InputLabel>
       <MaterialSelect
-        label={label}
         name={name}
         value={value}
         defaultValue=""
         onChange={onChange}
+        variant="outlined"
       >
         {options &&
           options.map((item) => (

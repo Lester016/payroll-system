@@ -186,11 +186,9 @@ const Position = () => {
             }
           )
           .then((response) => {
-            console.log(response);
             // Submit the position to the existings positions list.
             setPositions((prevPositions) => {
               let data = [...prevPositions];
-              console.log(data);
               data.unshift({
                 id: response.data.name,
                 title: jobTitle,
@@ -228,7 +226,6 @@ const Position = () => {
             }
           )
           .then((response) => {
-            console.log(response.data.name);
             // Update the position to the existings positions list.
             setPositions((prevPositions) => {
               let data = [...prevPositions];
@@ -266,7 +263,8 @@ const Position = () => {
     updatedPosition.steps[idx] = amount;
     axios
       .put(
-        `https://tup-payroll-default-rtdb.firebaseio.com/positions/${parentId}.json`, {
+        `https://tup-payroll-default-rtdb.firebaseio.com/positions/${parentId}.json`,
+        {
           title: updatedPosition.title,
           steps: updatedPosition.steps.map(Number),
         }
@@ -345,41 +343,43 @@ const Position = () => {
 
   return (
     <div>
-      <Container component={Paper} className={classes.paper}>
-        <Toolbar>
-          <TextField
-            label="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
-          <Fab
-            size="medium"
-            onClick={handleOpen}
-            color="primary"
-            className={classes.createbutton}
-          >
-            <AddIcon />
-          </Fab>
-        </Toolbar>
-          <CollapsibleTable
-            lists={positions}
-            onDeleteRow={deleteOpen}
-            onEditRow={handleEdit}
-            onSubmitCollapsibleRow={handleCollapsibleSubmit}
-            tab={"positions"}
-            filterFn={filterFn}
-            columns={columnHeads}
-            collapsibleColumns={collapsibleColumnHeads}
-            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
-            isLoading={isFetching}
-          />
-      </Container>
+      <Toolbar>
+        <TextField
+          label="Search..."
+          variant="outlined"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          onChange={handleSearch}
+        />
+        <Fab
+          size="medium"
+          onClick={handleOpen}
+          color="primary"
+          className={classes.createbutton}
+        >
+          <AddIcon />
+        </Fab>
+      </Toolbar>
+
+      <Paper>
+        <CollapsibleTable
+          lists={positions}
+          onDeleteRow={deleteOpen}
+          onEditRow={handleEdit}
+          onSubmitCollapsibleRow={handleCollapsibleSubmit}
+          tab={"positions"}
+          filterFn={filterFn}
+          columns={columnHeads}
+          collapsibleColumns={collapsibleColumnHeads}
+          propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
+          isLoading={isFetching}
+        />
+      </Paper>
 
       <TransitionsModal
         handleClose={deleteClose}
@@ -414,7 +414,9 @@ const Position = () => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 
@@ -460,7 +462,9 @@ const Position = () => {
             </center>
           </>
         ) : (
-          <CircularProgress />
+          <center>
+            <CircularProgress />
+          </center>
         )}
       </TransitionsModal>
 
