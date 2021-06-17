@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: 0,
-  }
+  },
 }));
 
 const columnHeads = [
@@ -290,7 +290,8 @@ const Employees = ({ userToken }) => {
     <>
       <Container component={Paper} className={classes.paper}>
         <Toolbar>
-          <TextField
+          <TextField 
+            className={classes.search}
             label="Search..."
             InputProps={{
               startAdornment: (

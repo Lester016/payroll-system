@@ -9,6 +9,7 @@ import {
   InputAdornment,
   CircularProgress,
   makeStyles,
+  Container,
 } from "@material-ui/core";
 
 import {
@@ -74,6 +75,9 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: "#a6172f",
     },
+  },
+  paper: {
+    padding:  0,
   },
 }));
 
@@ -375,21 +379,21 @@ const Deductions = ({ userToken }) => {
 
   return (
     <div>
-      <Toolbar>
-        <TextField
-          label="Search..."
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          onChange={handleSearch}
-        />
-      </Toolbar>
+      <Container component={Paper} className={classes.paper}>
+        <Toolbar>
+          <TextField
+            label="Search..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleSearch}
+          />
+        </Toolbar>
 
-      <Paper>
         <CollapsibleTable
           lists={employees}
           tab={"deductions"}
@@ -401,8 +405,8 @@ const Deductions = ({ userToken }) => {
           propertiesOrder={columnHeads.slice(0, 5).map((item) => item.id)}
           isLoading={isFetching}
           onSubmit={handleSubmit}
-        />
-      </Paper>
+          />
+      </Container> 
 
       <TransitionsModal
         handleClose={DeleteClose}

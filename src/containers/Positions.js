@@ -9,6 +9,7 @@ import {
   CircularProgress,
   makeStyles,
   Fab,
+  Container,
 } from "@material-ui/core";
 import {
   Add as AddIcon,
@@ -48,6 +49,7 @@ const Position = () => {
       "&:hover": {
         backgroundColor: "#a6172f",
       },
+      margin: 10,
     },
     submitButton: {
       marginTop: 10,
@@ -69,6 +71,9 @@ const Position = () => {
     textField: {
       marginTop: 20,
       marginBottom: 10,
+    },
+    paper: {
+      padding: 0,
     },
   }));
 
@@ -340,42 +345,41 @@ const Position = () => {
 
   return (
     <div>
-      <Toolbar>
-        <TextField
-          label="Search..."
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          onChange={handleSearch}
-        />
-        <Fab
-          size="medium"
-          onClick={handleOpen}
-          color="primary"
-          className={classes.createbutton}
-        >
-          <AddIcon />
-        </Fab>
-      </Toolbar>
-
-      <Paper>
-        <CollapsibleTable
-          lists={positions}
-          onDeleteRow={deleteOpen}
-          onEditRow={handleEdit}
-          onSubmitCollapsibleRow={handleCollapsibleSubmit}
-          tab={"positions"}
-          filterFn={filterFn}
-          columns={columnHeads}
-          collapsibleColumns={collapsibleColumnHeads}
-          propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
-          isLoading={isFetching}
-        />
-      </Paper>
+      <Container component={Paper} className={classes.paper}>
+        <Toolbar>
+          <TextField
+            label="Search..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={handleSearch}
+          />
+          <Fab
+            size="medium"
+            onClick={handleOpen}
+            color="primary"
+            className={classes.createbutton}
+          >
+            <AddIcon />
+          </Fab>
+        </Toolbar>
+          <CollapsibleTable
+            lists={positions}
+            onDeleteRow={deleteOpen}
+            onEditRow={handleEdit}
+            onSubmitCollapsibleRow={handleCollapsibleSubmit}
+            tab={"positions"}
+            filterFn={filterFn}
+            columns={columnHeads}
+            collapsibleColumns={collapsibleColumnHeads}
+            propertiesOrder={columnHeads.slice(0, 2).map((item) => item.id)}
+            isLoading={isFetching}
+          />
+      </Container>
 
       <TransitionsModal
         handleClose={deleteClose}
