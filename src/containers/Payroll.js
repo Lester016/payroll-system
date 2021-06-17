@@ -5,9 +5,16 @@ import { CSVLink } from "react-csv";
 import jsPDF from "jspdf";
 import DateFnsUtils from "@date-io/date-fns";
 
-import { Button, Paper, Toolbar, Fab, makeStyles, IconButton } from "@material-ui/core";
+import {
+  Button,
+  Paper,
+  Toolbar,
+  Fab,
+  makeStyles,
+  IconButton,
+} from "@material-ui/core";
 import { Add as AddIcon } from "@material-ui/icons";
-import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
+import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
@@ -15,12 +22,15 @@ import {
 
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
+import Snack from "../components/Snack";
 
 const Payroll = ({ userToken }) => {
   const [payrollData, setPayrollData] = useState([]);
+
   const [isFetching, setIsFetching] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [errorMsg, setErrorMsg] = useState();
+  const [isSnackOpen, setIsSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const regulars = [];
   const overload = [];
@@ -86,16 +96,19 @@ const Payroll = ({ userToken }) => {
         .then((response) => {
           console.log(response);
           setPayrollData(response.data);
+          setSnackMessage("Success: Payroll Generated");
           setIsFetching(false);
           payroll();
         })
         .catch((error) => {
           setIsFetching(false);
           // console.log(error.response.data.message);
-          setErrorMsg(error.response.data.message);
+          setSnackMessage(`Failed: ${error.response.data.message}`);
           payroll();
         });
     }
+    setIsModalOpen(false);
+    handleSnackOpen(true);
   };
 
   //Put the regular employee to regulars[]
@@ -334,13 +347,24 @@ const Payroll = ({ userToken }) => {
     pdf.save("payroll"); //Prints the pdf
   };
 
+  // ADD PAYROLL MODAL HANDLER
   const handleOpen = () => {
     setIsModalOpen(true);
   };
   const handleClose = () => {
     setIsModalOpen(false);
-    setErrorMsg();
     setcsvObj();
+  };
+
+  // SNACK HANDLER
+  const handleSnackOpen = () => {
+    setIsSnackOpen(true);
+  };
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsSnackOpen(false);
   };
 
   const handleFile = (e) => {
@@ -383,7 +407,7 @@ const Payroll = ({ userToken }) => {
               className="btn btn-primary"
               target="_blank"
             >
-              <SystemUpdateAltIcon/>
+              <SystemUpdateAltIcon />
             </CSVLink>
           </IconButton>
         </Toolbar>
@@ -445,8 +469,7 @@ const Payroll = ({ userToken }) => {
               onChange={(e) => handleFile(e)}
             ></input>
           </form>
-          <h4 style={{ color: "red" }}>{errorMsg}</h4>
-          <div>
+          <div style={{ marginTop: 20 }}>
             <Button
               variant="contained"
               size="small"
@@ -461,11 +484,17 @@ const Payroll = ({ userToken }) => {
               color="secondary"
               onClick={handleClose}
             >
-              Close
+              Cancel
             </Button>
           </div>
         </center>
       </TransitionsModal>
+
+      <Snack
+        open={isSnackOpen}
+        message={snackMessage}
+        handleClose={handleSnackClose}
+      />
     </div>
   );
 };
