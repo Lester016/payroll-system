@@ -41,6 +41,7 @@ const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: "#384448",
     color: theme.palette.common.white,
+    fontWeight: "bold",
   },
   body: {
     fontSize: 14,
@@ -141,7 +142,7 @@ const CollapsibleTable = ({
     <TableContainer component={Paper} className={classes.table}>
       <Table aria-label="collapsible table">
         <TableHead >
-          <TableRow className={classes.table}>
+          <TableRow className={classes.table} colSpan={12}>
             <StyledTableCell />
             {columns.map((item) => (
               <StyledTableCell key={item.label}>

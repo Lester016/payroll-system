@@ -163,8 +163,8 @@ const Row = ({
         })}
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto">
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={12}>
+          <Collapse in={open} timeout="auto" >
             <Box margin={1}>
               <Toolbar>
                 <Typography variant="h6" component="div" display="inline">

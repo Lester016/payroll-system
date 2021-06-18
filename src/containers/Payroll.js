@@ -59,6 +59,11 @@ const Payroll = ({ userToken, admin }) => {
       },
       marginLeft: 15,
     },
+    justify: {
+      justifyContent: "space-between",
+      alignItems: "flex-end",
+      flexDirection: "row",
+    },
   }));
 
   const classes = useStyles();
@@ -406,6 +411,7 @@ const Payroll = ({ userToken, admin }) => {
 
   return (
     <div style={{}}>
+      <Toolbar className={classes.justify}>
       <Fab
         size="medium"
         onClick={handleOpen}
@@ -414,7 +420,7 @@ const Payroll = ({ userToken, admin }) => {
       >
         <AddIcon />
       </Fab>
-
+    
       <Button>
         <CSVLink
           data={csvData}
@@ -432,6 +438,8 @@ const Payroll = ({ userToken, admin }) => {
           </Button>
         </CSVLink>
       </Button>
+      </Toolbar>
+
       <Paper style={{ marginTop: 20 }}>
         <Table
           lists={overload}
