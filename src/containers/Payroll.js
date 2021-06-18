@@ -12,8 +12,9 @@ import {
   Fab,
   makeStyles,
   IconButton,
+  InputAdornment,
 } from "@material-ui/core";
-import { Add as AddIcon } from "@material-ui/icons";
+import { Add as AddIcon, Search as SearchIcon } from "@material-ui/icons";
 import SystemUpdateAltIcon from "@material-ui/icons/SystemUpdateAlt";
 import {
   MuiPickersUtilsProvider,
@@ -23,6 +24,7 @@ import {
 import Table from "../components/Table";
 import TransitionsModal from "../components/Modal";
 import Snack from "../components/Snack";
+import TextField from "../components/TextField";
 
 const Payroll = ({ userToken, admin }) => {
   // console.log(admin); // Admin Name
@@ -409,6 +411,22 @@ const Payroll = ({ userToken, admin }) => {
     });
   };
 
+  const handleSearch = (e) => {
+    let target = e.target;
+    setFilterFn({
+      fn: (items) => {
+        if (target.value === "") return items;
+        else
+          return items.filter(
+            (x) =>
+              x.lastName.toLowerCase().includes(target.value.toLowerCase()) ||
+              x.firstName.toLowerCase().includes(target.value.toLowerCase()) ||
+              x.employeeId.toLowerCase().includes(target.value.toLowerCase())
+          );
+      },
+    });
+  };
+
   return (
     <div style={{}}>
       <Paper>
@@ -496,7 +514,7 @@ const Payroll = ({ userToken, admin }) => {
       <TransitionsModal
         handleClose={handleClose}
         isModalOpen={isModalOpen}
-        title=" Payroll"
+        title="Generate Payroll"
       >
         <center>
           <form>
