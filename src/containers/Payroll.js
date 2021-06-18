@@ -411,36 +411,35 @@ const Payroll = ({ userToken, admin }) => {
 
   return (
     <div style={{}}>
-      <Toolbar className={classes.justify}>
-      <Fab
-        size="medium"
-        onClick={handleOpen}
-        color="primary"
-        className={classes.createbutton}
-      >
-        <AddIcon />
-      </Fab>
-    
-      <Button>
-        <CSVLink
-          data={csvData}
-          filename={"overload.csv"}
-          className="btn btn-primary"
-          target="_blank"
-        >
-          <Button
-            variant="contained"
-            style={{ backgroundColor: "#4caf50", color: "white" }}
-            className={classes.button}
-            endIcon={<SystemUpdateAltIcon>send</SystemUpdateAltIcon>}
+      <Paper>
+        <Toolbar className={classes.justify} style={{ marginBottom: 10 }}>
+          <Fab
+            size="medium"
+            onClick={handleOpen}
+            color="primary"
+            className={classes.createbutton}
           >
-            Export Overload
-          </Button>
-        </CSVLink>
-      </Button>
-      </Toolbar>
+            <AddIcon />
+          </Fab>
 
-      <Paper style={{ marginTop: 20 }}>
+          <Button>
+            <CSVLink
+              data={csvData}
+              filename={"overload.csv"}
+              className="btn btn-primary"
+              target="_blank"
+            >
+              <Button
+                variant="contained"
+                style={{ backgroundColor: "#4caf50", color: "white" }}
+                className={classes.button}
+                endIcon={<SystemUpdateAltIcon>send</SystemUpdateAltIcon>}
+              >
+                Export Overload
+              </Button>
+            </CSVLink>
+          </Button>
+        </Toolbar>
         <Table
           lists={overload}
           filterFn={filterFn}
