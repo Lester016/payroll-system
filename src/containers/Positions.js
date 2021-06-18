@@ -387,6 +387,7 @@ const Position = () => {
       <TransitionsModal
         handleClose={deleteClose}
         isModalOpen={deleteKey ? true : false}
+        title="Delete Position"
       >
         {!isLoading ? (
           <>
@@ -423,7 +424,11 @@ const Position = () => {
         )}
       </TransitionsModal>
 
-      <TransitionsModal handleClose={handleClose} isModalOpen={isModalOpen}>
+      <TransitionsModal
+        handleClose={handleClose}
+        isModalOpen={isModalOpen}
+        title={"Add Position"}
+      >
         {!isLoading ? (
           <>
             <center>

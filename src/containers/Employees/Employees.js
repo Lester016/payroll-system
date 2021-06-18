@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
   },
   // button: {
-    
+
   // },
   toolbar: {
     justifyContent: "space-between",
@@ -324,7 +324,7 @@ const Employees = ({ userToken }) => {
               }}
               onChange={handleSearch}
             />
-            
+
             <Fab
               className={classes.createButton}
               size="medium"
@@ -333,7 +333,7 @@ const Employees = ({ userToken }) => {
             >
               <AddIcon />
             </Fab>
-            </div>
+          </div>
           <Button>
             <CSVLink
               data={csvData}
@@ -383,6 +383,7 @@ const Employees = ({ userToken }) => {
       <TransitionsModal
         handleClose={DeleteClose}
         isModalOpen={deleteKey ? true : false}
+        title="Delete Employee"
       >
         {!isLoading ? (
           <>

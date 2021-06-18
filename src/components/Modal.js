@@ -50,7 +50,7 @@ const TransitionsModal = ({ isModalOpen, handleClose, children, title }) => {
       >
         <Fade in={isModalOpen}>
           <Card className={classes.root}>
-            <DialogTitle className={classes.dialog}>Add {title}</DialogTitle>
+            <DialogTitle className={classes.dialog}>{title}</DialogTitle>
             <CardContent>{children}</CardContent>
           </Card>
         </Fade>
